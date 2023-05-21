@@ -45,3 +45,9 @@ img.img-article-left.thumb {
   color: #187a0c;
   text-align: center;
 }
+
+.content_2d {
+  width: 20em;
+  text-align: start, top;
+  color: #CC0000;
+}

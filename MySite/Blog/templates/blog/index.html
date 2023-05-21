@@ -5,19 +5,20 @@
     {% for p in posts %}
 
     <li>
+
         <div class="article-panel">
             <p class="first">Категория: {{p.cat_post}}</p>
             <p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+            <h3>{{p.title}}</h3>
         </div>
     {% if p.slug != '' %}
-        {{  p.slug }}
         {% if p.photo_part %}
         <p><img class="img-article-left thumb" src="{{p.photo_part.url}}"></p>
         {% endif %}
 
-        <h2>{{p.name_part}}</h2>
+
         {% autoescape on %}
-        {{p.content_part|linebreaks|truncatewords:50}}
+        {{p.description|linebreaks|truncatewords:50}}
         {% endautoescape %}
         <div class="clear"></div>
         <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
