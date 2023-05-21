@@ -1,0 +1,47 @@
+html, body {
+	font-family: 'Arial';
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+	color: #444;
+}
+
+
+a {
+	color: #0059b2;
+	text-decoration: none;
+}
+a:hover {
+	color: #CC0000;
+	text-decoration: underline;
+}
+
+img {max-width: 600px; height: auto;}
+
+img.img-article-left {
+	max-width: 300px;
+	height: auto;
+	float: left;
+	padding: 0 10px 10px 0;
+}
+
+img.img-article-left.thumb {
+	max-width: 150px;
+	height: auto;
+}
+
+.comments-form {
+  width: 20em;
+  text-align: left;
+}
+
+.comments-form2 {
+  padding: 2px 5px;
+  text-align: left;
+}
+
+.text-comments{
+  color: #187a0c;
+  text-align: center;
+}
