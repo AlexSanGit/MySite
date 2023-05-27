@@ -1,5 +1,6 @@
 from Blog.forms import *
 from Blog.models import Posts
+from Blog.utils import DataMixin
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
@@ -8,7 +9,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin
 
 
-class HomePage(ListView):
+class HomePage(DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -25,7 +26,7 @@ class HomePage(ListView):
         return context
 
 
-class PostDetail(DetailView, FormMixin):
+class PostDetail(DataMixin, DetailView, FormMixin):
     model = Posts
     template_name = 'blog/post_detail.html'
     slug_url_kwarg = 'post_slug'
@@ -54,6 +55,23 @@ class PostDetail(DetailView, FormMixin):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         return context
+
+
+class Category(DataMixin, ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Posts.objects.filter(cat_post__slug=self.kwargs['cat_slug'], is_published=True)\
+            .select_related('cat_post')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c = Category.objects.get(slug=self.kwargs['cat_slug'])
+        # c = Category.objects.all()
+        c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 class RegisterUser(CreateView):
