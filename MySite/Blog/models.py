@@ -3,17 +3,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_seller = models.BooleanField(default=False)
-    rating = models.IntegerField(default=0)
-    review = models.TextField(blank=True)
-    email = models.EmailField()
-
-    def __str__(self):
-        return self.user
-
-
 class Posts(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
@@ -37,6 +26,34 @@ class Posts(models.Model):
         return reverse('post', kwargs={'post_slug': self.slug})
 
 
+class Category(models.Model):
+    objects = models.Manager()
+    name = models.CharField(max_length=100, db_index=True, verbose_name="Категория")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cat_slug': self.slug})
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+        ordering = ['id']
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_seller = models.BooleanField(default=False)
+    rating = models.IntegerField(default=0)
+    review = models.TextField(blank=True)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.user
+
+
 class Message(models.Model):
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
@@ -56,22 +73,6 @@ class Offer(models.Model):
 
     def __str__(self):
         return self.price
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100, db_index=True, verbose_name="Категория")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('category', kwargs={'cat_slug': self.slug})
-
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ['id']
 
 
 class Comments(models.Model):

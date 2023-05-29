@@ -1,9 +1,14 @@
+from Blog import models
 from Blog.forms import *
+from Blog.models import Category
 from Blog.models import Posts
-from Blog.utils import DataMixin
+from Blog.utils import DataMixin, menu
 from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
+from django.core.paginator import Paginator
+from django.shortcuts import redirect, render
+from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin
@@ -23,7 +28,8 @@ class HomePage(DataMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
-        return context
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 class PostDetail(DataMixin, DetailView, FormMixin):
@@ -54,10 +60,11 @@ class PostDetail(DataMixin, DetailView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
-        return context
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
 
-class Category(DataMixin, ListView):
+class CategoryPosts(DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -69,8 +76,25 @@ class Category(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
-        # c = Category.objects.all()
         c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
+    form_class = AddPostForm
+    template_name = 'blog/addpage.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form, *args, **kwargs):
+        obj = form.save(commit=False)
+        obj.slug = slugify(obj.name_part)
+        print('obj.slug')
+        obj.save()
+        return super().form_valid(form)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Начнем поиск")
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -107,4 +131,17 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+def about(request):
+    contact_list = Posts.objects.all()
+    paginator = Paginator(contact_list, 3)
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'bayer/about.html', {'page_obj': page_obj, 'menu': menu, 'title': 'О сайте'})
+
+
+def contact(request):
+    return HttpResponse("Обратная связь")
 

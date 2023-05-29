@@ -3,7 +3,7 @@ from django.contrib import admin
 
 
 class PostAdmin(admin.ModelAdmin):     # Настройка столбов в админке
-    list_display = ('id', 'author', 'title', 'description', 'slug', 'photo_part', 'is_published')
+    list_display = ('id', 'cat_post', 'author', 'title', 'description', 'slug', 'photo_part', 'is_published')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'description')
     list_editable = ('is_published', )
@@ -12,7 +12,7 @@ class PostAdmin(admin.ModelAdmin):     # Настройка столбов в а
 
 
 class CategoryAdmin(admin.ModelAdmin):     # Настройка столбов в админке
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'slug')
     list_display_links = ('id', 'name')
     search_fields = ('name', )
     prepopulated_fields = {"slug": ("name",)}
