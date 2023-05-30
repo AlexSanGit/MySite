@@ -1,0 +1,39 @@
+{% extends 'blog/base.html' %}
+{% load bootstrap3 %}
+{% load blog_tags %}
+
+{% block content %}
+
+
+<h2>Страница пользователя</h2>
+
+<p>Логин: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+
+<p>Статус: {% if profile.is_seller %}
+        Покупатель
+    {% else %}
+        Продавец
+    {% endif%}
+</p>
+<p>Рейтинг: {% if profile.rating == 0 %}
+
+        Пока нет рейтинга
+    {% else %}
+        {{ profile.rating }}
+    {% endif%}
+
+</p>
+<p>Отзыв: {% if profile.rating == 0 %}
+
+        Пока нет отзывов
+    {% else %}
+        {{ profile.review }}
+    {% endif%}
+
+
+
+     </p>
+
+
+{% endblock %}

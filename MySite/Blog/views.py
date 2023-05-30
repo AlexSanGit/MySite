@@ -1,18 +1,28 @@
+import random
+
 from Blog import models
 from Blog.forms import *
-from Blog.models import Category
+from Blog.models import Category, UserProfile
 from Blog.models import Posts
 from Blog.utils import DataMixin, menu
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.template.defaultfilters import slugify
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin
+from slugify import slugify
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
 
 class HomePage(DataMixin, ListView):
@@ -43,7 +53,6 @@ class PostDetail(DataMixin, DetailView, FormMixin):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('home')
-
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -89,10 +98,30 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
     def form_valid(self, form, *args, **kwargs):
         obj = form.save(commit=False)
-        obj.slug = slugify(obj.name_part)
-        print('obj.slug')
-        obj.save()
-        return super().form_valid(form)
+        obj.author = self.request.user
+
+        # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
+        slug = slugify(form.cleaned_data['title'])
+        # проверяем уникальность slug
+        if Posts.objects.filter(slug=slug).exists():
+            # если slug уже занят, генерируем новый slug путем добавления случайного числа к оригинальному slug
+            slug = f"{slug}-{random.randint(1, 1000)}"
+        # добавляем slug в объект поста
+        form.instance.slug = slug
+        try:
+            # вызываем метод родительского класса для сохранения объекта поста
+            response = super().form_valid(form)
+        except ValidationError as e:
+            # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
+            if 'slug' in e.error_dict:
+                slug = f"{slug}-{random.randint(1, 1000)}"
+                form.instance.slug = slug
+                response = super().form_valid(form)
+            else:
+                raise e
+        return response
+        # obj.save()
+        return response
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -103,7 +132,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'blog/register.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -147,3 +176,17 @@ def about(request):
 def contact(request):
     return HttpResponse("Обратная связь")
 
+
+# class UserDetail(LoginRequiredMixin, DataMixin, DetailView):
+#     template_name = 'blog/user_detail.html'
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         c_def = self.get_user_context(title="Профиль")
+#         return dict(list(context.items()) + list(c_def.items()))
+
+def user_detail(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    profile = get_object_or_404(UserProfile, user=user)
+    context = {'user': user, 'profile': profile, 'menu':menu}
+    return render(request, 'blog/user_detail.html', context)

@@ -4,6 +4,7 @@ from Blog.models import Category
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Найти запчасть", 'url_name': 'add_page'},
         {'title': "Обратная связь", 'url_name': 'contact'},
+        # {'title': "Профиль", 'url_name': 'user_detail/1'},
 ]
 
 

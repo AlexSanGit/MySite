@@ -1,6 +1,7 @@
-from django import template
+import profile
 
-from Blog.models import Category
+from django import template
+from Blog.models import Category, UserProfile
 
 # здесь создаем тэги , для того чтобы обращаться с файлов шаблонов к ним
 
@@ -23,3 +24,11 @@ def show_categories(sort=None, cat_selected=0):
         cats = Category.objects.order_by(sort)
 
     return {"cats": cats, "cat_selected": cat_selected}
+
+
+@register.simple_tag()
+def get_status_user():
+    if UserProfile.is_seller is True:
+        return 'Продавец'
+    else:
+        return 'Покупатель'

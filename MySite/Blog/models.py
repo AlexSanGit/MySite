@@ -51,7 +51,7 @@ class UserProfile(models.Model):
     email = models.EmailField()
 
     def __str__(self):
-        return self.user
+        return str(self.user)
 
 
 class Message(models.Model):

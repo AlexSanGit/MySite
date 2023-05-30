@@ -2,6 +2,8 @@ from Blog.models import Comments, Posts
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django import forms
+from django.core.exceptions import ValidationError
+from django.http import request
 
 
 class RegisterUserForm(UserCreationForm):
@@ -33,11 +35,23 @@ class AddPostForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['cat_post'].empty_label = "Категория не выбрана"
+        self.fields['title'].label = "Заголовок"
+        self.fields['description'].label = "Описание"
+        self.fields['photo_part'].label = "Изображение"
+        self.fields['is_published'].label = "Опубликовать? "
+        # self.fields['author']
 
     class Meta:
         model = Posts
         fields = ['title', 'description', 'photo_part', 'is_published', 'cat_post']
+        # title = forms.CharField(label='Заголовок', widget=forms.TextInput(attrs={'class': 'form-input'}))
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-input'}),
-            'description': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
+            'title': forms.TextInput(attrs={'cols': 60}),
+            'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
         }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if len(title) > 100:
+            raise ValidationError('Длина превышает 200 символов')
+        return title

@@ -24,6 +24,12 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('author', 'email', 'text')
 
 
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'is_seller', 'rating', 'review', 'email')
+    search_fields = ('user', 'email')
+
+
 admin.site.register(Posts, PostAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comments, CommentAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
