@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import slugify
 from django.urls import reverse_lazy
@@ -19,7 +20,7 @@ class HomePage(DataMixin, ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
     ordering = ['-time_create']  # order posts by date in descending order
-    paginate_by = 10  # display 10 posts per page
+    paginate_by = 5  # display 10 posts per page
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -41,7 +42,8 @@ class PostDetail(DataMixin, DetailView, FormMixin):
     success_msg = 'Коментарий создан'
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('post:post_slug')
+        return reverse_lazy('home')
+
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -59,8 +61,8 @@ class PostDetail(DataMixin, DetailView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        c_def = self.get_user_context()
+        # context['title'] = str(Posts.title)
+        c_def = self.get_user_context(title='Страница поста')
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -139,7 +141,7 @@ def about(request):
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'bayer/about.html', {'page_obj': page_obj, 'menu': menu, 'title': 'О сайте'})
+    return render(request, 'blog/about.html', {'page_obj': page_obj, 'menu': menu, 'title': 'О сайте'})
 
 
 def contact(request):

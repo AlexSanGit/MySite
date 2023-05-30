@@ -1,5 +1,4 @@
 from Blog.models import Category
-from django.db.models import Count
 
 
 menu = [{'title': "О сайте", 'url_name': 'about'},

@@ -3,6 +3,7 @@
 
 <ul>
     {% for p in posts %}
+
     <li>
         <div>
             <p>Категория: {{p.cat_post}}</p>
@@ -24,7 +25,7 @@
                     {% autoescape on %}
                     {{p.description|linebreaks|truncatewords:50}}
                     {% endautoescape %}
-
+                    <p>Коментариев: ({{p.comments_posts.all.count}})</p>
                     <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
                     {% endif %}
                     <div class="clear"></div>

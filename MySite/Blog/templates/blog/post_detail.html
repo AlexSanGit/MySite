@@ -25,7 +25,7 @@
 <hr>
 <div class="comments-form">
 
-    <h4>Коментарии ({{post.comments_posts.all.count}})</h4>
+    <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
     {% for comments in post.comments_posts.all %}
     <div class="text-comments">
         <p class="user-comments">{{ comments.author }} написал {{ comments.created }}:</p>
