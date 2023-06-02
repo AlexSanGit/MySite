@@ -26,9 +26,4 @@ def show_categories(sort=None, cat_selected=0):
     return {"cats": cats, "cat_selected": cat_selected}
 
 
-@register.simple_tag()
-def get_status_user():
-    if UserProfile.is_seller is True:
-        return 'Продавец'
-    else:
-        return 'Покупатель'
+

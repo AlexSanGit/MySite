@@ -4,7 +4,7 @@ from Blog import models
 from Blog.forms import *
 from Blog.models import Category, UserProfile
 from Blog.models import Posts
-from Blog.utils import DataMixin, menu
+from Blog.utils import DataMixin, menu, AvatarProcessor
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -142,7 +142,7 @@ class RegisterUser(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Register'
+        context['title'] = 'Регистрация'
         return context
 
 
@@ -165,12 +165,7 @@ def logout_user(request):
 
 
 def about(request):
-    contact_list = Posts.objects.all()
-    paginator = Paginator(contact_list, 3)
-
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'blog/about.html', {'page_obj': page_obj, 'menu': menu, 'title': 'О сайте'})
+    return render(request, 'blog/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
 def contact(request):
@@ -188,5 +183,20 @@ def contact(request):
 def user_detail(request, user_id):
     user = get_object_or_404(User, id=user_id)
     profile = get_object_or_404(UserProfile, user=user)
-    context = {'user': user, 'profile': profile, 'menu':menu}
+    context = {'user': user, 'profile': profile, 'menu': menu}
     return render(request, 'blog/user_detail.html', context)
+
+
+# def edit_profile(request):
+#     user = request.user
+#     if request.method == 'POST':
+#         form = UserForm(request.POST, request.FILES, instance=user)
+#         if form.is_valid():
+#             form.save()
+#             # Обрабатываем изображение
+#             avatar_processor = AvatarProcessor(instance=user)
+#             avatar_processor.process()
+#             return redirect('profile')
+#     else:
+#         form = UserForm(instance=user)
+#     return render(request, 'edit_profile.html', {'form': form})

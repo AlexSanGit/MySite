@@ -49,6 +49,7 @@ class UserProfile(models.Model):
     rating = models.IntegerField(default=0)
     review = models.TextField(blank=True)
     email = models.EmailField()
+    # avatar = models.ImageField(upload_to="photos/avatar/%Y/%m/%d/", verbose_name="Фото", null=True, blank=True)
 
     def __str__(self):
         return str(self.user)
