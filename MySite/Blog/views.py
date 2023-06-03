@@ -187,16 +187,3 @@ def user_detail(request, user_id):
     return render(request, 'blog/user_detail.html', context)
 
 
-# def edit_profile(request):
-#     user = request.user
-#     if request.method == 'POST':
-#         form = UserForm(request.POST, request.FILES, instance=user)
-#         if form.is_valid():
-#             form.save()
-#             # Обрабатываем изображение
-#             avatar_processor = AvatarProcessor(instance=user)
-#             avatar_processor.process()
-#             return redirect('profile')
-#     else:
-#         form = UserForm(instance=user)
-#     return render(request, 'edit_profile.html', {'form': form})
