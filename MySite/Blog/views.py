@@ -1,7 +1,7 @@
 import random
 
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
@@ -12,18 +12,18 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 from slugify import slugify
 
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
-from Blog.models import UserProfile, Posts, Category
+from Blog.models import Posts, Category, UserProfile
 from Blog.utils import DataMixin, menu
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         UserProfile.objects.create(user=instance)
 
 
 class HomePage(DataMixin, ListView):
@@ -128,6 +128,32 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title="Начнем поиск")
         return dict(list(context.items()) + list(c_def.items()))
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Posts
+    fields = ['title', 'description', 'cat_post']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Posts
+    success_url = '/'
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
 
 
 class RegisterUser(CreateView):

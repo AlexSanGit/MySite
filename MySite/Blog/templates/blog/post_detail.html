@@ -7,7 +7,11 @@
     {{post.title}}
 
 </div>
-<p class="user-post"> Написал: {{post.author}} </p>
+
+<p class="user-post"> Написал:
+    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}"  style="width: 50px;"
+  alt="Avatar" />
+    {{post.author}} </p>
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
@@ -21,7 +25,8 @@
 
         </th>
     </tr>
-
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
 </table>
 <hr>
 <div class="comments-form">
