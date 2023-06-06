@@ -1,9 +1,13 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
-{% load bootstrap4 %}
+{% load blog_tags %}
 
 {% block content %}
-    <div class="content-section">
+
+<table border=0 cellpadding="0" cellspacing="0">
+    <tr>
+        <th>
+             <div class="content-section">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -20,4 +24,11 @@
             </small>
         </div>
     </div>
+
+        </th>
+
+    </tr>
+
+</table>
+
 {% endblock content %}

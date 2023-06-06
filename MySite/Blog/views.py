@@ -1,13 +1,10 @@
 import random
 
-from Blog import models
-from Blog.forms import *
-from Blog.models import Category, UserProfile
-from Blog.models import Posts
-from Blog.utils import DataMixin, menu, AvatarProcessor
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -17,6 +14,10 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin
 from slugify import slugify
+
+from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
+from Blog.models import UserProfile, Posts, Category
+from Blog.utils import DataMixin, menu
 
 
 @receiver(post_save, sender=User)
@@ -169,7 +170,7 @@ def about(request):
 
 
 def contact(request):
-    return HttpResponse("Обратная связь")
+    return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
 
 
 # class UserDetail(LoginRequiredMixin, DataMixin, DetailView):
