@@ -50,6 +50,7 @@ class AddPostForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
         }
 
+
     def clean_title(self):
         title = self.cleaned_data['title']
         if len(title) > 100:

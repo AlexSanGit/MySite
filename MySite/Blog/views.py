@@ -132,7 +132,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Posts
-    fields = ['title', 'description', 'cat_post']
+    fields = ['title', 'description', 'cat_post', 'photo_part']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
