@@ -11,6 +11,8 @@ urlpatterns = [
     path('addpage/', AddPost.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     path('user/<int:user_id>/', user_detail, name='user_detail'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     # path('login/', LoginUser.as_view(), name='login'),
     # path('logout/', logout_user, name='logout'),
 
