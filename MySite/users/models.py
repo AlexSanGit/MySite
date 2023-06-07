@@ -8,7 +8,7 @@ class Profile(models.Model):
     is_seller = models.BooleanField(default=False)
     rating = models.IntegerField(default=0)
     review = models.TextField(blank=True)
-    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'

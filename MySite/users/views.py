@@ -2,9 +2,7 @@ from Blog.utils import menu
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from users.models import Profile
 
@@ -37,7 +35,11 @@ def register(request):
 
 @login_required
 def profile(request):
+# def profile(request):
+#     user = get_object_or_404(User, id=user_id)
+#     profile = get_object_or_404(Profile, instance=request.user)
     if request.method == 'POST':
+
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
@@ -55,7 +57,8 @@ def profile(request):
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'menu': menu
+        'menu': menu,
+        'profile': profile
     }
 
     return render(request, 'users/profile.html', context)
