@@ -15,8 +15,8 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user)
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
         img = Image.open(self.image.path)
 

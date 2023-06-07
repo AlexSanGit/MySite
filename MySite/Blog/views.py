@@ -1,5 +1,6 @@
 import random
 
+from PIL import Image
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -8,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
@@ -132,11 +133,28 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Posts
-    fields = ['title', 'description', 'cat_post']
+    fields = ['title', 'description', 'cat_post', 'photo_part']
+    success_url = reverse_lazy('home')
+    # def form_valid(self, form):
+    #     form.instance.author = self.request.user
+    #     return super().form_valid(form)
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+        post = form.save(commit=False)
+        # if 'photo_part' in form.changed_data:
+        #     # Получаем изображение из формы
+        #     image = form.cleaned_data.get('photo_part')
+        #     # Открываем изображение с помощью библиотеки Pillow
+        #     img = Image.open(image)
+        #     # Меняем размер изображения
+        #     output_size = (500, 500)
+        #     img.thumbnail(output_size)
+        #     # Удаляем старое изображение
+        #     if post.image:
+        #         post.image.delete()
+        #     # Сохраняем новое изображение
+        #     post.image.save(image.name, img.format)
+        # return super().form_valid(form)
 
     def test_func(self):
         post = self.get_object()

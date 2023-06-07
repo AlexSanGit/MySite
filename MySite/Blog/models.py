@@ -5,8 +5,8 @@ from django.urls import reverse
 
 class Posts(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
-    description = models.TextField()
+    title = models.CharField(max_length=100,verbose_name="Заголовок")
+    description = models.TextField(verbose_name="Описание")
     slug = models.SlugField(max_length=255)
     photo_part = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Фото")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")

@@ -9,18 +9,19 @@ from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from users.models import Profile
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
 
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+
             username = form.cleaned_data.get('username')
+            form.save()
             messages.success(request, f'Ваш аккаунт создан: можно войти на сайт.')
             return redirect('home')
     else:
