@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage, FileSystemStorage
 from django.core.paginator import Paginator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -133,9 +134,20 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Posts
     fields = ['title', 'description', 'cat_post', 'photo_part']
+    storage = FileSystemStorage(location='photos/%Y/%m/%d/')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        # Получаем данные из формы
+        instance = form.save(commit=False)
+        image = self.request.FILES.get('image')
+
+        # Если есть новое изображение, сохраняем его
+        if image:
+            filename = f'posts/{instance.slug}/{image.name}'
+            path = self.storage.save(filename, image)
+            instance.image = path
+        # Вызываем родительский метод для сохранения остальных данных модели
         return super().form_valid(form)
 
     def test_func(self):
