@@ -40,7 +40,7 @@ def profile(request, user_id):
             u_form.save()
             p_form.save()
             messages.success(request, f'Ваш профиль успешно обновлен.')
-            return redirect('profile')
+            return redirect('profile', user_id)
 
     else:
         u_form = UserUpdateForm(instance=request.user)
