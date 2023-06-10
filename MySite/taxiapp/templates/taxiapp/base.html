@@ -1,5 +1,4 @@
 {% load static %}
-{% load blog_tags %}
 {% load crispy_forms_tags %}
 
 
@@ -25,7 +24,6 @@
 </head>
 <body>
 
-
 <table class="table-page" border=0 cellpadding="0" cellspacing="0">
     <tr>
         <td valign=top>
@@ -43,6 +41,7 @@
                     <li class="last"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
                     <a href="{% url 'user_detail' user.id %}">Страница пользователя | </a>
                     <a href="{% url 'profile' user.id %}">Профиль</a>
+
                     {% else %}
                     <li class="last"><a href="{% url 'register' %}">Регистрация</a> | <a
                             href="{% url 'login' %}">Войти</a></li>
@@ -59,11 +58,8 @@
                     <td valign="top" class="left-chapters">
 
                         <ul id="leftchapters">
-
+                            <li><a href="{% url 'choose_taxi' %}">Choose a taxi</a></li>
                             <li><a href="{% url 'home' %}">Все категории</a></li>
-                            <li><a href="{% url 'taxihome' %}">Заказ такси</a></li>
-
-                            {% show_categories '-name' cat_selected%}
 
                         </ul>
                     </td>

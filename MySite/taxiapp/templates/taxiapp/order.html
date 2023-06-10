@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Order a taxi</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="taxi" value="{{ taxi.id }}">
+    <button type="submit">Order</button>
+  </form>
+{% endblock %}

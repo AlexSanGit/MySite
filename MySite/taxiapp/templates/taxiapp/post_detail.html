@@ -1,0 +1,55 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<div class="title-detail-post">
+
+    {{post.title}}
+
+</div>
+
+<p class="user-post"> Написал:
+    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}"  style="width: 50px;"
+  alt="Avatar" />
+    {{post.author}} </p>
+<table border=0 cellpadding="0" cellspacing="0">
+    <tr>
+        <th>
+            {% if post.photo_part %}
+            <p><img class="img-article" src="{{post.photo_part.url}}"></p>
+            {% endif %}
+        </th>
+
+       <th>
+            <div class="post-description"> {{post.description|linebreaks}}</div>
+
+        </th>
+    </tr>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
+</table>
+<hr>
+<div class="comments-form">
+
+    <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
+    {% for comments in post.comments_posts.all %}
+    <div class="text-comments">
+        <p class="user-comments">{{ comments.author }} написал {{ comments.created }}:</p>
+        <p>{{ comments.text }} </p>
+
+    </div>
+    {% empty %}
+    <p>Пока нет коментариев</p>
+    {% endfor %}
+
+    <form action="" id="add_form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+
+</div>
+
+
+{% endblock %}
+

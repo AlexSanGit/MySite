@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Taxi App</title>
+</head>
+<body>
+    <h1>Welcome, {{ driver.user.name }}!</h1>
+    <h2>Driver Status: {{ driver.get_driver_status_display }}</h2>
+    <h2>Balance: ${{ driver.balance }}</h2>
+    <h2>Select a taxi:</h2>
+    <form method="post" action="{% url 'select_taxi' %}">
+        {% csrf_token %}
+        <select name="driver">
+            {% for driver in drivers %}
+            <option value="{{ driver.id }}">{{ driver }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <input type="submit" value="Select Taxi">
+    </form>
+</body>
+</html>

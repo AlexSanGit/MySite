@@ -1,0 +1,48 @@
+{% extends 'taxiapp/base.html' %}
+{% block content %}
+
+<ul>
+    {% for p in posts %}
+
+    <li>
+        <div>
+            <p>Категория: {{p.cat_post}}</p>
+            <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+            <h3>{{p.title}}</h3>
+        </div>
+        <table border=0 cellpadding="0" cellspacing="0">
+            <tr>
+                <th>
+                    <!--            {% if p.slug != '' %}-->
+                    <div>
+                        {% if p.photo_part %}
+                        <p><img class="img-article-left thumb" src="{{p.photo_part.url}}"></p>
+                        <!--            {% endif %}-->
+                    </div>
+                </th>
+                <th>
+
+                    {% autoescape on %}
+                    {{p.description|linebreaks|truncatewords:50}}
+                    {% endautoescape %}
+                    <p>Коментариев: ({{p.comments_posts.all.count}})</p>
+                    <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
+                    {% endif %}
+                    <div class="clear"></div>
+                </th>
+            </tr>
+
+        </table>
+        <hr>
+        {% endfor %}
+        {% endblock %}
+    </li>
+
+</ul>
+
+
+
+
+
+
+

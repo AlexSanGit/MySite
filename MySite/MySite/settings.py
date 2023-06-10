@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     'crispy_forms',
     'users',
+    'taxiapp',
 
 ]
+# AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
 
 
