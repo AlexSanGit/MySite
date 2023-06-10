@@ -1,14 +1,18 @@
 from PIL import Image
 from django.contrib.auth.models import User
 from django.db import models
+from users.choices.city_choices import CITY_CHOICES
 
 
 class Profile(models.Model):
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_seller = models.BooleanField(default=False)
     rating = models.IntegerField(default=0)
     review = models.TextField(blank=True)
     image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
+    city = models.CharField(max_length=3, choices=CITY_CHOICES, blank=True)
+    phone = models.IntegerField(default=0, blank=True)
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'
