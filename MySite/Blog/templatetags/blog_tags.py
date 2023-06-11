@@ -1,7 +1,7 @@
 import profile
 
 from django import template
-from Blog.models import Category, UserProfile
+from Blog.models import Category
 
 # здесь создаем тэги , для того чтобы обращаться с файлов шаблонов к ним
 

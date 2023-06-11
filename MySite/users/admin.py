@@ -3,7 +3,7 @@ from .models import Profile
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'is_seller', 'rating', 'review', 'city')
+    list_display = ('user', 'is_seller', 'rating', 'review', 'city',)
     search_fields = ('city', 'name', 'phone')
 
 

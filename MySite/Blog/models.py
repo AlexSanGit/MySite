@@ -43,16 +43,16 @@ class Category(models.Model):
         ordering = ['id']
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_seller = models.BooleanField(default=False)
-    rating = models.IntegerField(default=0)
-    review = models.TextField(blank=True)
-    email = models.EmailField()
-    # avatar = models.ImageField(upload_to="photos/avatar/%Y/%m/%d/", verbose_name="Фото", null=True, blank=True)
-
-    def __str__(self):
-        return str(self.user)
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     is_seller = models.BooleanField(default=False)
+#     rating = models.IntegerField(default=0)
+#     review = models.TextField(blank=True)
+#     email = models.EmailField()
+#     # avatar = models.ImageField(upload_to="photos/avatar/%Y/%m/%d/", verbose_name="Фото", null=True, blank=True)
+#
+#     def __str__(self):
+#         return str(self.user)
 
 
 class Message(models.Model):

@@ -32,4 +32,4 @@ class UserProfileAdmin(admin.ModelAdmin):
 admin.site.register(Posts, PostAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comments, CommentAdmin)
-admin.site.register(UserProfile, UserProfileAdmin)
+# admin.site.register(UserProfile, UserProfileAdmin)

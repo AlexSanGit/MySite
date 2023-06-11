@@ -19,27 +19,16 @@ from users.models import Profile
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        if request.method == 'POST':
-            form = UserRegisterForm(request.POST)
-            if form.is_valid():
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password1']
-                city = form.cleaned_data['city']
+        profile_form = ProfileUpdateForm(request.POST)
+        if form.is_valid() and profile_form.is_valid():
+            user = form.save()
+            profile_ = profile_form.save(commit=False)
+            profile_.user = user
+            profile_.save()
 
-                # Проверка наличия пользователя с таким именем
-                if User.objects.filter(username=username).exists():
-                    return render(request, 'registration.html',
-                                  {'form': form, 'error_message': 'Username already exists'})
-
-                # Создание пользователя
-                user = User.objects.create_user(username=username, password=password)
-
-                # Создание профиля пользователя
-                # profile = Profile(user=user, city=city)
-                # profile.save()
-            login(request, user)
-            messages.success(request, f'Ваш аккаунт создан: можно войти на сайт.')
-            return redirect('home')
+        login(request, user)
+        messages.success(request, f'Ваш аккаунт создан: можно войти на сайт.')
+        return redirect('home')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html',  {'form': form, 'city_choices': CITY_CHOICES})

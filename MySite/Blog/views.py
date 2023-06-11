@@ -17,7 +17,7 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView
 from slugify import slugify
 
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
-from Blog.models import Posts, Category, UserProfile
+from Blog.models import Posts, Category
 from Blog.utils import DataMixin, menu
 
 
