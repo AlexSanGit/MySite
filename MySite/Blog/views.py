@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import HttpResponse, request
+from django.http import HttpResponse, request, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
@@ -19,12 +19,6 @@ from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
 from Blog.models import Posts, Category
 from Blog.utils import DataMixin, menu
-
-
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         UserProfile.objects.create(user=instance)
 
 
 class HomePage(DataMixin, ListView):
@@ -131,29 +125,35 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Posts
+    template_name = 'blog/edit_posts_form.html'
     fields = ['title', 'description', 'cat_post', 'photo_part']
     success_url = reverse_lazy('home')
-    # def form_valid(self, form):
-    #     form.instance.author = self.request.user
-    #     return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        if obj.author != self.request.user:
+            raise Http404("You are not allowed to edit this post.")
+        return obj
 
     def form_valid(self, form):
-        post = form.save(commit=False)
-        # if 'photo_part' in form.changed_data:
-        #     # Получаем изображение из формы
-        #     image = form.cleaned_data.get('photo_part')
-        #     # Открываем изображение с помощью библиотеки Pillow
-        #     img = Image.open(image)
-        #     # Меняем размер изображения
-        #     output_size = (500, 500)
-        #     img.thumbnail(output_size)
-        #     # Удаляем старое изображение
-        #     if post.image:
-        #         post.image.delete()
-        #     # Сохраняем новое изображение
-        #     post.image.save(image.name, img.format)
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+        # post = form.save(commit=False)
+        # # if 'photo_part' in form.changed_data:
+        # #     # Получаем изображение из формы
+        # image = form.cleaned_data.get('photo_part')
+        # # Открываем изображение с помощью библиотеки Pillow
+        # img = Image.open(image)
+        # # Меняем размер изображения
+        # output_size = (500, 500)
+        # img.thumbnail(output_size)
+        # # Удаляем старое изображение
+        # # if post.photo_part:
+        # #     post.photo_part.delete()
+        # # Сохраняем новое изображение
+        # post.photo_part.save(image.name, img.format)
         # return super().form_valid(form)
 
     def test_func(self):
