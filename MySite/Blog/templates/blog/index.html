@@ -2,6 +2,35 @@
 {% block content %}
 
 <ul>
+
+<!-- Кнопка для открытия всплывающего сообщения -->
+<!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
+
+<!-- Функция для отображения всплывающего сообщения -->
+<!--<script>-->
+<!--function showMessage() {-->
+<!--  // Создаем элемент с сообщением-->
+<!--  var message = document.createElement("div");-->
+<!--  message.innerHTML = "Это всплывающее сообщение";-->
+<!--  message.style.position = "fixed";-->
+<!--  message.style.top = "50%";-->
+<!--  message.style.left = "50%";-->
+<!--  message.style.transform = "translate(-50%, -50%)";-->
+<!--  message.style.padding = "10px";-->
+<!--  message.style.backgroundColor = "#f1c40f";-->
+<!--  message.style.color = "#fff";-->
+<!--  message.style.borderRadius = "5px";-->
+
+<!--  // Добавляем элемент на страницу-->
+<!--  document.body.appendChild(message);-->
+
+<!--  // Через 5 секунд удаляем элемент-->
+<!--  setTimeout(function() {-->
+<!--    document.body.removeChild(message);-->
+<!--  }, 5000);-->
+<!--}-->
+<!--</script>-->
+
     {% for p in posts %}
 
     <li>

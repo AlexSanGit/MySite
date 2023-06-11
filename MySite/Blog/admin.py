@@ -3,7 +3,7 @@ from django.contrib import admin
 
 
 class PostAdmin(admin.ModelAdmin):     # Настройка столбов в админке
-    list_display = ('id', 'cat_post', 'author', 'title', 'description', 'slug', 'photo_part', 'is_published')
+    list_display = ('id', 'cat_post', 'author', 'title', 'city', 'slug', 'photo_part', 'is_published')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'description')
     list_editable = ('is_published', )
@@ -24,9 +24,9 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('author', 'email', 'text')
 
 
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'is_seller', 'rating', 'review', 'email')
-    search_fields = ('user', 'email')
+# class UserProfileAdmin(admin.ModelAdmin):
+#     list_display = ('user', 'is_seller', 'rating', 'review', 'email')
+#     search_fields = ('user', 'email')
 
 
 admin.site.register(Posts, PostAdmin)

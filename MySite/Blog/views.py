@@ -96,6 +96,9 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         obj = form.save(commit=False)
         obj.author = self.request.user
 
+        # user_profile = request.user.profile  # Получаем профиль пользователя
+        # post = Post(title=title, content=content, city=user_profile)
+
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
         # проверяем уникальность slug
@@ -225,10 +228,10 @@ def contact(request):
 #         c_def = self.get_user_context(title="Профиль")
 #         return dict(list(context.items()) + list(c_def.items()))
 
-def user_detail(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    profile = get_object_or_404(UserProfile, user=user)
-    context = {'user': user, 'profile': profile, 'menu': menu}
-    return render(request, 'blog/user_detail.html', context)
+# def user_detail(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     profile = get_object_or_404(UserProfile, user=user)
+#     context = {'user': user, 'profile': profile, 'menu': menu}
+#     return render(request, 'blog/user_detail.html', context)
 
 
