@@ -96,7 +96,7 @@ img.img-article {
 }
 
 .messages li {
-    animation: fade-out 5s forwards;
+    animation: fade-out 3s forwards;
     opacity: 1;
 }
 

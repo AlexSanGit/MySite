@@ -1,4 +1,4 @@
-{% extends "blog/base.html" %}
+{% extends "users/base.html" %}
 {% load crispy_forms_tags %}
 {% load custom_tags %}
 {% block content %}
@@ -15,6 +15,10 @@
 </ul>
 {% endif %}
 
+<table border=0 cellpadding="0" cellspacing="0">
+
+    <tr>
+        <th>
 <div class="content-section">
     <div class="media">
         <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
@@ -50,4 +54,8 @@
         </div>
     </form>
 </div>
+        </th>
+    </tr>
+</table>
+
 {% endblock content %}

@@ -1,5 +1,18 @@
-{% extends "blog/base.html" %}
+{% extends "users/base.html" %}
 {% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %}
+        class="{{ message.tags }}"
+        {% endif %}>
+        {{ message|message_with_animation }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
     <h2>Вы вышли из своей учетной записи</h2>
     <div class="border-top pt-3">
         <small class="text-muted">

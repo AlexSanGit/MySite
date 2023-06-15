@@ -1,6 +1,7 @@
 import random
 
 from PIL import Image
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -19,6 +20,7 @@ from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
 from Blog.models import Posts, Category
 from Blog.utils import DataMixin, menu
+from users.models import Profile
 
 
 class HomePage(DataMixin, ListView):
@@ -137,11 +139,12 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_object(self, queryset=None):
         obj = super().get_object(queryset=queryset)
         if obj.author != self.request.user:
-            raise Http404("You are not allowed to edit this post.")
+            raise Http404("У вас нет доступа")
         return obj
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        # messages.success(self.request, 'Профиль обновлен.')
         return super().form_valid(form)
         # post = form.save(commit=False)
         # # if 'photo_part' in form.changed_data:
@@ -166,15 +169,27 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return False
 
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Posts
-    success_url = '/'
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = reverse_lazy('home')
+    # slug_url_kwarg = 'slug'
+    context_object_name = 'post'
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
-            return True
-        return False
+        messages.success(self.request, 'Post deleted successfully.')
+        return self.request.user == post.author
+
+    # def get_object(self, queryset=None):
+    #     slug = self.kwargs.get('slug')
+    #     return Posts.objects.get(slug=slug)
+    #
+    # def test_func(self):
+    #     post = self.get_object()
+    #     if self.request.user == post.author:
+    #         return True
+    #     return False
 
 
 class RegisterUser(CreateView):

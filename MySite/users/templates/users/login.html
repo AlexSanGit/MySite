@@ -1,8 +1,21 @@
-{% extends "blog/base.html" %}
+{% extends "users/base.html" %}
 {% load crispy_forms_tags %}
 {% load blog_tags %}
 
 {% block content %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %}
+        class="{{ message.tags }}"
+        {% endif %}>
+        {{ message|message_with_animation }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <table border=0 cellpadding="0" cellspacing="0">
 
     <tr>

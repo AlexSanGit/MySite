@@ -2,7 +2,13 @@
 {% block content %}
 
 <ul>
-
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 <!-- Кнопка для открытия всплывающего сообщения -->
 <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
 
@@ -68,6 +74,14 @@
     </li>
 
 </ul>
+
+<script>
+  setTimeout(function() {
+    document.querySelectorAll('.messages li').forEach(function(message) {
+      message.remove();
+    });
+  }, 3000);
+</script>
 
 
 

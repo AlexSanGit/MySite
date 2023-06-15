@@ -12,7 +12,7 @@ urlpatterns = [
     path('contact/', contact, name='contact'),
     # path('user/<int:user_id>/', user_detail, name='user_detail'),
     path('post/<int:pk>/update/', PostEditView.as_view(), name='post-update'),
-    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    path('post/<int:pk>/delete/', DeletePostView.as_view(), name='post-delete'),
     # path('login/', LoginUser.as_view(), name='login'),
     # path('logout/', logout_user, name='logout'),
 
