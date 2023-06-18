@@ -7,9 +7,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.http import HttpResponse, request, Http404
+from django.http import request, Http404
+
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
@@ -93,27 +92,19 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     template_name = 'blog/addpage.html'
     success_url = reverse_lazy('home')
 
-    def create_images(self, post):
+    def create_images(files, post):
         images = []
-        for file in images:
-            image = PILImage.open(file)
-            # Обработка изображения
-
-            # Создание экземпляра модели Image
-            image_instance = Image(post=post)
-
-            # Сохранение изображения в поле 'file' модели Image
-            image_buffer = BytesIO()
-            image.save(image_buffer, format='JPEG')
-            image_instance.file.save(file.name, InMemoryUploadedFile(
-                image_buffer, None, file.name, 'image/jpeg', image.tell(), None
-            ))
+        for file in files:
+            # Создание экземпляра модели ImageFile и присвоение полям значений
+            image = Image(image=file)
 
             # Сохранение экземпляра модели Image в базе данных
-            image_instance.save()
+            image.save()
 
-            # Добавление экземпляра модели Image в список
-            images.append(image_instance)
+            # Связывание экземпляра Image с соответствующим экземпляром Posts
+            post.images = image
+
+            images.append(image)  # Добавление созданного экземпляра в список images
 
         return images
 
@@ -124,6 +115,21 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # post.author = self.request.user
         # # post.save()
 
+        # Получение списка файлов
+        files = self.request.FILES.getlist('images')
+
+        # Создание экземпляров модели Image и сохранение их в базе данных
+        for file in files:
+            image = Image.objects.create(post=self.object)
+            image.image.save(file.name, file, save=True)
+
+            # Обработка изображения с использованием Pillow (если необходимо)
+            # Например, изменение размера изображения
+            img = PILImage.open(image.image.path)
+            img.thumbnail((800, 800))
+            img.save(image.image.path)
+
+        # Создание экземпляров модели Image и сохранение их в базе данных
         # Обработка изображений с использованием библиотеки Pillow
         # processed_images = []
         # for image in images:
@@ -177,14 +183,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         #     image = Image(post=post, file=filename)
         #     image.save()
 
-        files = request.FILES.getlist('images')
 
-        # Создание экземпляров модели Image и сохранение их в базе данных
-        images = self.create_images(files, post)
-        # Сохранение экземпляра модели Image в базе данных
-        images.save()
-
-        images.append(images)
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
