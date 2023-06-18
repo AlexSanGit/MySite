@@ -4,9 +4,14 @@ from django.urls import reverse
 from users.models import Profile
 
 
+class Image(models.Model):
+    post = models.ForeignKey('Posts', on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Изображение")
+
+
 class Posts(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100,verbose_name="Заголовок")
+    title = models.CharField(max_length=100, verbose_name="Заголовок")
     description = models.TextField(verbose_name="Описание")
     slug = models.SlugField(max_length=255)
     photo_part = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Фото")
@@ -15,6 +20,7 @@ class Posts(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     cat_post = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True, verbose_name="Категории")
     city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="город", null=True)
+    images = models.ForeignKey(Image, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.title

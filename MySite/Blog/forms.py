@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
 from django.http import request
+from multiupload.fields import MultiFileField
 
 
 class RegisterUserForm(UserCreationForm):
@@ -32,6 +33,10 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
+    # images = forms.ImageField(widget=forms.ClearableFileMultipleInput)
+    images = MultiFileField(min_num=1, max_num=10, max_file_size=1024 * 1024 * 5)  # Пример настроек, можно изменить по своему усмотрению
+    # images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['cat_post'].empty_label = "Категория не выбрана"
@@ -39,15 +44,15 @@ class AddPostForm(forms.ModelForm):
         self.fields['description'].label = "Описание"
         self.fields['photo_part'].label = "Изображение"
         self.fields['is_published'].label = "Опубликовать? "
-        # self.fields['author']
 
     class Meta:
         model = Posts
-        fields = ['title', 'description', 'photo_part', 'is_published', 'cat_post']
+        fields = ['title', 'description', 'photo_part', 'images', 'is_published', 'cat_post']
         # title = forms.CharField(label='Заголовок', widget=forms.TextInput(attrs={'class': 'form-input'}))
         widgets = {
             'title': forms.TextInput(attrs={'cols': 60}),
             'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
+            # 'images': forms.ClearableFileMultipleInput(attrs={'multiple': True}),
         }
 
     def clean_title(self):

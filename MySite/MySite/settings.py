@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'users',
     'taxiapp',
+    'multiselectfield',
 
 ]
 # AUTH_USER_MODEL = 'users.User'

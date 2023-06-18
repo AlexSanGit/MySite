@@ -1,20 +1,19 @@
 import random
-
-from PIL import Image
+from io import BytesIO
+from PIL import Image as PILImage
+from PIL.Image import Image
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse, request, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
-from django.views.generic.edit import FormMixin, UpdateView, DeleteView
+from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
 
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
@@ -94,12 +93,98 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     template_name = 'blog/addpage.html'
     success_url = reverse_lazy('home')
 
+    def create_images(self, post):
+        images = []
+        for file in images:
+            image = PILImage.open(file)
+            # Обработка изображения
+
+            # Создание экземпляра модели Image
+            image_instance = Image(post=post)
+
+            # Сохранение изображения в поле 'file' модели Image
+            image_buffer = BytesIO()
+            image.save(image_buffer, format='JPEG')
+            image_instance.file.save(file.name, InMemoryUploadedFile(
+                image_buffer, None, file.name, 'image/jpeg', image.tell(), None
+            ))
+
+            # Сохранение экземпляра модели Image в базе данных
+            image_instance.save()
+
+            # Добавление экземпляра модели Image в список
+            images.append(image_instance)
+
+        return images
+
     def form_valid(self, form, *args, **kwargs):
         obj = form.save(commit=False)
         obj.author = self.request.user
+        post = form.save(commit=False)
+        # post.author = self.request.user
+        # # post.save()
 
-        # user_profile = request.user.profile  # Получаем профиль пользователя
-        # post = Post(title=title, content=content, city=user_profile)
+        # Обработка изображений с использованием библиотеки Pillow
+        # processed_images = []
+        # for image in images:
+        #     img = Image.open(image)
+        #     # Обработка изображения с помощью Pillow
+        #     # Например, изменение размера изображения, обрезка и т.д.
+        #     # img.thumbnail((800, 800))
+        #     # img = img.convert('RGB')
+        #
+        # def create_images(files, post):
+        #     images = []
+        #     for file in files:
+        #         image = PILImage.open(file)
+        #
+        #         # Обработка изображения
+        #
+        #         # Создание экземпляра модели Image
+        #         image_instance = Image(post=post)
+        #
+        #         # Сохранение изображения в поле 'file' модели Image
+        #         image_buffer = BytesIO()
+        #         image.save(image_buffer, format='JPEG')
+        #         image_instance.file.save(file.name, InMemoryUploadedFile(
+        #             image_buffer, None, file.name, 'image/jpeg', image.tell(), None
+        #         ))
+        #
+        #         # Сохранение экземпляра модели Image в базе данных
+        #         image_instance.save()
+        #
+        #         # Добавление экземпляра модели Image в список
+        #         images.append(image_instance)
+        #
+        #     return images
+
+        # # Получение списка файлов
+        # files = request.FILES.getlist('images')
+        #
+        # # Создание экземпляров модели Image и сохранение их в базе данных
+        # images = self.create_images(files, post)
+        #
+        # # Обработка загрузки нескольких файлов
+        # files = self.request.FILES.getlist('images')
+        # for file in files:
+        #     # Генерация уникального имени файла
+        #     filename = default_storage.get_available_name(file.name)
+        #
+        #     # Сохранение файла
+        #     default_storage.save(filename, file)
+        #
+        #     # Создание объекта Image и сохранение связанных данных
+        #     image = Image(post=post, file=filename)
+        #     image.save()
+
+        files = request.FILES.getlist('images')
+
+        # Создание экземпляров модели Image и сохранение их в базе данных
+        images = self.create_images(files, post)
+        # Сохранение экземпляра модели Image в базе данных
+        images.save()
+
+        images.append(images)
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -122,7 +207,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 raise e
         return response
         # obj.save()
-        return response
+        # return response
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

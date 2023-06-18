@@ -24,6 +24,10 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('author', 'email', 'text')
 
 
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ('post', 'image')
+
+
 # class UserProfileAdmin(admin.ModelAdmin):
 #     list_display = ('user', 'is_seller', 'rating', 'review', 'email')
 #     search_fields = ('user', 'email')
@@ -32,4 +36,5 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Posts, PostAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comments, CommentAdmin)
+admin.site.register(Image, ImageAdmin)
 # admin.site.register(UserProfile, UserProfileAdmin)

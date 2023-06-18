@@ -39,7 +39,6 @@
                     {% endfor %}
                     {% if request.user.is_authenticated %}
                     <li class="last"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
-                    <a href="{% url 'user_detail' user.id %}">Страница пользователя | </a>
                     <a href="{% url 'profile' user.id %}">Профиль</a>
 
                     {% else %}
