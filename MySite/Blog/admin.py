@@ -3,12 +3,12 @@ from django.contrib import admin
 
 
 class PostAdmin(admin.ModelAdmin):     # Настройка столбов в админке
-    list_display = ('id', 'cat_post', 'author', 'title', 'city', 'slug', 'photo_part', 'is_published')
+    list_display = ('id', 'time_create', 'cat_post', 'author', 'title', 'city', 'slug', 'is_published')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'description')
     list_editable = ('is_published', )
     list_filter = ('is_published', 'time_create')
-    prepopulated_fields = {"slug": ("title",)}
+    # prepopulated_fields = {"slug": ("title",)}
 
 
 class CategoryAdmin(admin.ModelAdmin):     # Настройка столбов в админке
@@ -25,7 +25,7 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('post', 'image')
+    list_display = ('id', 'image', 'post')
 
 
 # class UserProfileAdmin(admin.ModelAdmin):
@@ -36,5 +36,5 @@ class ImageAdmin(admin.ModelAdmin):
 admin.site.register(Posts, PostAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Comments, CommentAdmin)
-admin.site.register(Image, ImageAdmin)
+admin.site.register(CustomImage, ImageAdmin)
 # admin.site.register(UserProfile, UserProfileAdmin)

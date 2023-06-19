@@ -1,12 +1,12 @@
 import random
-from io import BytesIO
 from PIL import Image as PILImage
-from PIL.Image import Image
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 from django.http import request, Http404
 
 from django.shortcuts import redirect, render, get_object_or_404
@@ -16,7 +16,7 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormVie
 from slugify import slugify
 
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
-from Blog.models import Posts, Category
+from Blog.models import Posts, Category, CustomImage
 from Blog.utils import DataMixin, menu
 from users.models import Profile
 
@@ -87,103 +87,168 @@ class CategoryPosts(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+# class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
+#     form_class = AddPostForm
+#     template_name = 'blog/addpage.html'
+#     success_url = reverse_lazy('home')
+#
+#     def create_images(files, post):
+#         images = []
+#         for file in files:
+#             # Создание экземпляра модели ImageFile и присвоение полям значений
+#             image = CustomImage(image=file)
+#
+#             # Сохранение экземпляра модели Image в базе данных
+#             image.save()
+#
+#             # Связывание экземпляра Image с соответствующим экземпляром Posts
+#             post.images = image
+#
+#             images.append(image)  # Добавление созданного экземпляра в список images
+#
+#         return images
+#
+#     def form_valid(self, form, *args, **kwargs):
+#         obj = form.save(commit=False)
+#         obj.author = self.request.user
+#         post = form.save(commit=False)
+#         # image = Image.open(filename)
+#         # objects = image.objects  # теперь атрибут 'objects' доступен
+#
+#         # Получение списка файлов
+#         # files = self.request.FILES.getlist('images')
+#
+#         # Создание экземпляров модели Image и сохранение их в базе данных
+#         # for file in files:
+#         #     image = CustomImage.objects.create(post=self.object)
+#         #     image.image.save(file.name, file, save=True)
+#         #
+#         #     # Обработка изображения с использованием Pillow (если необходимо)
+#         #     # Например, изменение размера изображения
+#         #     img = PILImage.open(image.image.path)
+#         #     img.thumbnail((800, 800))
+#         #     img.save(image.image.path)
+#
+#         # Создание экземпляров модели Image и сохранение их в базе данных
+#         # Обработка изображений с использованием библиотеки Pillow
+#         # processed_images = []
+#         # for image in images:
+#         #     img = Image.open(image)
+#         #     # Обработка изображения с помощью Pillow
+#         #     # Например, изменение размера изображения, обрезка и т.д.
+#         #     # img.thumbnail((800, 800))
+#         #     # img = img.convert('RGB')
+#         #
+#         # def create_images(files, post):
+#         #     images = []
+#         #     for file in files:
+#         #         image = PILImage.open(file)
+#         #
+#         #         # Обработка изображения
+#         #
+#         #         # Создание экземпляра модели Image
+#         #         image_instance = Image(post=post)
+#         #
+#         #         # Сохранение изображения в поле 'file' модели Image
+#         #         image_buffer = BytesIO()
+#         #         image.save(image_buffer, format='JPEG')
+#         #         image_instance.file.save(file.name, InMemoryUploadedFile(
+#         #             image_buffer, None, file.name, 'image/jpeg', image.tell(), None
+#         #         ))
+#         #
+#         #         # Сохранение экземпляра модели Image в базе данных
+#         #         image_instance.save()
+#         #
+#         #         # Добавление экземпляра модели Image в список
+#         #         images.append(image_instance)
+#         #
+#         #     return images
+#
+#         # Получение списка файлов
+#         files = request.FILES.getlist('images')
+#
+#         # Создание экземпляров модели Image и сохранение их в базе данных
+#         # images = self.create_images(files, post)
+#
+#         # Обработка загрузки нескольких файлов
+#         files = self.request.FILES.getlist('images')
+#         for file in files:
+#             # Генерация уникального имени файла
+#             filename = default_storage.get_available_name(file.name)
+#
+#             # Сохранение файла
+#             default_storage.save(filename, file)
+#
+#             # Создание объекта Image и сохранение связанных данных
+#             image = CustomImage(post=post, file=filename)
+#             image.save()
+#
+#
+#
+#         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
+#         slug = slugify(form.cleaned_data['title'])
+#         # проверяем уникальность slug
+#         if Posts.objects.filter(slug=slug).exists():
+#             # если slug уже занят, генерируем новый slug путем добавления случайного числа к оригинальному slug
+#             slug = f"{slug}-{random.randint(1, 1000)}"
+#         # добавляем slug в объект поста
+#         form.instance.slug = slug
+#         try:
+#             # вызываем метод родительского класса для сохранения объекта поста
+#             response = super().form_valid(form)
+#         except ValidationError as e:
+#             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
+#             if 'slug' in e.error_dict:
+#                 slug = f"{slug}-{random.randint(1, 1000)}"
+#                 form.instance.slug = slug
+#                 response = super().form_valid(form)
+#             else:
+#                 raise e
+#         return response
+#         # obj.save()
+#         # return response
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         c_def = self.get_user_context(title="Начнем поиск")
+#         return dict(list(context.items()) + list(c_def.items()))
+
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm
     template_name = 'blog/addpage.html'
     success_url = reverse_lazy('home')
 
-    def create_images(files, post):
+    def create_images(self, files, post):
         images = []
         for file in files:
-            # Создание экземпляра модели ImageFile и присвоение полям значений
-            image = Image(image=file)
+            # Создание экземпляра модели CustomImage и присвоение полям значений
+            image = CustomImage(image=file)
+            CustomImage.objects.create(post, file)
+            # # Связывание экземпляра CustomImage с соответствующим экземпляром Posts
+            # post.images.set(image)
 
-            # Сохранение экземпляра модели Image в базе данных
-            image.save()
-
-            # Связывание экземпляра Image с соответствующим экземпляром Posts
-            post.images = image
+            # Сохранение экземпляра модели CustomImage в базе данных
+            # image.save()
 
             images.append(image)  # Добавление созданного экземпляра в список images
 
         return images
+    # def create_images(self, files):
+    #     images = []
+    #     for file in files:
+    #         # Создание экземпляра модели CustomImage и сохранение в базе данных
+    #         image = CustomImage.objects.create(image=file)
+    #         images.append(image)  # Добавление созданного экземпляра в список images
+    #
+    #     return images
 
     def form_valid(self, form, *args, **kwargs):
         obj = form.save(commit=False)
         obj.author = self.request.user
         post = form.save(commit=False)
-        # post.author = self.request.user
-        # # post.save()
 
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
-
-        # Создание экземпляров модели Image и сохранение их в базе данных
-        for file in files:
-            image = Image.objects.create(post=self.object)
-            image.image.save(file.name, file, save=True)
-
-            # Обработка изображения с использованием Pillow (если необходимо)
-            # Например, изменение размера изображения
-            img = PILImage.open(image.image.path)
-            img.thumbnail((800, 800))
-            img.save(image.image.path)
-
-        # Создание экземпляров модели Image и сохранение их в базе данных
-        # Обработка изображений с использованием библиотеки Pillow
-        # processed_images = []
-        # for image in images:
-        #     img = Image.open(image)
-        #     # Обработка изображения с помощью Pillow
-        #     # Например, изменение размера изображения, обрезка и т.д.
-        #     # img.thumbnail((800, 800))
-        #     # img = img.convert('RGB')
-        #
-        # def create_images(files, post):
-        #     images = []
-        #     for file in files:
-        #         image = PILImage.open(file)
-        #
-        #         # Обработка изображения
-        #
-        #         # Создание экземпляра модели Image
-        #         image_instance = Image(post=post)
-        #
-        #         # Сохранение изображения в поле 'file' модели Image
-        #         image_buffer = BytesIO()
-        #         image.save(image_buffer, format='JPEG')
-        #         image_instance.file.save(file.name, InMemoryUploadedFile(
-        #             image_buffer, None, file.name, 'image/jpeg', image.tell(), None
-        #         ))
-        #
-        #         # Сохранение экземпляра модели Image в базе данных
-        #         image_instance.save()
-        #
-        #         # Добавление экземпляра модели Image в список
-        #         images.append(image_instance)
-        #
-        #     return images
-
-        # # Получение списка файлов
-        # files = request.FILES.getlist('images')
-        #
-        # # Создание экземпляров модели Image и сохранение их в базе данных
-        # images = self.create_images(files, post)
-        #
-        # # Обработка загрузки нескольких файлов
-        # files = self.request.FILES.getlist('images')
-        # for file in files:
-        #     # Генерация уникального имени файла
-        #     filename = default_storage.get_available_name(file.name)
-        #
-        #     # Сохранение файла
-        #     default_storage.save(filename, file)
-        #
-        #     # Создание объекта Image и сохранение связанных данных
-        #     image = Image(post=post, file=filename)
-        #     image.save()
-
-
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -193,7 +258,24 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
             slug = f"{slug}-{random.randint(1, 1000)}"
         # добавляем slug в объект поста
         form.instance.slug = slug
+
         try:
+            post.save()
+            # Создание экземпляров модели CustomImage и связывание их с постом
+
+            self.create_images(files, post)
+
+            # Добавление связи многие-ко-многим между постом и изображениями
+            # post.images.set(images)
+            # Сохранение объекта post в базе данных
+
+
+            # Создание экземпляров модели CustomImage и сохранение их в базе данных
+            # images = self.create_images(files, post)
+
+            # Добавление связи многие-ко-многим между постом и изображениями
+            # post.images.set(images)
+
             # вызываем метод родительского класса для сохранения объекта поста
             response = super().form_valid(form)
         except ValidationError as e:
@@ -204,9 +286,8 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 response = super().form_valid(form)
             else:
                 raise e
+
         return response
-        # obj.save()
-        # return response
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

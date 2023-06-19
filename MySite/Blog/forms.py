@@ -42,17 +42,17 @@ class AddPostForm(forms.ModelForm):
         self.fields['cat_post'].empty_label = "Категория не выбрана"
         self.fields['title'].label = "Заголовок"
         self.fields['description'].label = "Описание"
-        self.fields['photo_part'].label = "Изображение"
+        # self.fields['photo_part'].label = "Изображение"
         self.fields['is_published'].label = "Опубликовать? "
 
     class Meta:
         model = Posts
-        fields = ['title', 'description', 'photo_part', 'images', 'is_published', 'cat_post']
+        fields = ['title', 'description', 'images', 'is_published', 'cat_post']
         # title = forms.CharField(label='Заголовок', widget=forms.TextInput(attrs={'class': 'form-input'}))
         widgets = {
             'title': forms.TextInput(attrs={'cols': 60}),
             'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
-            # 'images': forms.ClearableFileMultipleInput(attrs={'multiple': True}),
+            # 'images': forms.ClearableFileInput(attrs={'multiple': True}),
         }
 
     def clean_title(self):
