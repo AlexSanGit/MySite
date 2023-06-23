@@ -20,7 +20,7 @@ a:hover {
 img {max-width: 600px; height: auto;}
 
 img.img-article-left {
-	max-width: 300px;
+	max-width: 150px;
 	height: auto;
 	float: left;
 	padding: 0 10px 10px 0;
@@ -69,7 +69,7 @@ div.article-panel {
 	vertical-align: top;
 }
 img.img-article {
-	max-width: 300px;
+	max-width: 150px;
 	height: auto;
 	float: left;
 
@@ -77,7 +77,7 @@ img.img-article {
 
 .title-detail-post{
     font-family: 'Arial';
-    text-align: center;
+    text-align: left;
     font-size: 30px;
 }
 

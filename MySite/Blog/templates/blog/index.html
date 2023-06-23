@@ -48,18 +48,13 @@
         <table border=0 cellpadding="0" cellspacing="0">
             <tr>
                 <th>
-                    <!--            {% if p.slug != '' %}-->
-                    <div>
-
-                                {% for image in post.post_images.all %}
-                                  <p><img class="img-article" src="{{ image.image.url }}" alt="Изображение"></p>
+ <div class="row">>
+                                {% for image in p.post_images.all %}
+     <div class="col-md-4">                         <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p></div>
                                 {% endfor %}
-
-                        {% if p.photo_part %}
-                        <p><img class="img-article-left thumb" src="{{p.photo_part.url}}"></p>
-                        <!--            {% endif %}-->
-                    </div>
+ </div>>
                 </th>
+
                 <th>
 
                     {% autoescape on %}
@@ -68,7 +63,7 @@
 
                     <p>Коментариев: ({{p.comments_posts.all.count}})</p>
                     <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
-                    {% endif %}
+
                     <div class="clear"></div>
                 </th>
             </tr>

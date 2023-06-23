@@ -9,19 +9,16 @@
 
 </div>
 
-<p class="user-post"> Написал:
-    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;"
-         alt="Avatar"/>
-    {{post.author}} </p>
-
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
-
+    <div class="row">
             {% for image in post.post_images.all %}
-              <p><img class="img-article" src="{{ image.image.url }}" alt="Изображение"></p>
+        <div class="col-md-4">
+              <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
+        </div>
             {% endfor %}
-
+    </div>
         </th>
 
         <th>
@@ -30,7 +27,14 @@
         </th>
     </tr>
 
+
+
 </table>
+<p class="user-post"> Написал:
+    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;"
+         alt="Avatar"/>
+    {{post.author}} </p>
+
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -38,6 +42,9 @@
     {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
     {% endfor %}
 </ul>
+
+
+
 {% endif %}
 <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
