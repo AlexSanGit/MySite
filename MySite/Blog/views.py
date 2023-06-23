@@ -33,6 +33,8 @@ class HomePage(DataMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
+        posts = self.get_queryset()
+        context['posts'] = posts
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -62,11 +64,18 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         self.object.save()
         return super().form_valid(form)
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # context['title'] = str(Posts.title)
+    #     c_def = self.get_user_context(title='Страница поста')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['title'] = str(Posts.title)
-        c_def = self.get_user_context(title='Страница поста')
-        return dict(list(context.items()) + list(c_def.items()))
+        post = self.get_object()
+        context['post_images'] = post.post_images.all()
+        return context
+
+        # return dict(list(context.items()) + list(c_def.items()))
 
 
 class CategoryPosts(DataMixin, ListView):

@@ -5,7 +5,7 @@ from users.models import Profile
 
 
 class CustomImage(models.Model):
-    post = models.ForeignKey('Posts', on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey('Posts', on_delete=models.CASCADE, null=True, related_name='post_images')
     image = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Изображение")
     objects = models.Manager()
 

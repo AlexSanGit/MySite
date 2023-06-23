@@ -17,13 +17,11 @@
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
-            {% for image in customimage.post.all %}
-            <img src="{{ customimage.image.url }}" alt="{{ post.title }}">
+
+            {% for image in post.post_images.all %}
+              <p><img class="img-article" src="{{ image.image.url }}" alt="Изображение"></p>
             {% endfor %}
 
-            {% if post.photo_part %}
-            <p><img class="img-article" src="{{post.photo_part.url}}"></p>
-            {% endif %}
         </th>
 
         <th>

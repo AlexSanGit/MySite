@@ -50,6 +50,11 @@
                 <th>
                     <!--            {% if p.slug != '' %}-->
                     <div>
+
+                                {% for image in post.post_images.all %}
+                                  <p><img class="img-article" src="{{ image.image.url }}" alt="Изображение"></p>
+                                {% endfor %}
+
                         {% if p.photo_part %}
                         <p><img class="img-article-left thumb" src="{{p.photo_part.url}}"></p>
                         <!--            {% endif %}-->
@@ -60,6 +65,7 @@
                     {% autoescape on %}
                     {{p.description|linebreaks|truncatewords:50}}
                     {% endautoescape %}
+
                     <p>Коментариев: ({{p.comments_posts.all.count}})</p>
                     <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
                     {% endif %}
