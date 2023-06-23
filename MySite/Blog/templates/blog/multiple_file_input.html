@@ -1,0 +1,18 @@
+{% if widget.needs_multipart_form %}
+<input type="hidden" name="{{ widget.form_name }}" value="1">
+{% endif %}
+{% for file in widget.value %}
+    <div class="file-upload">
+        {{ file }}
+        <label for="{{ file.auto_id }}">
+            {{ file.name }}
+            {% if not file.is_initial %}
+            <input type="checkbox" name="{{ file.field_name }}_delete" id="{{ file.auto_id }}_delete" class="{{ file.css_classes }}"{% if file.field.disabled %} disabled{% endif %}>
+            <label for="{{ file.auto_id }}_delete" class="clearable-file-input-label">
+                <span class="clearable-file-input-label-text">{{ widget.clear_checkbox_label }}</span>
+            </label>
+            {% endif %}
+        </label>
+    </div>
+{% endfor %}
+<input type="{{ widget.input_type }}" name="{{ widget.field_name }}" class="{{ widget.css_classes }}" id="{{ widget.auto_id }}"{% include "django/forms/widgets/attrs.html" %}>

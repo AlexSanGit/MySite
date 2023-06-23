@@ -1,0 +1,16 @@
+<!-- clearable_multiple_file_input.html -->
+<div class="form-group">
+  <label for="{{ widget.attrs.id_for_label }}">{{ widget.label }}</label>
+  <div class="custom-file">
+    {{ widget }}
+    <label class="custom-file-label" for="{{ widget.attrs.id_for_label }}">Выберите файлы</label>
+  </div>
+  {% if widget.value %}
+    <div class="mt-2">
+      Текущие файлы:
+      {% for value in widget.value %}
+        <div>{{ value.name }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

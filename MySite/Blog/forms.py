@@ -1,8 +1,10 @@
 from Blog.models import Comments, Posts
+from .widgets import MultipleFileInput
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import ClearableFileInput, ClearableFileMultipleInput
 from django.http import request
 from multiupload.fields import MultiFileField
 
@@ -33,8 +35,7 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
-    # images = forms.ImageField(widget=forms.ClearableFileMultipleInput)
-    images = MultiFileField(min_num=1, max_num=10, max_file_size=1024 * 1024 * 5)  # Пример настроек, можно изменить по своему усмотрению
+    images = MultiFileField(min_num=1, max_num=10, max_file_size=1024*1024*5)
     # images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     def __init__(self, *args, **kwargs):

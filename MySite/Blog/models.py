@@ -7,8 +7,7 @@ from users.models import Profile
 class CustomImage(models.Model):
     post = models.ForeignKey('Posts', on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Изображение")
-
-    objects = models.Manager()  # добавляем атрибут objects
+    objects = models.Manager()
 
 
 class Posts(models.Model):
@@ -22,7 +21,8 @@ class Posts(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     cat_post = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True, verbose_name="Категории")
     city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="город", null=True)
-    images = models.ManyToManyField(CustomImage, related_name='posts', blank=True)
+    # images = models.ManyToManyField(CustomImage, related_name='posts', blank=True)
+    # images = models.ManyToManyField(CustomImage, blank=True)
 
     def __str__(self):
         return self.title

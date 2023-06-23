@@ -1,24 +1,22 @@
 import random
-from PIL import Image as PILImage
+from io import BytesIO
 
+from PIL import Image
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import request, Http404
-
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
-
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
 from Blog.models import Posts, Category, CustomImage
 from Blog.utils import DataMixin, menu
-from users.models import Profile
 
 
 class HomePage(DataMixin, ListView):
@@ -57,7 +55,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):
+    def form_valid(self, form):         # проверка поля коментария
         self.object = form.save(commit=False)
         self.object.article = self.get_object()
         self.object.author = self.request.user
@@ -213,40 +211,16 @@ class CategoryPosts(DataMixin, ListView):
 #         c_def = self.get_user_context(title="Начнем поиск")
 #         return dict(list(context.items()) + list(c_def.items()))
 
+
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm
     template_name = 'blog/addpage.html'
     success_url = reverse_lazy('home')
 
-    def create_images(self, files, post):
-        images = []
-        for file in files:
-            # Создание экземпляра модели CustomImage и присвоение полям значений
-            image = CustomImage(image=file)
-            CustomImage.objects.create(post, file)
-            # # Связывание экземпляра CustomImage с соответствующим экземпляром Posts
-            # post.images.set(image)
-
-            # Сохранение экземпляра модели CustomImage в базе данных
-            # image.save()
-
-            images.append(image)  # Добавление созданного экземпляра в список images
-
-        return images
-    # def create_images(self, files):
-    #     images = []
-    #     for file in files:
-    #         # Создание экземпляра модели CustomImage и сохранение в базе данных
-    #         image = CustomImage.objects.create(image=file)
-    #         images.append(image)  # Добавление созданного экземпляра в список images
-    #
-    #     return images
-
     def form_valid(self, form, *args, **kwargs):
         obj = form.save(commit=False)
         obj.author = self.request.user
-        post = form.save(commit=False)
-
+        # obj.save()
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
 
@@ -260,24 +234,14 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         form.instance.slug = slug
 
         try:
-            post.save()
-            # Создание экземпляров модели CustomImage и связывание их с постом
-
-            self.create_images(files, post)
-
-            # Добавление связи многие-ко-многим между постом и изображениями
-            # post.images.set(images)
-            # Сохранение объекта post в базе данных
-
-
-            # Создание экземпляров модели CustomImage и сохранение их в базе данных
-            # images = self.create_images(files, post)
+            obj.save()
+            for file in files:
+                CustomImage.objects.create(post=obj, image=file)
 
             # Добавление связи многие-ко-многим между постом и изображениями
-            # post.images.set(images)
+            #     post.images.set(file)
 
-            # вызываем метод родительского класса для сохранения объекта поста
-            response = super().form_valid(form)
+            response = super().form_valid(form)  # Сохраняем пост
         except ValidationError as e:
             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
             if 'slug' in e.error_dict:
@@ -343,7 +307,7 @@ class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         post = self.get_object()
-        messages.success(self.request, 'Post deleted successfully.')
+        messages.success(self.request, 'Пост успешно удален')
         return self.request.user == post.author
 
     # def get_object(self, queryset=None):
