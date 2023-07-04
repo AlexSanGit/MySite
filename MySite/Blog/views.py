@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import request, Http404
 from django.shortcuts import redirect, render, get_object_or_404
@@ -14,6 +15,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
+
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
 from Blog.models import Posts, Category, CustomImage
 from Blog.utils import DataMixin, menu
@@ -283,22 +285,14 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
 
-        # Создание экземпляров модели CustomImage и связывание их с постом
-        # images = []
-        # for file in files:
-        #     image = CustomImage(post=post, )
-        #     image.image = file
-        #     image.save()
-        #     images.append(image)
+        # Удаление предыдущих изображений поста
+        for image in post.post_images.all():
+            image_path = image.image.path
+            default_storage.delete(image_path)
+        post.post_images.clear()
 
         for file in files:
             CustomImage.objects.create(post=post, image=file)
-
-        # Удаление предыдущих изображений поста
-        # post.images.clear()
-
-        # Добавление связи многие-ко-многим между постом и изображениями
-        # post.images.set(images)
 
         messages.success(self.request, 'Пост обновлен.')
         return super().form_valid(form)

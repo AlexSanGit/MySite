@@ -2,40 +2,40 @@
 {% block content %}
 
 <ul>
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-<!-- Кнопка для открытия всплывающего сообщения -->
-<!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <!-- Кнопка для открытия всплывающего сообщения -->
+    <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
 
-<!-- Функция для отображения всплывающего сообщения -->
-<!--<script>-->
-<!--function showMessage() {-->
-<!--  // Создаем элемент с сообщением-->
-<!--  var message = document.createElement("div");-->
-<!--  message.innerHTML = "Это всплывающее сообщение";-->
-<!--  message.style.position = "fixed";-->
-<!--  message.style.top = "50%";-->
-<!--  message.style.left = "50%";-->
-<!--  message.style.transform = "translate(-50%, -50%)";-->
-<!--  message.style.padding = "10px";-->
-<!--  message.style.backgroundColor = "#f1c40f";-->
-<!--  message.style.color = "#fff";-->
-<!--  message.style.borderRadius = "5px";-->
+    <!-- Функция для отображения всплывающего сообщения -->
+    <!--<script>-->
+    <!--function showMessage() {-->
+    <!--  // Создаем элемент с сообщением-->
+    <!--  var message = document.createElement("div");-->
+    <!--  message.innerHTML = "Это всплывающее сообщение";-->
+    <!--  message.style.position = "fixed";-->
+    <!--  message.style.top = "50%";-->
+    <!--  message.style.left = "50%";-->
+    <!--  message.style.transform = "translate(-50%, -50%)";-->
+    <!--  message.style.padding = "10px";-->
+    <!--  message.style.backgroundColor = "#f1c40f";-->
+    <!--  message.style.color = "#fff";-->
+    <!--  message.style.borderRadius = "5px";-->
 
-<!--  // Добавляем элемент на страницу-->
-<!--  document.body.appendChild(message);-->
+    <!--  // Добавляем элемент на страницу-->
+    <!--  document.body.appendChild(message);-->
 
-<!--  // Через 5 секунд удаляем элемент-->
-<!--  setTimeout(function() {-->
-<!--    document.body.removeChild(message);-->
-<!--  }, 5000);-->
-<!--}-->
-<!--</script>-->
+    <!--  // Через 5 секунд удаляем элемент-->
+    <!--  setTimeout(function() {-->
+    <!--    document.body.removeChild(message);-->
+    <!--  }, 5000);-->
+    <!--}-->
+    <!--</script>-->
 
     {% for p in posts %}
 
@@ -48,11 +48,13 @@
         <table border=0 cellpadding="0" cellspacing="0">
             <tr>
                 <th>
- <div class="row">>
-                                {% for image in p.post_images.all %}
-     <div class="col-md-4">                         <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p></div>
-                                {% endfor %}
- </div>>
+                    <div class="row">>
+                        {% for image in p.post_images.all %}
+                        <div class="col-md-4"><p><img class="img-article-left" src="{{ image.image.url }}"
+                                                      alt="Изображение"></p></div>
+                        {% endfor %}
+                    </div>
+                    >
                 </th>
 
                 <th>
@@ -82,6 +84,7 @@
       message.remove();
     });
   }, 3000);
+
 </script>
 
 
