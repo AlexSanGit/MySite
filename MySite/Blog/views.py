@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import request, Http404
@@ -292,7 +293,17 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         post.post_images.clear()
 
         for file in files:
-            CustomImage.objects.create(post=post, image=file)
+            image = Image.open(file)
+            resized_image = image.resize((800, 600))  # Измените размеры изображения по вашему выбору
+            image_name = file.name
+            image_extension = file.content_type.split('/')[-1].lower()
+            image_io = BytesIO()
+            resized_image.save(image_io, format=image_extension)
+            image_file = ContentFile(image_io.getvalue(), name=image_name)
+            CustomImage.objects.create(post=post, image=image_file)
+
+        # for file in files:
+        #     CustomImage.objects.create(post=post, image=file)
 
         messages.success(self.request, 'Пост обновлен.')
         return super().form_valid(form)

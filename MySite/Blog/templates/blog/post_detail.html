@@ -1,32 +1,38 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
 
 
+
 <div class="title-detail-post">
-
     {{post.title}}
-
 </div>
 
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
-    <div class="row">
-            {% for image in post.post_images.all %}
-        <div class="col-md-4">
-              <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
-        </div>
-            {% endfor %}
-    </div>
+            <div class="row">
+
+          {% for image in post.post_images.all %}
+            <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+          {% endfor %}
+
+
+
+                {% for image in post.post_images.all %}
+
+                <div class="col-md-4">
+                    <a href="{{ image.image.url }}" target="_blank">
+                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
         </th>
 
-        <th>
-            <div class="post-description"> {{post.description|linebreaks}}</div>
-
-        </th>
     </tr>
-
+    <th>
+        <div class="post-description"> {{post.description|linebreaks}}</div>
+    </th>
 
 
 </table>
@@ -39,10 +45,10 @@
 <ul class="messages">
     {% for message in messages %}
     <li
-    {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
     {% endfor %}
 </ul>
-
 
 
 {% endif %}
@@ -69,6 +75,11 @@
     </form>
 
 </div>
+  <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="img01">
+  </div>
 
 
 {% endblock %}
