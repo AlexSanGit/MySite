@@ -13,19 +13,16 @@
             <div class="row">
 
           {% for image in post.post_images.all %}
-            <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+            <img class="img-article-left" src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
           {% endfor %}
+<!--                {% for image in post.post_images.all %}-->
 
-
-
-                {% for image in post.post_images.all %}
-
-                <div class="col-md-4">
-                    <a href="{{ image.image.url }}" target="_blank">
-                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
-                    </a>
-                </div>
-                {% endfor %}
+<!--                <div class="col-md-4">-->
+<!--                    <a href="{{ image.image.url }}" target="_blank">-->
+<!--                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--                {% endfor %}-->
             </div>
         </th>
 
@@ -37,7 +34,7 @@
 
 </table>
 <p class="user-post"> Написал:
-    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;"
+    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 40px;"
          alt="Avatar"/>
     {{post.author}} </p>
 

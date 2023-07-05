@@ -42,12 +42,12 @@ class AddPostForm(forms.ModelForm):
         self.fields['cat_post'].empty_label = "Категория не выбрана"
         self.fields['title'].label = "Заголовок"
         self.fields['description'].label = "Описание"
-        # self.fields['photo_part'].label = "Изображение"
-        self.fields['is_published'].label = "Опубликовать? "
+        self.fields['images'].label = "Изображение"
+        # self.fields['is_published'].label = "Опубликовать? "
 
     class Meta:
         model = Posts
-        fields = ['title', 'description', 'images', 'is_published', 'cat_post']
+        fields = ['title', 'description', 'images', 'cat_post']
         # title = forms.CharField(label='Заголовок', widget=forms.TextInput(attrs={'class': 'form-input'}))
         widgets = {
             'title': forms.TextInput(attrs={'cols': 60}),

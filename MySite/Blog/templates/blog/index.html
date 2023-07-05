@@ -9,68 +9,46 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <!-- Кнопка для открытия всплывающего сообщения -->
-    <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
-
-    <!-- Функция для отображения всплывающего сообщения -->
-    <!--<script>-->
-    <!--function showMessage() {-->
-    <!--  // Создаем элемент с сообщением-->
-    <!--  var message = document.createElement("div");-->
-    <!--  message.innerHTML = "Это всплывающее сообщение";-->
-    <!--  message.style.position = "fixed";-->
-    <!--  message.style.top = "50%";-->
-    <!--  message.style.left = "50%";-->
-    <!--  message.style.transform = "translate(-50%, -50%)";-->
-    <!--  message.style.padding = "10px";-->
-    <!--  message.style.backgroundColor = "#f1c40f";-->
-    <!--  message.style.color = "#fff";-->
-    <!--  message.style.borderRadius = "5px";-->
-
-    <!--  // Добавляем элемент на страницу-->
-    <!--  document.body.appendChild(message);-->
-
-    <!--  // Через 5 секунд удаляем элемент-->
-    <!--  setTimeout(function() {-->
-    <!--    document.body.removeChild(message);-->
-    <!--  }, 5000);-->
-    <!--}-->
-    <!--</script>-->
 
     {% for p in posts %}
-
     <li>
         <div>
             <p>Категория: {{p.cat_post}}</p>
             <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
-            <h3>{{p.title}}</h3>
+            <h5>Заголовок: {{p.title}}</h5>
         </div>
+
         <table border=0 cellpadding="0" cellspacing="0">
             <tr>
                 <th>
-                    <div class="row">>
+                    <div class="row">
                         {% for image in p.post_images.all %}
-                        <div class="col-md-4"><p><img class="img-article-left" src="{{ image.image.url }}"
-                                                      alt="Изображение"></p></div>
+                        <div class="col-md-4">
+                            <p>
+                                <img class="img-article-left" src="{{ image.image.url }}"
+                                     alt="Изображение">
+                            </p>
+                        </div>
                         {% endfor %}
                     </div>
-                    >
-                </th>
-
-                <th>
-
-                    {% autoescape on %}
-                    {{p.description|linebreaks|truncatewords:50}}
-                    {% endautoescape %}
-
-                    <p>Коментариев: ({{p.comments_posts.all.count}})</p>
-                    <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
-
-                    <div class="clear"></div>
                 </th>
             </tr>
 
+            <tr>
+
+
+            </tr>
+
         </table>
+
+        {% autoescape on %}
+        Описание: {{p.description|linebreaks|truncatewords:50}}
+        {% endautoescape %}
+        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
+
+        <p>Коментариев: ({{p.comments_posts.all.count}})</p>
+
+
         <hr>
         {% endfor %}
         {% endblock %}
