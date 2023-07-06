@@ -12,10 +12,11 @@
 }
 
 .modal-content {
-    margin: auto;
+    margin: 30px auto 0;
     display: block;
     max-width: 80%;
     max-height: 80%;
+    object-fit: contain;
 }
 
 .close {

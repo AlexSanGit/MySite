@@ -75,10 +75,11 @@ class PostDetail(DataMixin, DetailView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
+        context['title'] = 'Страница поста'
         context['post_images'] = post.post_images.all()
-        return context
-
-        # return dict(list(context.items()) + list(c_def.items()))
+        c_def = self.get_user_context()
+        # return context
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 class CategoryPosts(DataMixin, ListView):
