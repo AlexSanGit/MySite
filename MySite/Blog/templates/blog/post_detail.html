@@ -2,7 +2,6 @@
 {% block content %}
 
 
-
 <div class="title-detail-post">
     {{post.title}}
 </div>
@@ -12,17 +11,17 @@
         <th>
             <div class="row">
 
-          {% for image in post.post_images.all %}
-            <img class="img-article-left" src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
-          {% endfor %}
-<!--                {% for image in post.post_images.all %}-->
+                {% for image in post.post_images.all %}
+                <img class="img-article-left" src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+                {% endfor %}
+                <!--                {% for image in post.post_images.all %}-->
 
-<!--                <div class="col-md-4">-->
-<!--                    <a href="{{ image.image.url }}" target="_blank">-->
-<!--                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                {% endfor %}-->
+                <!--                <div class="col-md-4">-->
+                <!--                    <a href="{{ image.image.url }}" target="_blank">-->
+                <!--                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>-->
+                <!--                    </a>-->
+                <!--                </div>-->
+                <!--                {% endfor %}-->
             </div>
         </th>
 
@@ -65,18 +64,26 @@
     <p>Пока нет коментариев</p>
     {% endfor %}
 
+    {% if user.is_authenticated %}
+    <!-- Код элементов, которые нужно показать только авторизованным пользователям -->
     <form action="" id="add_form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Добавить</button>
+        <button class="btn btn-secondary btn-sm mt-1 mb-1" type="submit">Добавить</button>
     </form>
 
+    {% else %}
+    <!-- Код элементов, которые нужно скрыть для неавторизованных пользователей -->
+    <p>Чтобы оставить коментарий, войдите или зарегистрируйтесь.</p>
+    {% endif %}
+
+
 </div>
-  <!-- Модальное окно -->
-  <div id="myModal" class="modal">
+<!-- Модальное окно -->
+<div id="myModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="img01">
-  </div>
+</div>
 
 
 {% endblock %}
