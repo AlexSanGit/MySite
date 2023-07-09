@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'users',
     'taxiapp',
     'multiselectfield',
+    'allauth',
+    'allauth.account',
 
 ]
 # AUTH_USER_MODEL = 'users.User'

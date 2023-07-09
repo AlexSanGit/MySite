@@ -246,6 +246,20 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # добавляем slug в объект поста
         form.instance.slug = slug
 
+        new_category = form.cleaned_data.get('new_category')
+        if new_category:
+            # Проверка уникальности имени категории
+            if Category.objects.filter(name=new_category).exists():
+                messages.error(self.request, 'Категория с таким именем уже существует.')
+                return self.form_invalid(form)
+
+            # Создание новой категории
+            slug = slugify(new_category)
+            category, created = Category.objects.get_or_create(name=new_category, slug=slug)
+
+            # Связывание поста с новой категорией
+            obj.cat_post = category
+
         try:
             obj.save()
             for file in files:
