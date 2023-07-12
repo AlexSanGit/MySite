@@ -42,25 +42,40 @@ def register(request):
 
 @login_required
 def profile(request, user_id):
+
+    user = get_object_or_404(User, id=user_id)
+    prof = get_object_or_404(Profile, user=user)
+
     if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
+        # u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
                                    instance=request.user.profile)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
+        # profile.is_seller = 'is_seller' in request.POST
+        # if u_form.is_valid() and p_form.is_valid():
+        if p_form.is_valid():
+            # Обновление фото
+            if 'image' in request.FILES:
+                prof.image = request.FILES['image']
+            # Обновление поля city
+            city = request.POST.get('city', '')
+            prof.city = city
+            # u_form.save()
             p_form.save()
+            # Обновление статуса is_seller
+            is_seller = request.POST.get('is_seller', False)
+            prof.is_seller = bool(is_seller)
+            prof.save()
             messages.success(request, f'Ваш профиль успешно обновлен.')
-            # return redirect('profile')
-            redirect(f'/profile/{user_id}')
+            return redirect(f'/profile/{user_id}')
 
     else:
-        u_form = UserUpdateForm(instance=request.user)
+        # u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
     user = get_object_or_404(User, id=user_id)
     prof = get_object_or_404(Profile, user=user)
     context = {
-        'u_form': u_form,
+        # 'u_form': u_form,
         'p_form': p_form,
         'menu': menu,
         'profile': prof

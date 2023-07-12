@@ -1,37 +1,38 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
 
 
 <div class="title-detail-post">
-
     {{post.title}}
-
 </div>
 
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
-    <div class="row">
-            {% for image in post.post_images.all %}
-        <div class="col-md-4">
-              <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
-        </div>
-            {% endfor %}
-    </div>
+            <div class="row">
+
+                {% for image in post.post_images.all %}
+                <img class="img-article-left" src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+                {% endfor %}
+                <!--                {% for image in post.post_images.all %}-->
+
+                <!--                <div class="col-md-4">-->
+                <!--                    <a href="{{ image.image.url }}" target="_blank">-->
+                <!--                        <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>-->
+                <!--                    </a>-->
+                <!--                </div>-->
+                <!--                {% endfor %}-->
+            </div>
         </th>
 
-        <th>
-            <div class="post-description"> {{post.description|linebreaks}}</div>
-
-        </th>
     </tr>
-
-
-
+    <th>
+        <div class="post-description"> {{post.description|linebreaks}}</div>
+    </th>
 </table>
+
 <p class="user-post"> Написал:
-    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;"
+    <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 40px;"
          alt="Avatar"/>
     {{post.author}} </p>
 
@@ -39,16 +40,17 @@
 <ul class="messages">
     {% for message in messages %}
     <li
-    {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
     {% endfor %}
 </ul>
-
-
-
 {% endif %}
+{% if post.author == request.user %}
 <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
+{% endif %}
 <hr>
+
 <div class="comments-form">
 
     <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
@@ -62,12 +64,25 @@
     <p>Пока нет коментариев</p>
     {% endfor %}
 
+    {% if user.is_authenticated %}
+    <!-- Код элементов, которые нужно показать только авторизованным пользователям -->
     <form action="" id="add_form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Добавить</button>
+        <button class="btn btn-secondary btn-sm mt-1 mb-1" type="submit">Добавить</button>
     </form>
 
+    {% else %}
+    <!-- Код элементов, которые нужно скрыть для неавторизованных пользователей -->
+    <p>Чтобы оставить коментарий, войдите или зарегистрируйтесь.</p>
+    {% endif %}
+
+
+</div>
+<!-- Модальное окно -->
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="img01">
 </div>
 
 

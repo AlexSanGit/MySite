@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('Blog.urls')),
     path('', include('users.urls')),
     path('', include('taxiapp.urls')),
+    path('accounts/', include('allauth.urls')),
 
 ]
 

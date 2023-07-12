@@ -10,7 +10,7 @@
     <li {% if message.tags %}
         class="{{ message.tags }}"
         {% endif %}>
-        {{ message|message_with_animation }}
+        {{ message }}
     </li>
     {% endfor %}
 </ul>
@@ -32,7 +32,6 @@
                 <button class="btn btn-outline-info" type="submit">Войти</button>
             </div>
         </form>
-
         <div class="border-top pt-3">
             <small class="text-muted">
                 Нужен аккаунт? <a class="ml-2" href="{% url 'register' %}">Регистрация</a>
