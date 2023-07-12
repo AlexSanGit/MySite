@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,7 +67,7 @@
                             <li><a href="{% url 'home' %}">Все категории</a></li>
                             <li><a href="{% url 'taxihome' %}">Заказ такси</a></li>
 
-                            {% show_categories '-name' cat_selected%}
+                            {% show_categories '-name' cat_selected %}
 
                         </ul>
                     </td>

@@ -12,7 +12,7 @@ class PostAdmin(admin.ModelAdmin):     # Настройка столбов в а
 
 
 class CategoryAdmin(admin.ModelAdmin):     # Настройка столбов в админке
-    list_display = ('id', 'name', 'slug')
+    list_display = ('id', 'name', 'slug', 'parent_id')
     list_display_links = ('id', 'name')
     search_fields = ('name', )
     prepopulated_fields = {"slug": ("name",)}

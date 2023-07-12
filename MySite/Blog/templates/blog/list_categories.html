@@ -1,7 +1,43 @@
-{% for c in cats %}
-	{% if c.pk == cat_selected %}
-		<li class="selected">{{c.name}}</li>
-	{% else %}
-		<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
-	{% endif %}
+<!--{% for c in cats %}-->
+<!--	{% if c.pk == cat_selected %}-->
+<!--		<li class="selected">{{c.name}}</li>-->
+<!--	{% else %}-->
+<!--		<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>-->
+<!--	{{ c.children.all }}-->
+<!--	{% endif %}-->
+<!--{% endfor %}-->
+
+{% for category in cats %}
+    {% if not category.parent %}
+        {% if category.pk == cat_selected %}
+             <li class="selected">{{ category.name }}</li>
+        {% else %}
+    <li>
+    <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+
+    {% if category.children.all %}
+    <ul>
+
+        {% for child in category.children.all %}
+        <li>
+            <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>
+            <!--            {% if child.children.all %}-->
+            <!--            <ul>-->
+            <!--                {% for subchild in child.children.all %}-->
+            <!--                <li><a href="{{ subchild.get_absolute_url }}">{{ subchild.name }}</a></li>-->
+            <!--                &lt;!&ndash; Repeat this pattern for additional levels of children if necessary &ndash;&gt;-->
+            <!--                {% endfor %}-->
+            <!--            </ul>-->
+            <!--            {% endif %}-->
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>
+
+{% endif %}
+{% endif %}
 {% endfor %}
+
+
+
