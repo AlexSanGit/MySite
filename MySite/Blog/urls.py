@@ -1,5 +1,6 @@
 from django.urls import path, include
 
+from Blog import views
 from Blog.views import *
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     # path('user/<int:user_id>/', user_detail, name='user_detail'),
     path('post/<int:pk>/update/', PostEditView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', DeletePostView.as_view(), name='post-delete'),
+    path('get_child_categories/<int:parent_category_id>/', views.get_child_categories, name='get_child_categories'),
     # path('login/', LoginUser.as_view(), name='login'),
     # path('logout/', logout_user, name='logout'),
 

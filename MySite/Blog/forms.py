@@ -29,7 +29,7 @@ class LoginUserForm(AuthenticationForm):
 
 class AddPostForm(forms.ModelForm):
     new_category = forms.CharField(label='Новая категория', max_length=100, required=False)
-    images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5)
+    images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,12 +58,6 @@ class AddPostForm(forms.ModelForm):
             # Проверка уникальности имени категории
             if Category.objects.filter(name=new_category).exists():
                 raise forms.ValidationError('Категория с таким именем уже существует.')
-
-# class AddPostView(CreateView):
-#     model = Posts
-#     form_class = AddPostForm
-#     template_name = 'blog/add_post.html'
-#     success_url = reverse_lazy('home')
 
 
 class CommentForm(forms.ModelForm):

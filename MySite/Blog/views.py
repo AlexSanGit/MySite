@@ -11,7 +11,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q
-from django.http import request, Http404
+from django.http import request, Http404, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
@@ -119,7 +119,6 @@ class CategoryPosts(DataMixin, ListView):
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
         c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
         return dict(list(context.items()) + list(c_def.items()))
-
 
 
 # class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
@@ -306,8 +305,18 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Начнем поиск")
+        c_def = self.get_user_context(title="Добавить запись")
         return dict(list(context.items()) + list(c_def.items()))
+
+
+def get_child_categories(request, parent_category_id):
+    try:
+        parent_category = Category.objects.get(pk=parent_category_id)
+        child_categories = parent_category.children.all()
+        data = [{'id': category.id, 'name': category.name} for category in child_categories]
+        return JsonResponse(data, safe=False)
+    except Category.DoesNotExist:
+        return JsonResponse([], safe=False)
 
 
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -460,4 +469,3 @@ def contact(request):
 #     profile = get_object_or_404(UserProfile, user=user)
 #     context = {'user': user, 'profile': profile, 'menu': menu}
 #     return render(request, 'blog/user_detail.html', context)
-

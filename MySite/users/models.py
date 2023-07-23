@@ -1,6 +1,9 @@
 from PIL import Image
 from django.contrib.auth.models import User
 from django.db import models
+
+from Blog.models import Category
+# from Blog.models import *
 from users.choices.city_choices import CITY_CHOICES
 
 
@@ -13,6 +16,8 @@ class Profile(models.Model):
     image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
     city = models.CharField(verbose_name='Город', max_length=3, choices=CITY_CHOICES, blank=True)
     phone = models.IntegerField(default=0, blank=True)
+    # Поле для хранения доступных категорий
+    available_categories = models.ManyToManyField(Category, related_name='sellers')
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'
