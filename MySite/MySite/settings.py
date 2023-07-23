@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'taxiapp',
     'multiselectfield',
+    'mptt',
     'allauth',
     'allauth.account',
 

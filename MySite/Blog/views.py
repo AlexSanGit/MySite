@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models import Q
 from django.http import request, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
@@ -32,6 +33,18 @@ class HomePage(DataMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(is_published=True)  # only show published posts
+
+    # def get_queryset(self):
+    #     # Получение родительской категории
+    #     cat_slug = self.kwargs['cat_slug']
+    #     parent_category = Category.objects.get(slug=cat_slug)
+    #
+    #     # Получение всех дочерних категорий
+    #     child_categories = parent_category.get_descendants(include_self=True)
+    #
+    #     # Получение записей постов для всех дочерних категорий
+    #     queryset = Posts.objects.filter(cat_post__in=child_categories, is_published=True).select_related('cat_post')
+    #     return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,7 +73,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):         # проверка поля коментария
+    def form_valid(self, form):  # проверка поля коментария
         self.object = form.save(commit=False)
         self.object.article = self.get_object()
         self.object.author = self.request.user
@@ -88,14 +101,25 @@ class CategoryPosts(DataMixin, ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Posts.objects.filter(cat_post__slug=self.kwargs['cat_slug'], is_published=True)\
-            .select_related('cat_post')
+        category_slug = self.kwargs['cat_slug']
+        # Get the child category using the slug from the URL
+        child_category = Category.objects.get(slug=category_slug)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+        # If the selected category is a parent category, get all posts for its descendants
+        if not child_category.is_leaf_node():
+            return Posts.objects.filter(
+                Q(cat_post__in=child_category.get_descendants(include_self=True)),
+                is_published=True)
+
+        # If the selected category is a leaf node (a child category), get posts for the specific category only
+        return Posts.objects.filter(cat_post=child_category, is_published=True)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
         c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
         return dict(list(context.items()) + list(c_def.items()))
+
 
 
 # class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
@@ -322,33 +346,34 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         messages.success(self.request, 'Пост обновлен.')
         return super().form_valid(form)
-#
-#     def get_object(self, queryset=None):
-#         obj = super().get_object(queryset=queryset)
-#         if obj.author != self.request.user:
-#             raise Http404("У вас нет доступа")
-#         return obj
-#
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         messages.success(self.request, 'Профиль обновлен.')
-#         return super().form_valid(form)
 
-        # post = form.save(commit=False)
-        # # if 'photo_part' in form.changed_data:
-        # #     # Получаем изображение из формы
-        # image = form.cleaned_data.get('photo_part')
-        # # Открываем изображение с помощью библиотеки Pillow
-        # img = Image.open(image)
-        # # Меняем размер изображения
-        # output_size = (500, 500)
-        # img.thumbnail(output_size)
-        # # Удаляем старое изображение
-        # # if post.photo_part:
-        # #     post.photo_part.delete()
-        # # Сохраняем новое изображение
-        # post.photo_part.save(image.name, img.format)
-        # return super().form_valid(form)
+    #
+    #     def get_object(self, queryset=None):
+    #         obj = super().get_object(queryset=queryset)
+    #         if obj.author != self.request.user:
+    #             raise Http404("У вас нет доступа")
+    #         return obj
+    #
+    #     def form_valid(self, form):
+    #         form.instance.author = self.request.user
+    #         messages.success(self.request, 'Профиль обновлен.')
+    #         return super().form_valid(form)
+
+    # post = form.save(commit=False)
+    # # if 'photo_part' in form.changed_data:
+    # #     # Получаем изображение из формы
+    # image = form.cleaned_data.get('photo_part')
+    # # Открываем изображение с помощью библиотеки Pillow
+    # img = Image.open(image)
+    # # Меняем размер изображения
+    # output_size = (500, 500)
+    # img.thumbnail(output_size)
+    # # Удаляем старое изображение
+    # # if post.photo_part:
+    # #     post.photo_part.delete()
+    # # Сохраняем новое изображение
+    # post.photo_part.save(image.name, img.format)
+    # return super().form_valid(form)
 
     def test_func(self):
         post = self.get_object()
@@ -422,7 +447,6 @@ def about(request):
 def contact(request):
     return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
 
-
 # class UserDetail(LoginRequiredMixin, DataMixin, DetailView):
 #     template_name = 'blog/user_detail.html'
 #
@@ -436,5 +460,4 @@ def contact(request):
 #     profile = get_object_or_404(UserProfile, user=user)
 #     context = {'user': user, 'profile': profile, 'menu': menu}
 #     return render(request, 'blog/user_detail.html', context)
-
 

@@ -7,37 +7,104 @@
 <!--	{% endif %}-->
 <!--{% endfor %}-->
 
-{% for category in cats %}
-    {% if not category.parent %}
-        {% if category.pk == cat_selected %}
-             <li class="selected">{{ category.name }}</li>
-        {% else %}
+  {% for category in cats %}
     <li>
-    <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+      <a href="{% url 'category' category.slug %}" {% if category.pk == cat_selected %} class="selected"{% endif %}>
+        {{ category.name }}
+      </a>
+      {% if category.child_categories %}
+        <button class="toggle-btn" data-target="children-list-{{ category.pk }}">
+          &#x25BC;
+        </button>
+        <ul id="children-list-{{ category.pk }}" class="children-list">
+          {% for child_category in category.child_categories %}
+            <li>
+              <a href="{% url 'category' child_category.slug %}"
+                 {% if child_category.pk == cat_selected %}
+                 class="selected"
+                 {% endif %}>
+                {{ child_category.name }}
 
-    {% if category.children.all %}
-    <ul>
-
-        {% for child in category.children.all %}
-        <li>
-            <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>
-            <!--            {% if child.children.all %}-->
-            <!--            <ul>-->
-            <!--                {% for subchild in child.children.all %}-->
-            <!--                <li><a href="{{ subchild.get_absolute_url }}">{{ subchild.name }}</a></li>-->
-            <!--                &lt;!&ndash; Repeat this pattern for additional levels of children if necessary &ndash;&gt;-->
-            <!--                {% endfor %}-->
-            <!--            </ul>-->
-            <!--            {% endif %}-->
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</li>
-
-{% endif %}
-{% endif %}
-{% endfor %}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </li>
+  {% endfor %}
 
 
+
+
+<script>
+  // Функция для обработки клика на кнопку
+  function toggleChildren(targetId) {
+    var target = document.getElementById(targetId);
+    target.classList.toggle('show');
+  }
+
+  // Привязка обработчика события к кнопкам
+  var toggleButtons = document.getElementsByClassName('toggle-btn');
+  for (var i = 0; i < toggleButtons.length; i++) {
+    var targetId = toggleButtons[i].getAttribute('data-target');
+    toggleButtons[i].addEventListener('click', toggleChildren.bind(null, targetId));
+  }
+</script>
+
+<style>
+  .children-list {
+  display: none;
+  padding-left: 20px;
+}
+
+.selected {
+    background-color: #e6e6e6;
+}
+
+.show {
+  display: block !important;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+<!--{% for category in cats %}-->
+<!--    {% if not category.parent %}-->
+<!--        {% if category.pk == cat_selected %}-->
+<!--             <li class="selected">{{ category.name }}</li>-->
+<!--        {% else %}-->
+<!--    <li>-->
+<!--    <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>-->
+
+<!--    {% if category.children.all %}-->
+<!--    <ul>-->
+
+<!--        {% for child in category.children.all %}-->
+<!--        <li>-->
+<!--            <a href="{{ child.get_absolute_url }}">{{ child.name }}</a>-->
+<!--            &lt;!&ndash;            {% if child.children.all %}&ndash;&gt;-->
+<!--            &lt;!&ndash;            <ul>&ndash;&gt;-->
+<!--            &lt;!&ndash;                {% for subchild in child.children.all %}&ndash;&gt;-->
+<!--            &lt;!&ndash;                <li><a href="{{ subchild.get_absolute_url }}">{{ subchild.name }}</a></li>&ndash;&gt;-->
+<!--            &lt;!&ndash;                &lt;!&ndash; Repeat this pattern for additional levels of children if necessary &ndash;&gt;&ndash;&gt;-->
+<!--            &lt;!&ndash;                {% endfor %}&ndash;&gt;-->
+<!--            &lt;!&ndash;            </ul>&ndash;&gt;-->
+<!--            &lt;!&ndash;            {% endif %}&ndash;&gt;-->
+<!--        </li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+<!--    {% endif %}-->
+<!--</li>-->
+
+<!--{% endif %}-->
+<!--{% endif %}-->
+<!--{% endfor %}-->
 

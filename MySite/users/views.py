@@ -21,25 +21,16 @@ def create_user_profile(sender, instance, created, **kwargs):
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        profile_form = ProfileUpdateForm(request.POST)
-        if form.is_valid() and profile_form.is_valid():
-            user = form.save()
-            profile_ = profile_form.save(commit=False)
-            profile_.user = user
-            profile_.save()
-
-        login(request, user)
-        messages.success(request, f'Ваш аккаунт создан: можно войти на сайт.')
+        if form.is_valid():
+            user = form.save(commit=False)
+            username = form.cleaned_data.get('username')
+            form.save()
+            login(request, user)
+            messages.success(request, f'Ваш аккаунт создан.')
         return redirect('home')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html',  {'form': form, 'city_choices': CITY_CHOICES})
-
-
-# @login_required
-# def profile(request):
-#     context = {'profile': profile, 'menu': menu}
-#     return render(request, 'users/profile.html', context)
 
 
 @login_required
