@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 from users.models import Profile
 
 
@@ -36,13 +38,21 @@ class Posts(models.Model):
         return reverse('post', kwargs={'post_slug': self.slug})
 
 
-class Category(models.Model):
+class Category(MPTTModel):
     objects = models.Manager()
     name = models.CharField(max_length=100, db_index=True, verbose_name="Категория")
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug")
+    # parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    level = models.PositiveIntegerField(default=0)  # Define the default value for the 'level' field
+    lft = models.PositiveIntegerField(default=0)  # Определите значение по умолчанию для поля 'lft'
+    rght = models.PositiveIntegerField(default=0)  # Определите значение по умолчанию для поля 'rght'
 
     def __str__(self):
         return self.name
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_slug': self.slug})

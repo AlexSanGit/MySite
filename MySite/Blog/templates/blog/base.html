@@ -1,6 +1,7 @@
 {% load static %}
 {% load blog_tags %}
 {% load crispy_forms_tags %}
+{% load mptt_tags %}
 
 
 <!DOCTYPE html>
@@ -61,7 +62,7 @@
                         <ul id="leftchapters">
 
                             <li><a href="{% url 'home' %}">Все категории</a></li>
-                            <li><a href="{% url 'taxihome' %}">Заказ такси</a></li>
+<!--                            <li><a href="{% url 'taxihome' %}">Заказ такси</a></li>-->
 
                             {% show_categories '-name' cat_selected%}
 

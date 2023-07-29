@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models import Q
 from django.http import request, Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
@@ -84,14 +85,25 @@ class CategoryPosts(DataMixin, ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Posts.objects.filter(cat_post__slug=self.kwargs['cat_slug'], is_published=True)\
-            .select_related('cat_post')
+        category_slug = self.kwargs['cat_slug']
+        # Get the child category using the slug from the URL
+        child_category = Category.objects.get(slug=category_slug)
+
+        # If the selected category is a parent category, get all posts for its descendants
+        if not child_category.is_leaf_node():
+            return Posts.objects.filter(
+                Q(cat_post__in=child_category.get_descendants(include_self=True)),
+                is_published=True)
+
+        # If the selected category is a leaf node (a child category), get posts for the specific category only
+        return Posts.objects.filter(cat_post=child_category, is_published=True)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
         c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
         return dict(list(context.items()) + list(c_def.items()))
+
 
 
 # class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
