@@ -7,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q
 from django.http import request, Http404
@@ -295,52 +296,17 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
 
-        # Создание экземпляров модели CustomImage и связывание их с постом
-        # images = []
-        # for file in files:
-        #     image = CustomImage(post=post, )
-        #     image.image = file
-        #     image.save()
-        #     images.append(image)
+        # Удаление предыдущих изображений поста
+        for image in post.post_images.all():
+            image_path = image.image.path
+            default_storage.delete(image_path)
+        post.post_images.clear()
 
         for file in files:
             CustomImage.objects.create(post=post, image=file)
 
-        # Удаление предыдущих изображений поста
-        # post.images.clear()
-
-        # Добавление связи многие-ко-многим между постом и изображениями
-        # post.images.set(images)
-
         messages.success(self.request, 'Пост обновлен.')
         return super().form_valid(form)
-#
-#     def get_object(self, queryset=None):
-#         obj = super().get_object(queryset=queryset)
-#         if obj.author != self.request.user:
-#             raise Http404("У вас нет доступа")
-#         return obj
-#
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         messages.success(self.request, 'Профиль обновлен.')
-#         return super().form_valid(form)
-
-        # post = form.save(commit=False)
-        # # if 'photo_part' in form.changed_data:
-        # #     # Получаем изображение из формы
-        # image = form.cleaned_data.get('photo_part')
-        # # Открываем изображение с помощью библиотеки Pillow
-        # img = Image.open(image)
-        # # Меняем размер изображения
-        # output_size = (500, 500)
-        # img.thumbnail(output_size)
-        # # Удаляем старое изображение
-        # # if post.photo_part:
-        # #     post.photo_part.delete()
-        # # Сохраняем новое изображение
-        # post.photo_part.save(image.name, img.format)
-        # return super().form_valid(form)
 
     def test_func(self):
         post = self.get_object()

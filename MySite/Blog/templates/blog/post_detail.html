@@ -12,24 +12,22 @@
 <table border=0 cellpadding="0" cellspacing="0">
     <tr>
         <th>
-    <div class="row">
-            {% for image in post.post_images.all %}
-        <div class="col-md-4">
-              <p><img class="img-article-left" src="{{ image.image.url }}" alt="Изображение"></p>
-        </div>
-            {% endfor %}
-    </div>
+            <div class="row">
+              {% for image in post.post_images.all %}
+                <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+              {% endfor %}
+            </div>
         </th>
-
+    </tr>
+    <tr>
         <th>
             <div class="post-description"> {{post.description|linebreaks}}</div>
 
         </th>
     </tr>
 
-
-
 </table>
+
 <p class="user-post"> Написал:
     <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;"
          alt="Avatar"/>
@@ -39,10 +37,10 @@
 <ul class="messages">
     {% for message in messages %}
     <li
-    {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
     {% endfor %}
 </ul>
-
 
 
 {% endif %}
@@ -70,6 +68,12 @@
 
 </div>
 
+
+ <!-- Модальное окно -->
+  <div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="img01">
+  </div>
 
 {% endblock %}
 
