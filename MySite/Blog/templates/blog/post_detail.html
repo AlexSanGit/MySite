@@ -44,8 +44,11 @@
 
 
 {% endif %}
+{% if user.is_authenticated and user == post.author %}
+    <!-- Элементы, которые будут видны только автору поста -->
 <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
 <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
+{% endif %}
 <hr>
 <div class="comments-form">
 
@@ -60,20 +63,29 @@
     <p>Пока нет коментариев</p>
     {% endfor %}
 
+
+    {% if user.is_authenticated %}
+    <!-- Код элементов, которые нужно показать только авторизованным пользователям -->
     <form action="" id="add_form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Добавить</button>
+        <button class="btn btn-secondary btn-sm mt-1 mb-1" type="submit">Добавить</button>
     </form>
+
+    {% else %}
+    <!-- Код элементов, которые нужно скрыть для неавторизованных пользователей -->
+    <p>Чтобы оставить коментарий, войдите или зарегистрируйтесь.</p>
+    {% endif %}
 
 </div>
 
+<!-- Модальное окно -->
+<div id="myModal" class="modal">
 
- <!-- Модальное окно -->
-  <div id="myModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="img01">
+    <img id="img01" class="modal-content">
   </div>
+
 
 {% endblock %}
 

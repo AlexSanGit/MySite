@@ -99,7 +99,7 @@ class CategoryPosts(DataMixin, ListView):
         # If the selected category is a leaf node (a child category), get posts for the specific category only
         return Posts.objects.filter(cat_post=child_category, is_published=True)
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
         c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
@@ -255,6 +255,20 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # добавляем slug в объект поста
         form.instance.slug = slug
 
+        new_category = form.cleaned_data.get('new_category')
+        if new_category:
+            # Проверка уникальности имени категории
+            if Category.objects.filter(name=new_category).exists():
+                messages.error(self.request, 'Категория с таким именем уже существует.')
+                return self.form_invalid(form)
+
+            # Создание новой категории
+            slug = slugify(new_category)
+            category, created = Category.objects.get_or_create(name=new_category, slug=slug)
+
+            # Связывание поста с новой категорией
+            obj.cat_post = category
+
         try:
             obj.save()
             for file in files:
@@ -277,7 +291,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Начнем поиск")
+        c_def = self.get_user_context(title="Добавить запись")
         return dict(list(context.items()) + list(c_def.items()))
 
 
