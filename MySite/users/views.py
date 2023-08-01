@@ -49,20 +49,40 @@ def register(request):
     return render(request, 'users/register.html', {'form': form, 'city_choices': CITY_CHOICES})
 
 
-
 @login_required
 def profile(request, user_id):
+
+    user = get_object_or_404(User, id=user_id)
+    prof = get_object_or_404(Profile, user=user)
+
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
                                    instance=request.user.profile)
+        # profile.is_seller = 'is_seller' in request.POST
         if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
+        # if p_form.is_valid():
+            # Обновление фото
+            if 'image' in request.FILES:
+                prof.image = request.FILES['image']
+            # Обновление поля city
+            first_name = u_form.cleaned_data.get('first_name')
+            last_name =  u_form.cleaned_data.get('last_name')
+            city = request.POST.get('city', '')
+            prof.city = city
+            # u_form.save()
             p_form.save()
+            # Обновление статуса is_seller
+            is_seller = request.POST.get('is_seller', False)
+            prof.is_seller = bool(is_seller)
+            # Обновление полей first_name и last_name в модели User
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+            prof.save()
             messages.success(request, f'Ваш профиль успешно обновлен.')
-            # return redirect('profile')
-            redirect(f'/profile/{user_id}')
+            return redirect(f'/profile/{user_id}')
 
     else:
         u_form = UserUpdateForm(instance=request.user)

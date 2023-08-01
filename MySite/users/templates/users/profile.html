@@ -9,51 +9,56 @@
     <li {% if message.tags %}
         class="{{ message.tags }}"
         {% endif %}>
-        {{ message|message_with_animation }}
+        {{ message}}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 
 <table border=0 cellpadding="0" cellspacing="0">
-
+<h2 class="border-bottom mb-4">Ваш профиль</h2>
     <tr>
         <th>
-<div class="content-section">
-    <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        <div class="media-body">
-            <h2 class="account-heading">Логин: {{ user.username }}</h2>
-            <h2 class="account-heading">Имя: {{ user.first_name }} {{ user.last_name }}</h2>
+            <div class="content-section">
+                <div class="media">
+<!--                    <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">-->
+                    <div class="media-body">
+                        <h3 class="account-heading">Логин: {{ user.username }}</h3>
+                        <h3 class="account-heading">Имя: {{ user.first_name }} {{ user.last_name }}</h3>
 
-            <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
-            <p class="text-secondary">Отзывы: {{ profile.review }}</p>
-            <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}
-                Пока нет рейтинга
-                {% else %}
-                {{ profile.rating }}
-                {% endif%}
-            </p>
-            <p class="text-secondary">Статус: {% if profile.is_seller %}
-                Продавец
-                {% else %}
-                Покупатель
-                {% endif%}
-            </p>
-        </div>
-    </div>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Ваш профиль</legend>
-            {{ u_form|crispy }}
-            {{ p_form|crispy }}
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Обновить</button>
-        </div>
-    </form>
-</div>
+                        <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
+                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>
+                        <p class="text-secondary">Отзывы: {{ profile.review }}</p>
+                        <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}
+                            Пока нет рейтинга
+                            {% else %}
+                            {{ profile.rating }}
+                            {% endif%}
+                        </p>
+
+                        <p class="text-secondary">Статус: {% if profile.is_seller %}
+                            Продавец
+                            {% else %}
+                            Покупатель
+                            {% endif%}
+                        </p>
+                    </div>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+
+                        {{ u_form|crispy }}
+                        {{ p_form|crispy }}
+                    </fieldset>
+
+                    <div class="form-group">
+                        <button class="btn btn-outline-info" type="submit">Обновить</button>
+
+                    </div>
+                </form>
+            </div>
         </th>
     </tr>
 </table>

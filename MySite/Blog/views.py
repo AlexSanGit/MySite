@@ -75,7 +75,9 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
         context['post_images'] = post.post_images.all()
-        return context
+        context['title'] = 'Страница поста'
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
 
         # return dict(list(context.items()) + list(c_def.items()))
 
@@ -232,7 +234,6 @@ class CategoryPosts(DataMixin, ListView):
 #         context = super().get_context_data(**kwargs)
 #         c_def = self.get_user_context(title="Начнем поиск")
 #         return dict(list(context.items()) + list(c_def.items()))
-
 
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm

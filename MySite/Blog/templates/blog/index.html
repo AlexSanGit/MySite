@@ -50,9 +50,10 @@
                 <th>
                     <div class="row">
                         {% for image in p.post_images.all %}
-                        <div class="col-md-4"><p>
-                            <img class="img-article-left" src="{{ image.image.url }}"
-                                 alt="Изображение"></p></div>
+                        <div>
+                            <p><img class="img-index" src="{{ image.image.url }}"
+                                 alt="Изображение"></p>
+                        </div>
                         {% endfor %}
                     </div>
                 </th>
