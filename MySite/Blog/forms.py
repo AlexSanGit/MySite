@@ -44,6 +44,25 @@ class AddPostForm(forms.ModelForm):
         self.fields['title'].label = "Заголовок"
         self.fields['description'].label = "Описание"
         self.fields['images'].label = "Изображение"
+        # Получите список всех категорий с их деревовидной структурой
+        categories_tree = self.get_categories_tree()
+        self.fields['cat_post'].widget.choices = categories_tree
+
+    def get_categories_tree(self):
+        categories_tree = []
+
+        # Получите все основные категории
+        main_categories = Category.objects.filter(parent=None)
+
+        # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
+        for main_category in main_categories:
+            # Создайте кортеж с именем категории и списком дочерних категорий
+            category_group = (
+                main_category.name,
+                [(child_category.id, child_category.name) for child_category in main_category.children.all()]
+            )
+            categories_tree.append(category_group)
+        return categories_tree
 
     class Meta:
         model = Posts
