@@ -7,6 +7,17 @@ html, body {
 	color: #444;
 }
 
+.image-post-detail img {
+	max-width: 150px;
+	height: auto;
+	float: left;
+	padding: 0 10px 10px 0;
+	border: 10px
+}
+.content-post-detail{
+    padding: 10px 100px 100px 210px;
+
+}
 
 a {
 	color: #0059b2;
@@ -19,7 +30,7 @@ a:hover {
 
 img {max-width: 600px; height: auto;}
 
-img.img-article-left {
+img.img-index{
 	max-width: 150px;
 	height: auto;
 	float: left;

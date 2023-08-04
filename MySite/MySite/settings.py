@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Blog',
     'crispy_bootstrap4',
     'crispy_forms',
+    'mptt',
     'users',
     'taxiapp',
     'multiselectfield',

@@ -1,9 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import ClearableFileInput
 from django.utils.html import format_html
-
 from users.choices.city_choices import CITY_CHOICES
 from users.models import Profile
 
@@ -30,6 +28,13 @@ class UserRegisterForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2', 'city']
 
 
+class UserUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+
 class ProfileUpdateForm(forms.ModelForm):
     is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
     image = forms.ImageField(label='Фото', widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
@@ -39,9 +44,3 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['is_seller', 'city', 'image']
 
 
-class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField()
-
-    class Meta:
-        model = User
-        fields = ['email']

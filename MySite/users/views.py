@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.shortcuts import redirect, render, get_object_or_404
 
 from Blog.utils import menu
@@ -19,25 +21,32 @@ from users.models import Profile
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
-        profile_form = ProfileUpdateForm(request.POST)
-        if form.is_valid() and profile_form.is_valid():
-            user = form.save()
-            profile_ = profile_form.save(commit=False)
-            profile_.user = user
-            profile_.save()
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            city = form.cleaned_data.get('city')
 
-        login(request, user)
-        messages.success(request, f'Ваш аккаунт создан: можно войти на сайт.')
-        return redirect('home')
+            # Проверяем, существует ли уже пользователь с таким именем
+            if User.objects.filter(username=username).exists():
+                return render(request, 'register.html', {'form': form, 'error_message': 'Уже есть такой пользователь'})
+
+            # Сохраняем данные пользователя
+            user = form.save()
+
+            # Проверяем, существует ли профиль для данного пользователя
+            profile, created = Profile.objects.get_or_create(user=user)
+
+            # Обновляем поля профиля, если был создан новый профиль
+            if created:
+                profile.city = city
+                profile.save()
+
+            login(request, user)
+            messages.success(request, f'Ваш аккаунт создан.')
+            return redirect('home')
     else:
         form = UserRegisterForm()
-    return render(request, 'users/register.html',  {'form': form, 'city_choices': CITY_CHOICES})
 
-
-# @login_required
-# def profile(request):
-#     context = {'profile': profile, 'menu': menu}
-#     return render(request, 'users/profile.html', context)
+    return render(request, 'users/register.html', {'form': form, 'city_choices': CITY_CHOICES})
 
 
 @login_required
@@ -47,17 +56,19 @@ def profile(request, user_id):
     prof = get_object_or_404(Profile, user=user)
 
     if request.method == 'POST':
-        # u_form = UserUpdateForm(request.POST, instance=request.user)
+        u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
                                    instance=request.user.profile)
         # profile.is_seller = 'is_seller' in request.POST
-        # if u_form.is_valid() and p_form.is_valid():
-        if p_form.is_valid():
+        if u_form.is_valid() and p_form.is_valid():
+        # if p_form.is_valid():
             # Обновление фото
             if 'image' in request.FILES:
                 prof.image = request.FILES['image']
             # Обновление поля city
+            first_name = u_form.cleaned_data.get('first_name')
+            last_name =  u_form.cleaned_data.get('last_name')
             city = request.POST.get('city', '')
             prof.city = city
             # u_form.save()
@@ -65,17 +76,21 @@ def profile(request, user_id):
             # Обновление статуса is_seller
             is_seller = request.POST.get('is_seller', False)
             prof.is_seller = bool(is_seller)
+            # Обновление полей first_name и last_name в модели User
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
             prof.save()
             messages.success(request, f'Ваш профиль успешно обновлен.')
             return redirect(f'/profile/{user_id}')
 
     else:
-        # u_form = UserUpdateForm(instance=request.user)
+        u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
     user = get_object_or_404(User, id=user_id)
     prof = get_object_or_404(Profile, user=user)
     context = {
-        # 'u_form': u_form,
+        'u_form': u_form,
         'p_form': p_form,
         'menu': menu,
         'profile': prof

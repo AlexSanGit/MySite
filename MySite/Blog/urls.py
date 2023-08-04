@@ -1,5 +1,6 @@
+from Blog import views
 from django.urls import path, include
-
+from Blog import views
 from Blog.views import *
 
 urlpatterns = [
@@ -11,6 +12,7 @@ urlpatterns = [
     path('addpage/', AddPost.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     # path('user/<int:user_id>/', user_detail, name='user_detail'),
+    # path('get_child_categories/<int:parent_category_id>/', views.get_child_categories, name='get_child_categories'),
     path('post/<int:pk>/update/', PostEditView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', DeletePostView.as_view(), name='post-delete'),
     # path('login/', LoginUser.as_view(), name='login'),

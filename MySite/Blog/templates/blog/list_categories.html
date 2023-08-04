@@ -1,7 +1,56 @@
-{% for c in cats %}
-	{% if c.pk == cat_selected %}
-		<li class="selected">{{c.name}}</li>
-	{% else %}
-		<li><a href="{{ c.get_absolute_url }}">{{c.name}}</a></li>
-	{% endif %}
-{% endfor %}
+ {% for category in cats %}
+    <li>
+      <a href="{% url 'category' category.slug %}" {% if category.pk == cat_selected %} class="selected"{% endif %}>
+        {{ category.name }}
+      </a>
+      {% if category.child_categories %}
+        <button class="toggle-btn" data-target="children-list-{{ category.pk }}">
+          &#x25BC;
+        </button>
+        <ul id="children-list-{{ category.pk }}" class="children-list">
+          {% for child_category in category.child_categories %}
+            <li>
+              <a href="{% url 'category' child_category.slug %}"
+                 {% if child_category.pk == cat_selected %}
+                 class="selected"
+                 {% endif %}>
+                {{ child_category.name }}
+
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </li>
+  {% endfor %}
+
+
+ <script>
+  // Функция для обработки клика на кнопку
+  function toggleChildren(targetId) {
+    var target = document.getElementById(targetId);
+    target.classList.toggle('show');
+  }
+
+  // Привязка обработчика события к кнопкам
+  var toggleButtons = document.getElementsByClassName('toggle-btn');
+  for (var i = 0; i < toggleButtons.length; i++) {
+    var targetId = toggleButtons[i].getAttribute('data-target');
+    toggleButtons[i].addEventListener('click', toggleChildren.bind(null, targetId));
+  }
+</script>
+
+<style>
+  .children-list {
+  display: none;
+  padding-left: 20px;
+}
+
+.selected {
+    background-color: #e6e6e6;
+}
+
+.show {
+  display: block !important;
+}
+</style>
