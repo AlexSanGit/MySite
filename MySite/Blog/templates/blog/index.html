@@ -48,14 +48,18 @@
         <table border=0 cellpadding="0" cellspacing="0">
             <tr>
                 <th>
+
                     <div class="row">
                         {% for image in p.post_images.all %}
+
                         <div>
                             <p><img class="img-index" src="{{ image.image.url }}"
                                  alt="Изображение"></p>
                         </div>
+
                         {% endfor %}
                     </div>
+
                 </th>
             </tr>
 

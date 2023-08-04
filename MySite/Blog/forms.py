@@ -48,20 +48,43 @@ class AddPostForm(forms.ModelForm):
         categories_tree = self.get_categories_tree()
         self.fields['cat_post'].widget.choices = categories_tree
 
+    # def get_categories_tree(self):
+    #     categories_tree = []
+    #     # Получите все основные категории
+    #     main_categories = Category.objects.filter(parent=None)
+    #
+    #     # Добавьте опцию "Все категории" в начало списка
+    #     all_categories = [(category.id, category.name) for category in main_categories]
+    #     categories_tree.append(("Все категории", all_categories))
+    #
+    #     # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
+    #     for main_category in main_categories:
+    #         # Создайте кортеж с именем категории и списком всех дочерних категорий
+    #         category_group = (
+    #             main_category.name,
+    #             [(child_category.id, child_category.name) for child_category in main_category.children.all()]
+    #         )
+    #         categories_tree.append(category_group)
+    #     return categories_tree
+
     def get_categories_tree(self):
         categories_tree = []
-
-        # Получите все основные категории
         main_categories = Category.objects.filter(parent=None)
 
-        # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
         for main_category in main_categories:
-            # Создайте кортеж с именем категории и списком дочерних категорий
+            # Получите список всех дочерних категорий данной основной категории, используя метод get_all_children
+            all_children = main_category.get_all_children()
+
+            # Соедините основную категорию и все ее дочерние категории в один список
+            all_categories = [main_category] + all_children
+
+            # Создайте кортеж с именем основной категории и списком всех ее категорий (включая дочерние)
             category_group = (
                 main_category.name,
-                [(child_category.id, child_category.name) for child_category in main_category.children.all()]
+                [(category.id, category.name) for category in all_categories]
             )
             categories_tree.append(category_group)
+
         return categories_tree
 
     class Meta:
