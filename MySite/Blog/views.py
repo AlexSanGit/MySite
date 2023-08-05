@@ -10,9 +10,9 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q
-from django.http import request, Http404
+from django.http import request, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
@@ -108,133 +108,6 @@ class CategoryPosts(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-
-# class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
-#     form_class = AddPostForm
-#     template_name = 'blog/addpage.html'
-#     success_url = reverse_lazy('home')
-#
-#     def create_images(files, post):
-#         images = []
-#         for file in files:
-#             # Создание экземпляра модели ImageFile и присвоение полям значений
-#             image = CustomImage(image=file)
-#
-#             # Сохранение экземпляра модели Image в базе данных
-#             image.save()
-#
-#             # Связывание экземпляра Image с соответствующим экземпляром Posts
-#             post.images = image
-#
-#             images.append(image)  # Добавление созданного экземпляра в список images
-#
-#         return images
-#
-#     def form_valid(self, form, *args, **kwargs):
-#         obj = form.save(commit=False)
-#         obj.author = self.request.user
-#         post = form.save(commit=False)
-#         # image = Image.open(filename)
-#         # objects = image.objects  # теперь атрибут 'objects' доступен
-#
-#         # Получение списка файлов
-#         # files = self.request.FILES.getlist('images')
-#
-#         # Создание экземпляров модели Image и сохранение их в базе данных
-#         # for file in files:
-#         #     image = CustomImage.objects.create(post=self.object)
-#         #     image.image.save(file.name, file, save=True)
-#         #
-#         #     # Обработка изображения с использованием Pillow (если необходимо)
-#         #     # Например, изменение размера изображения
-#         #     img = PILImage.open(image.image.path)
-#         #     img.thumbnail((800, 800))
-#         #     img.save(image.image.path)
-#
-#         # Создание экземпляров модели Image и сохранение их в базе данных
-#         # Обработка изображений с использованием библиотеки Pillow
-#         # processed_images = []
-#         # for image in images:
-#         #     img = Image.open(image)
-#         #     # Обработка изображения с помощью Pillow
-#         #     # Например, изменение размера изображения, обрезка и т.д.
-#         #     # img.thumbnail((800, 800))
-#         #     # img = img.convert('RGB')
-#         #
-#         # def create_images(files, post):
-#         #     images = []
-#         #     for file in files:
-#         #         image = PILImage.open(file)
-#         #
-#         #         # Обработка изображения
-#         #
-#         #         # Создание экземпляра модели Image
-#         #         image_instance = Image(post=post)
-#         #
-#         #         # Сохранение изображения в поле 'file' модели Image
-#         #         image_buffer = BytesIO()
-#         #         image.save(image_buffer, format='JPEG')
-#         #         image_instance.file.save(file.name, InMemoryUploadedFile(
-#         #             image_buffer, None, file.name, 'image/jpeg', image.tell(), None
-#         #         ))
-#         #
-#         #         # Сохранение экземпляра модели Image в базе данных
-#         #         image_instance.save()
-#         #
-#         #         # Добавление экземпляра модели Image в список
-#         #         images.append(image_instance)
-#         #
-#         #     return images
-#
-#         # Получение списка файлов
-#         files = request.FILES.getlist('images')
-#
-#         # Создание экземпляров модели Image и сохранение их в базе данных
-#         # images = self.create_images(files, post)
-#
-#         # Обработка загрузки нескольких файлов
-#         files = self.request.FILES.getlist('images')
-#         for file in files:
-#             # Генерация уникального имени файла
-#             filename = default_storage.get_available_name(file.name)
-#
-#             # Сохранение файла
-#             default_storage.save(filename, file)
-#
-#             # Создание объекта Image и сохранение связанных данных
-#             image = CustomImage(post=post, file=filename)
-#             image.save()
-#
-#
-#
-#         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
-#         slug = slugify(form.cleaned_data['title'])
-#         # проверяем уникальность slug
-#         if Posts.objects.filter(slug=slug).exists():
-#             # если slug уже занят, генерируем новый slug путем добавления случайного числа к оригинальному slug
-#             slug = f"{slug}-{random.randint(1, 1000)}"
-#         # добавляем slug в объект поста
-#         form.instance.slug = slug
-#         try:
-#             # вызываем метод родительского класса для сохранения объекта поста
-#             response = super().form_valid(form)
-#         except ValidationError as e:
-#             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
-#             if 'slug' in e.error_dict:
-#                 slug = f"{slug}-{random.randint(1, 1000)}"
-#                 form.instance.slug = slug
-#                 response = super().form_valid(form)
-#             else:
-#                 raise e
-#         return response
-#         # obj.save()
-#         # return response
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title="Начнем поиск")
-#         return dict(list(context.items()) + list(c_def.items()))
-
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm
     template_name = 'blog/addpage.html'
@@ -257,10 +130,50 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         form.instance.slug = slug
 
         new_category = form.cleaned_data.get('new_category')
+        # if new_category:
+        #     # Проверка уникальности имени категории
+        #     if Category.objects.filter(name=new_category).exists():
+        #         messages.error(self.request, 'Категория с таким именем уже существует.')
+        #         return self.form_invalid(form)
+        #         # Проверяем, выбрана ли основная категория, и есть ли новая категория
+        #
+        #
+        #     # Создание новой категории
+        #     slug = slugify(new_category)
+        #     category, created = Category.objects.get_or_create(name=new_category, slug=slug)
+        #
+        #     # Связывание поста с новой категорией
+        #     obj.cat_post = category
+        #
+        # try:
+        #     obj.save()
+        #     for file in files:
+        #         CustomImage.objects.create(post=obj, image=file)
+        #
+        #     response = super().form_valid(form)  # Сохраняем пост
+        # except ValidationError as e:
+        #     # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
+        #     if 'slug' in e.error_dict:
+        #         slug = f"{slug}-{random.randint(1, 1000)}"
+        #         form.instance.slug = slug
+        #         response = super().form_valid(form)
+        #     else:
+        #         raise e
+        #
+        # return response
         if new_category:
-            # Проверка уникальности имени категории
-            if Category.objects.filter(name=new_category).exists():
-                messages.error(self.request, 'Категория с таким именем уже существует.')
+            # # Проверка уникальности имени категории
+            # if Category.objects.filter(name=new_category).exists():
+            #     messages.error(self.request, 'Категория с таким именем уже существует.')
+            #     return self.form_invalid(form)
+
+            # Получите все основные категории
+            main_categories = Category.objects.filter(parent=None)
+            # Получение объекта основной категории
+            main_category = form.cleaned_data.get('cat_post', None)
+
+            if not main_categories and new_category:
+                messages.error(self.request, 'Выберите основную категорию или введите новую.')
                 return self.form_invalid(form)
 
             # Создание новой категории
@@ -270,25 +183,25 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
             # Связывание поста с новой категорией
             obj.cat_post = category
 
+            # Если есть основная категория, устанавливаем ее в качестве родительской для новой категории
+            category.parent = main_category
+            category.save()
+
         try:
             obj.save()
             for file in files:
                 CustomImage.objects.create(post=obj, image=file)
 
-            # Добавление связи многие-ко-многим между постом и изображениями
-            #     post.images.set(file)
-
-            response = super().form_valid(form)  # Сохраняем пост
         except ValidationError as e:
             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
             if 'slug' in e.error_dict:
                 slug = f"{slug}-{random.randint(1, 1000)}"
                 form.instance.slug = slug
-                response = super().form_valid(form)
+                return self.form_valid(form)
             else:
                 raise e
 
-        return response
+        return HttpResponseRedirect(reverse('home'))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

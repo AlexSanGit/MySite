@@ -108,6 +108,11 @@ class AddPostForm(forms.ModelForm):
         cleaned_data = super().clean()
         cat_post = cleaned_data.get('cat_post')
         new_category = cleaned_data.get('new_category')
+        main_category = self.cleaned_data.get('cat_post')
+        print(main_category)
+
+        if main_category.parent is not None and new_category:
+            raise forms.ValidationError('Выберите основную категорию')
 
         if not cat_post and not new_category:
             raise forms.ValidationError('Выберите категорию или введите новую')
