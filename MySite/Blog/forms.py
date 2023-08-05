@@ -1,4 +1,6 @@
 from Blog.models import Comments, Posts, Category
+from django.utils.html import strip_tags
+
 from .widgets import MultipleFileInput
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -48,21 +50,51 @@ class AddPostForm(forms.ModelForm):
         categories_tree = self.get_categories_tree()
         self.fields['cat_post'].widget.choices = categories_tree
 
+    # def get_categories_tree(self):
+    #     categories_tree = []
+    #
+    #     # Получите все основные категории
+    #     main_categories = Category.objects.filter(parent=None)
+    #
+    #     # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
+    #     for main_category in main_categories:
+    #         # Создайте кортеж с именем категории и списком дочерних категорий
+    #         category_group = (
+    #             main_category.name,
+    #             [(child_category.id, child_category.name) for child_category in main_category.children.all()]
+    #         )
+    #         categories_tree.append(category_group)
+    #     return categories_tree
+    from django.utils.html import strip_tags
+
     def get_categories_tree(self):
         categories_tree = []
 
         # Получите все основные категории
         main_categories = Category.objects.filter(parent=None)
 
-        # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
+        # Переберите основные категории и добавьте их в список с глубиной 0
         for main_category in main_categories:
-            # Создайте кортеж с именем категории и списком дочерних категорий
-            category_group = (
-                main_category.name,
-                [(child_category.id, child_category.name) for child_category in main_category.children.all()]
-            )
-            categories_tree.append(category_group)
+            # Используйте HTML-код для выделения основной категории жирным шрифтом
+            # main_category_name = f'<bold>{main_category.name}</bold>'
+            categories_tree.append((main_category.id, main_category.name))
+            # Добавьте все подкатегории с глубиной больше 0 рекурсивно
+            categories_tree.extend(self.get_subcategories(main_category, 1))
         return categories_tree
+
+    def get_subcategories(self, parent_category, depth):
+        subcategories = []
+        # Получите все дочерние категории данной родительской категории
+        children = parent_category.children.all()
+        # Переберите дочерние категории и добавьте их в список с указанной глубиной
+        for child in children:
+            # Добавьте тире перед именем подкатегории в зависимости от глубины
+            child_category_name = "--" * depth + child.name
+            subcategories.append((child.id, child_category_name))
+            # Если у дочерней категории есть свои дети, добавьте их в список рекурсивно с увеличенной глубиной
+            if child.children.exists():
+                subcategories.extend(self.get_subcategories(child, depth + 1))
+        return subcategories
 
     class Meta:
         model = Posts
