@@ -1,14 +1,20 @@
 {% extends 'blog/base.html' %}
 {% block content %}
 
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %}
+        class="{{ message.tags }}"
+        {% endif %}>
+        {{ message}}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 <ul>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}" {% endif %} {{ message }}>
-            {% endfor %}
-    </ul>
-    {% endif %}
     <!-- Кнопка для открытия всплывающего сообщения -->
     <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
 
@@ -52,7 +58,7 @@
                         {% for image in p.post_images.all %}
                         <div>
                             <p><img class="img-index" src="{{ image.image.url }}"
-                                 alt="Изображение"></p>
+                                    alt="Изображение"></p>
                         </div>
                         {% endfor %}
                     </div>
@@ -88,6 +94,7 @@
       message.remove();
     });
   }, 3000);
+
 
 
 </script>

@@ -2,23 +2,31 @@ import random
 from io import BytesIO
 
 from PIL import Image
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.mail import send_mail
 from django.db.models import Q
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import request, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
+from django.utils.html import strip_tags
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
-from Blog.models import Posts, Category, CustomImage
+from Blog.models import Posts, Category, CustomImage, Comments
 from Blog.utils import DataMixin, menu
+from users.models import Profile
 
 
 class HomePage(DataMixin, ListView):
@@ -162,20 +170,8 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         #
         # return response
         if new_category:
-            # # Проверка уникальности имени категории
-            # if Category.objects.filter(name=new_category).exists():
-            #     messages.error(self.request, 'Категория с таким именем уже существует.')
-            #     return self.form_invalid(form)
-
-            # Получите все основные категории
-            main_categories = Category.objects.filter(parent=None)
             # Получение объекта основной категории
             main_category = form.cleaned_data.get('cat_post', None)
-
-            if not main_categories and new_category:
-                messages.error(self.request, 'Выберите основную категорию или введите новую.')
-                return self.form_invalid(form)
-
             # Создание новой категории
             slug = slugify(new_category)
             category, created = Category.objects.get_or_create(name=new_category, slug=slug)
@@ -183,8 +179,16 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
             # Связывание поста с новой категорией
             obj.cat_post = category
 
+            # Проверка, что новая категория не является родителем основной категории
+            if main_category is not None and main_category.parent != category:
+                # Установка основной категории в качестве родителя для новой категории
+                category.parent = main_category
+            else:
+                # Вывод сообщения об ошибке
+                messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
+
             # Если есть основная категория, устанавливаем ее в качестве родительской для новой категории
-            category.parent = main_category
+            # category.parent = main_category
             category.save()
 
         try:
@@ -233,7 +237,7 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         for file in files:
             CustomImage.objects.create(post=post, image=file)
 
-        messages.success(self.request, 'Пост обновлен.')
+        messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
 
     def test_func(self):
@@ -249,21 +253,41 @@ class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('home')
     # slug_url_kwarg = 'slug'
     context_object_name = 'post'
+    success_msg = 'Коментарий создан'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Пост успешно удален.')
+        return super().delete(request, *args, **kwargs)
 
     def test_func(self):
         post = self.get_object()
-        messages.success(self.request, 'Пост успешно удален')
         return self.request.user == post.author
 
-    # def get_object(self, queryset=None):
-    #     slug = self.kwargs.get('slug')
-    #     return Posts.objects.get(slug=slug)
-    #
-    # def test_func(self):
-    #     post = self.get_object()
-    #     if self.request.user == post.author:
-    #         return True
-    #     return False
+
+# # Функция, которая отправляет сообщение и уведомление автору поста при создании комментария
+# @receiver(post_save, sender=Comments)
+# def send_notification_to_author(sender, instance, created, **kwargs):
+#     if created:
+#         # Получаем автора поста
+#         post_author = instance.post.author
+#
+#         # Формируем URL для просмотра комментария
+#         current_site = get_current_site(request=None)
+#         comment_url = reverse('comment_detail', args=[instance.id])  # Здесь 'comment_detail' - это имя URL для просмотра комментария
+#
+#         # Формируем текст и html для письма
+#         subject = 'У вас новый комментарий к посту'
+#         message = f'Здравствуйте, {post_author.username}!\n\nУ вас новый комментарий к вашему посту "{instance.post.title}".\n\nВы можете просмотреть его по этой ссылке:\n{current_site.domain}{comment_url}'
+#         html_message = render_to_string('email/notification_email.html', {'post_author': post_author, 'comment': instance, 'comment_url': comment_url})
+#         plain_message = strip_tags(html_message)
+#
+#         # Отправляем уведомление
+#         send_mail(subject, plain_message, None, [post_author.email], html_message=html_message)
+def comment_detail_view(request, pk):
+    comment = get_object_or_404(Comments, pk=pk)
+    # Ваша логика для отображения деталей комментария здесь
+    # Например, вы можете отобразить шаблон с деталями комментария
+    return render(request, 'comment_detail.html', {'comment': comment})
 
 
 class RegisterUser(CreateView):
@@ -307,6 +331,12 @@ def about(request):
 
 def contact(request):
     return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
+
+
+def show_notifications(request):
+    profile = Profile.objects.get(user=request.user)
+    notifications = profile.notifications.split('\n') if profile.notifications else []
+    return render(request, 'blog/notifications.html', {'notifications': notifications})
 
 
 # class UserDetail(LoginRequiredMixin, DataMixin, DetailView):

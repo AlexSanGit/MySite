@@ -60,10 +60,8 @@ def profile(request, user_id):
         p_form = ProfileUpdateForm(request.POST,
                                    request.FILES,
                                    instance=request.user.profile)
-        # profile.is_seller = 'is_seller' in request.POST
         if u_form.is_valid() and p_form.is_valid():
-        # if p_form.is_valid():
-            # Обновление фото
+             # Обновление фото
             if 'image' in request.FILES:
                 prof.image = request.FILES['image']
             # Обновление поля city
@@ -94,7 +92,6 @@ def profile(request, user_id):
         'p_form': p_form,
         'menu': menu,
         'profile': prof
-
     }
 
     return render(request, 'users/profile.html', context)

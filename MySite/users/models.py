@@ -13,6 +13,7 @@ class Profile(models.Model):
     image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
     city = models.CharField(max_length=3, choices=CITY_CHOICES, blank=True)
     phone = models.IntegerField(default=0, blank=True)
+    notifications = models.TextField(blank=True, null=True)
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'

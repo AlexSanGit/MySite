@@ -1,6 +1,13 @@
+from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.html import strip_tags
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from users.models import Profile
@@ -101,3 +108,47 @@ class Comments(models.Model):
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.author, self.article)
+
+
+# @receiver(post_save, sender=Comments)
+# def send_notification_to_author(sender, instance, created, **kwargs):
+#     if created:
+#         # Получаем автора комментария
+#         comment_author = instance.author
+#
+#         # Получаем автора поста
+#         post_author = instance.article.author
+#
+#         # Формируем URL для просмотра комментария
+#         comment_url = reverse('comment_detail',
+#                               args=[instance.id])  # Здесь 'comment_detail' - это имя URL для просмотра комментария
+#
+#         # Формируем текст и html для письма
+#         subject = 'У вас новый комментарий к посту'
+#         message = f'Здравствуйте, {post_author.username}!\n\nУ вас новый комментарий к вашему посту "{instance.article.title}".\n\nВы можете просмотреть его по этой ссылке:\n{comment_url}'
+#         html_message = f'Здравствуйте, {post_author.username}!<br><br>У вас новый комментарий к вашему посту "{instance.article.title}".<br><br>Вы можете просмотреть его по этой <a href="{comment_url}">ссылке</a>.'
+#
+#         # Отправляем уведомление
+#         send_mail(subject, message, None, [post_author.email], html_message=html_message)
+
+
+@receiver(post_save, sender=Comments)
+def send_notification_to_author(sender, instance, created, **kwargs):
+    if created:
+        # Получаем автора комментария
+        comment_author = instance.author
+
+        # Получаем автора поста
+        post_author = instance.article.author
+
+        if comment_author != post_author:
+            # Если автор комментария и автор поста различаются,
+            # тогда отправляем уведомление автору поста.
+
+            # Сохраняем уведомление в профиле пользователя
+            profile, created = Profile.objects.get_or_create(user=post_author)
+            if profile.notifications:
+                profile.notifications += f'\nПост "{instance.article.title}" получил новый комментарий от {comment_author.username}.'
+            else:
+                profile.notifications = f'Пост "{instance.article.title}" получил новый комментарий от {comment_author.username}.'
+            profile.save()

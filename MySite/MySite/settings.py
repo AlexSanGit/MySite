@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     'taxiapp',
     'multiselectfield',
 
+
 ]
 # AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/'
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -140,3 +140,12 @@ STATICFILES_DIR = []
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# Рассылка сообщений
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'algeneralsan@gmail.com'
+EMAIL_HOST_PASSWORD = 'naslaren222'
+# Укажите EMAIL_BACKEND для отправки почты через SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

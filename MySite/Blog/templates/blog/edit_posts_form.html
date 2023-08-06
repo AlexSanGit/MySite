@@ -2,14 +2,18 @@
 {% load crispy_forms_tags %}
 {% load custom_tags %}
 {% block content %}
-{% if messages %}
 
+
+{% if messages %}
     <ul class="messages">
         {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
         {% endfor %}
     </ul>
 {% endif %}
+
     <div class="content-section">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
