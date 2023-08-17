@@ -138,58 +138,33 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         form.instance.slug = slug
 
         new_category = form.cleaned_data.get('new_category')
-        # if new_category:
-        #     # Проверка уникальности имени категории
-        #     if Category.objects.filter(name=new_category).exists():
-        #         messages.error(self.request, 'Категория с таким именем уже существует.')
-        #         return self.form_invalid(form)
-        #         # Проверяем, выбрана ли основная категория, и есть ли новая категория
-        #
-        #
-        #     # Создание новой категории
-        #     slug = slugify(new_category)
-        #     category, created = Category.objects.get_or_create(name=new_category, slug=slug)
-        #
-        #     # Связывание поста с новой категорией
-        #     obj.cat_post = category
-        #
-        # try:
-        #     obj.save()
-        #     for file in files:
-        #         CustomImage.objects.create(post=obj, image=file)
-        #
-        #     response = super().form_valid(form)  # Сохраняем пост
-        # except ValidationError as e:
-        #     # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
-        #     if 'slug' in e.error_dict:
-        #         slug = f"{slug}-{random.randint(1, 1000)}"
-        #         form.instance.slug = slug
-        #         response = super().form_valid(form)
-        #     else:
-        #         raise e
-        #
-        # return response
+        main_category = form.cleaned_data.get('cat_post')
+        print(main_category, new_category)
+
         if new_category:
             # Получение объекта основной категории
-            main_category = form.cleaned_data.get('cat_post', None)
-            # Создание новой категории
-            slug = slugify(new_category)
-            category, created = Category.objects.get_or_create(name=new_category, slug=slug)
-
-            # Связывание поста с новой категорией
-            obj.cat_post = category
+            try:
+                # Попытка получить уже существующую категорию с указанным именем
+                category = Category.objects.get(name=new_category)
+            except Category.DoesNotExist:
+                # Если категория не существует, создаем новую
+                slug = slugify(new_category)
+                category = Category.objects.create(name=new_category, slug=slug)
+            # Связываем пост с выбранной или созданной категорией
+                obj.cat_post = category
 
             # Проверка, что новая категория не является родителем основной категории
-            if main_category is not None and main_category.parent != category:
+            # if main_category is not None and main_category.parent != category:
+            if main_category is not None:
                 # Установка основной категории в качестве родителя для новой категории
                 category.parent = main_category
+                category.save()
             else:
                 # Вывод сообщения об ошибке
                 messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
 
             # Если есть основная категория, устанавливаем ее в качестве родительской для новой категории
             # category.parent = main_category
-            category.save()
 
         try:
             obj.save()

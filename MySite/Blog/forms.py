@@ -37,7 +37,7 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
-    new_category = forms.CharField(label='Новая категория', max_length=100, required=False)
+    new_category = forms.CharField(label='Новая подкатегория', max_length=100, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -65,7 +65,6 @@ class AddPostForm(forms.ModelForm):
     #         )
     #         categories_tree.append(category_group)
     #     return categories_tree
-    from django.utils.html import strip_tags
 
     def get_categories_tree(self):
         categories_tree = []
@@ -109,7 +108,7 @@ class AddPostForm(forms.ModelForm):
         cat_post = cleaned_data.get('cat_post')
         new_category = cleaned_data.get('new_category')
         main_category = self.cleaned_data.get('cat_post')
-        print(main_category)
+        # print(main_category)
 
         if main_category.parent is not None and new_category:
             raise forms.ValidationError('Выберите основную категорию')
@@ -122,16 +121,3 @@ class AddPostForm(forms.ModelForm):
             if Category.objects.filter(name=new_category).exists():
                 raise forms.ValidationError('Категория с таким именем уже существует.')
 
-
-# class ProfileForm(UserCreationForm):
-#     username = forms.CharField(label='Логин', widget=forms.TextInput(attrs={'class': 'form-input'}))
-#     is_seller = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input'}))
-#     rating = forms.IntegerField()
-#     review = forms.TextField()
-#     email = forms.EmailField()
-#     password1 = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
-#     avatar = forms.ImageField()
-#
-#     class Meta:
-#         model = User
-#         fields = ('username', 'email', 'password1', 'rating', 'review', 'avatar')
