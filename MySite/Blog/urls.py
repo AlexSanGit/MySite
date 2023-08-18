@@ -9,6 +9,7 @@ urlpatterns = [
     path('post/<slug:post_slug>/', PostDetail.as_view(), name='post'),
     path('category/<slug:cat_slug>/', CategoryPosts.as_view(), name='category'),
     path('about/', about, name='about'),
+    path('base-2/', check, name='check'),
     path('addpage/', AddPost.as_view(), name='add_page'),
     path('contact/', contact, name='contact'),
     path('notifications/', views.show_notifications, name='show_notifications'),

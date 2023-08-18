@@ -67,7 +67,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):         # проверка поля коментария
+    def form_valid(self, form):  # проверка поля коментария
         self.object = form.save(commit=False)
         self.object.article = self.get_object()
         self.object.author = self.request.user
@@ -150,7 +150,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 # Если категория не существует, создаем новую
                 slug = slugify(new_category)
                 category = Category.objects.create(name=new_category, slug=slug)
-            # Связываем пост с выбранной или созданной категорией
+                # Связываем пост с выбранной или созданной категорией
                 obj.cat_post = category
 
             # Проверка, что новая категория не является родителем основной категории
@@ -304,6 +304,10 @@ def about(request):
     return render(request, 'blog/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
+def check(request):
+    return render(request, 'blog/base-2.html', {'menu': menu, 'title': 'Проверка'})
+
+
 def contact(request):
     return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
 
@@ -312,20 +316,3 @@ def show_notifications(request):
     profile = Profile.objects.get(user=request.user)
     notifications = profile.notifications.split('\n') if profile.notifications else []
     return render(request, 'blog/notifications.html', {'notifications': notifications})
-
-
-# class UserDetail(LoginRequiredMixin, DataMixin, DetailView):
-#     template_name = 'blog/user_detail.html'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title="Профиль")
-#         return dict(list(context.items()) + list(c_def.items()))
-
-# def user_detail(request, user_id):
-#     user = get_object_or_404(User, id=user_id)
-#     profile = get_object_or_404(UserProfile, user=user)
-#     context = {'user': user, 'profile': profile, 'menu': menu}
-#     return render(request, 'blog/user_detail.html', context)
-
-

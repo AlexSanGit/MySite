@@ -3,8 +3,8 @@ from PIL import Image
 from Blog.models import Category
 
 
-menu = [{'title': "О сайте", 'url_name': 'about'},
-        {'title': "Добавить запись", 'url_name': 'add_page'},
+menu = [{'title': "Добавить запись", 'url_name': 'add_page'},
+        {'title': "О сайте", 'url_name': 'about'},
         {'title': "Обратная связь", 'url_name': 'contact'},
         # {'title': "Профиль", 'url_name': 'user_detail/1'},
         ]

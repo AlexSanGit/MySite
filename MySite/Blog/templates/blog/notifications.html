@@ -1,0 +1,16 @@
+<!-- notifications.html -->
+
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <h1>Уведомления</h1>
+    {% if notifications %}
+        <ul>
+            {% for notification in notifications %}
+                <li>{{ notification }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас пока нет уведомлений.</p>
+    {% endif %}
+{% endblock %}

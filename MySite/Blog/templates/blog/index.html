@@ -1,6 +1,7 @@
 {% extends 'blog/base.html' %}
-{% block content %}
 
+
+{% block content %}
 
 {% if messages %}
 <ul class="messages">
@@ -15,40 +16,16 @@
 {% endif %}
 
 <ul>
-    <!-- Кнопка для открытия всплывающего сообщения -->
-    <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
-
-    <!-- Функция для отображения всплывающего сообщения -->
-    <!--<script>-->
-    <!--function showMessage() {-->
-    <!--  // Создаем элемент с сообщением-->
-    <!--  var message = document.createElement("div");-->
-    <!--  message.innerHTML = "Это всплывающее сообщение";-->
-    <!--  message.style.position = "fixed";-->
-    <!--  message.style.top = "50%";-->
-    <!--  message.style.left = "50%";-->
-    <!--  message.style.transform = "translate(-50%, -50%)";-->
-    <!--  message.style.padding = "10px";-->
-    <!--  message.style.backgroundColor = "#f1c40f";-->
-    <!--  message.style.color = "#fff";-->
-    <!--  message.style.borderRadius = "5px";-->
-
-    <!--  // Добавляем элемент на страницу-->
-    <!--  document.body.appendChild(message);-->
-
-    <!--  // Через 5 секунд удаляем элемент-->
-    <!--  setTimeout(function() {-->
-    <!--    document.body.removeChild(message);-->
-    <!--  }, 5000);-->
-    <!--}-->
-    <!--</script>-->
-
     {% for p in posts %}
-
     <li>
         <div>
             <p>Категория: {{p.cat_post}}</p>
             <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+            <p class="user-post"> Написал: {{p.author}}
+                <img class="rounded-circle mb-3" src="{{ p.author.profile.image.url }}"
+                     style="width: 25px;height: 25px;"
+                     alt="Avatar"/>
+            </p>
             <h3>{{p.title}}</h3>
         </div>
         <table border=0 cellpadding="0" cellspacing="0">
@@ -81,7 +58,7 @@
 
 
         </table>
-        <hr>
+        <hr width=50% color="black" align="left">
         {% endfor %}
         {% endblock %}
     </li>
@@ -94,9 +71,6 @@
       message.remove();
     });
   }, 3000);
-
-
-
 </script>
 
 
