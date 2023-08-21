@@ -132,6 +132,8 @@ class Comments(models.Model):
 #         send_mail(subject, message, None, [post_author.email], html_message=html_message)
 
 
+# myapp/models.py
+
 @receiver(post_save, sender=Comments)
 def send_notification_to_author(sender, instance, created, **kwargs):
     if created:
@@ -141,14 +143,17 @@ def send_notification_to_author(sender, instance, created, **kwargs):
         # Получаем автора поста
         post_author = instance.article.author
 
-        if comment_author != post_author:
-            # Если автор комментария и автор поста различаются,
-            # тогда отправляем уведомление автору поста.
+        # Закомментируйте или удалите это условие,
+        # чтобы уведомления отправлялись даже автору поста
+        # if comment_author != post_author:
 
-            # Сохраняем уведомление в профиле пользователя
-            profile, created = Profile.objects.get_or_create(user=post_author)
-            if profile.notifications:
-                profile.notifications += f'\nПост "{instance.article.title}" получил новый комментарий от {comment_author.username}.'
-            else:
-                profile.notifications = f'Пост "{instance.article.title}" получил новый комментарий от {comment_author.username}.'
-            profile.save()
+        # Сохраняем уведомление в профиле пользователя
+        profile, created = Profile.objects.get_or_create(user=post_author)
+        post_title = instance.article.title
+        post_slug = instance.article.slug
+
+        if profile.notifications:
+            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Ссылка: /post/{post_slug}/'
+        else:
+            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Ссылка: /post/{post_slug}/'
+        profile.save()

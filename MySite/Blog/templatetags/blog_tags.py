@@ -25,6 +25,10 @@ def show_categories(sort=None, cat_selected=0):
     return {"cats": top_categories, "cat_selected": cat_selected}
 
 
+@register.inclusion_tag('blog/main-menu.html')
+def show_menu():
+    print('')
+
 
 
 

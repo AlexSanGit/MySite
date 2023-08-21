@@ -1,16 +1,35 @@
 <!-- notifications.html -->
 
-{% extends 'users/base.html' %}
+{% extends 'blog/base.html' %}
 
 {% block content %}
+
     <h1>Уведомления</h1>
     {% if notifications %}
         <ul>
-            {% for notification in notifications %}
-                <li>{{ notification }}</li>
+            {% for post_slug, notification in notifications %}
+                <li>
+                    {% if post_slug %}
+                        {% url 'post_detail' post_slug=post_slug as post_url %}
+                        <a href="{{ post_url }}">{{ notification }}</a>
+                    {% else %}
+                        {{ notification }}
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% else %}
         <p>У вас пока нет уведомлений.</p>
     {% endif %}
+
+
+<!-- Ссылка на уведомления с восклицательным знаком и ссылкой для очистки -->
+<a href="{% url 'show_notifications' %}" class="btn btn-info">
+    {% if profile.notifications %}
+        Мои уведомления <span class="badge badge-danger">!</span>
+    {% else %}
+        Мои уведомления
+    {% endif %}
+</a>
+<a href="{% url 'clear_notifications' %}" class="btn btn-danger ml-2">Очистить уведомления</a>
 {% endblock %}

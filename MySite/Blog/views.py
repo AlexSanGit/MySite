@@ -87,8 +87,6 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
-        # return dict(list(context.items()) + list(c_def.items()))
-
 
 class CategoryPosts(DataMixin, ListView):
     model = Posts
@@ -304,10 +302,6 @@ def about(request):
     return render(request, 'blog/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
-def check(request):
-    return render(request, 'blog/base-2.html', {'menu': menu, 'title': 'Проверка'})
-
-
 def contact(request):
     return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
 
@@ -315,4 +309,21 @@ def contact(request):
 def show_notifications(request):
     profile = Profile.objects.get(user=request.user)
     notifications = profile.notifications.split('\n') if profile.notifications else []
-    return render(request, 'blog/notifications.html', {'notifications': notifications})
+
+    processed_notifications = []
+    for notification in notifications:
+        if "Пост" in notification:
+            post_title = notification.split('"')[1]
+            post_slug = Posts.objects.get(title=post_title).slug  # Подставьте имя вашей модели поста
+            processed_notifications.append((post_slug, notification))
+        else:
+            processed_notifications.append((None, notification))
+
+    return render(request, 'blog/notifications.html', {'notifications': processed_notifications})
+
+
+def clear_notifications(request):
+    profile = Profile.objects.get(user=request.user)
+    profile.notifications = ''
+    profile.save()
+    return redirect('show_notifications')

@@ -1,0 +1,14 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+<title>У вас новый комментарий к посту</title>
+
+  <p>Здравствуйте, {{ post_author.username }}!</p>
+    <p>У вас новый комментарий к вашему посту "{{ comment.post.title }}".</p>
+    <p>Вы можете просмотреть его по этой <a href="{{ comment_url }}">ссылке</a>.</p>
+
+{% endblock %}
+
+
+
+

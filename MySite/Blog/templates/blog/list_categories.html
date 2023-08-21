@@ -42,9 +42,27 @@
 </script>
 
 <style>
-  .children-list {
+.children-list {
   display: none;
   padding-left: 20px;
+}
+.toggle-btn {
+    background-color: #3498db; /* Цвет фона кнопки */
+    color: black; /* Цвет текста кнопки */
+    border: none;
+    padding: 1px 1px; /* Внутренние отступы */
+    border-radius: 3px; /* Скругление углов */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+}
+
+.toggle-btn:hover {
+    background-color: #2980b9; /* Изменение цвета фона при наведении */
+}
+
+/* Изменение стиля кнопки при нажатии */
+.toggle-btn:active {
+    transform: scale(0.9); /* Уменьшение размера при нажатии */
 }
 
 .selected {
