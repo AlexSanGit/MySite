@@ -7,11 +7,10 @@
     <h1>Уведомления</h1>
     {% if notifications %}
         <ul>
-            {% for post_slug, notification in notifications %}
+            {% for post_link, notification in notifications %}
                 <li>
-                    {% if post_slug %}
-                        {% url 'post_detail' post_slug=post_slug as post_url %}
-                        <a href="{{ post_url }}">{{ notification }}</a>
+                    {% if post_link %}
+                        <a href="{{ post_link }}">{{ notification }}</a>
                     {% else %}
                         {{ notification }}
                     {% endif %}

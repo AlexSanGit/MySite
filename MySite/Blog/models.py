@@ -151,9 +151,12 @@ def send_notification_to_author(sender, instance, created, **kwargs):
         profile, created = Profile.objects.get_or_create(user=post_author)
         post_title = instance.article.title
         post_slug = instance.article.slug
+        post_link = Posts.objects.get(title=post_title).get_absolute_url()  # Используйте get_absolute_url()
+        # post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
+        print(post_link)
 
         if profile.notifications:
-            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Ссылка: /post/{post_slug}/'
+            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Ссылка: {post_link}'
         else:
-            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Ссылка: /post/{post_slug}/'
+            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Ссылка: {post_link}'
         profile.save()

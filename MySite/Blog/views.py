@@ -306,6 +306,7 @@ def contact(request):
     return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
 
 
+# Отображение уведомлений
 def show_notifications(request):
     profile = Profile.objects.get(user=request.user)
     notifications = profile.notifications.split('\n') if profile.notifications else []
@@ -314,8 +315,12 @@ def show_notifications(request):
     for notification in notifications:
         if "Пост" in notification:
             post_title = notification.split('"')[1]
-            post_slug = Posts.objects.get(title=post_title).slug  # Подставьте имя вашей модели поста
-            processed_notifications.append((post_slug, notification))
+            try:
+                post = Posts.objects.get(title=post_title)
+                post_link = str(post.get_absolute_url())
+                processed_notifications.append((post_link, notification))
+            except Posts.DoesNotExist:
+                processed_notifications.append((None, notification))
         else:
             processed_notifications.append((None, notification))
 
