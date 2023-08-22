@@ -1,6 +1,6 @@
 <!-- notifications.html -->
 
-{% extends 'blog/base.html' %}
+{% extends "blog/base.html" %}
 
 {% block content %}
 
@@ -23,12 +23,12 @@
 
 
 <!-- Ссылка на уведомления с восклицательным знаком и ссылкой для очистки -->
-<a href="{% url 'show_notifications' %}" class="btn btn-info">
-    {% if profile.notifications %}
-        Мои уведомления <span class="badge badge-danger">!</span>
-    {% else %}
-        Мои уведомления
-    {% endif %}
-</a>
+<!--<a href="{% url 'show_notifications' %}" class="btn btn-info">-->
+<!--    {% if profile.notifications %}-->
+<!--        Мои уведомления <span class="badge badge-danger">!</span>-->
+<!--    {% else %}-->
+<!--        Мои уведомления-->
+<!--    {% endif %}-->
+
 <a href="{% url 'clear_notifications' %}" class="btn btn-danger ml-2">Очистить уведомления</a>
 {% endblock %}

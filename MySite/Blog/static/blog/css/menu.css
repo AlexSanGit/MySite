@@ -70,6 +70,20 @@ nav {
     color: #ff9900;
 }
 
+
+@keyframes blink {
+    0%, 100% {
+        color: red; /* Первый цвет */
+    }
+    50% {
+        color: green; /* Второй цвет */
+    }
+}
+/* Применение анимации к элементу */
+.notification-blink {
+    animation: blink 1s infinite; /* Мигать каждую секунду бесконечно */
+}
+
 /* Медиа-запрос для адаптивности */
 @media screen and (max-width: 768px) {
     .menu {

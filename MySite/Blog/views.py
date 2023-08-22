@@ -1,6 +1,7 @@
 import random
 from io import BytesIO
 
+from Blog.menu import DataMixin, menu
 from PIL import Image
 from django.conf import settings
 from django.contrib import messages
@@ -25,7 +26,6 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormVie
 from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
 from Blog.models import Posts, Category, CustomImage, Comments
-from Blog.utils import DataMixin, menu
 from users.models import Profile
 
 
@@ -219,6 +219,11 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_images'] = self.object.post_images.all()
+        return context
+
 
 class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Posts
@@ -324,7 +329,7 @@ def show_notifications(request):
         else:
             processed_notifications.append((None, notification))
 
-    return render(request, 'blog/notifications.html', {'notifications': processed_notifications})
+    return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu,})
 
 
 def clear_notifications(request):

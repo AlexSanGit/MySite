@@ -34,31 +34,10 @@
 </head>
 
 <body>
+
 <header>
     {% block main-menu %}
-    <nav>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <ul class="menu">
-            {% for m in menu %}
-            <li class="line"><a href="{% url m.url_name %}">{{m.title}}</a></li>
-            {% endfor %}
-
-            {% if request.user.is_authenticated %}
-            <li class="line"><a href="{% url 'profile' user.id %}">Мой профиль </a></li>
-
-            <li class="m-right"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
-            {% else %}
-            <li class="m-right"><a href="{% url 'register' %}">Регистрация</a> | <a
-                    href="{% url 'login' %}">Войти</a></li>
-            {% endif %}
-        </ul>
-
-
-    </nav>
+        {% include 'blog/main_menu.html' %}
     {% endblock %}
 </header>
 

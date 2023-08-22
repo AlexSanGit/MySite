@@ -1,5 +1,4 @@
-from Blog import views
-from django.urls import path, include
+from django.urls import path
 from Blog import views
 from Blog.views import *
 
