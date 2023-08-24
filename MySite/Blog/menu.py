@@ -10,11 +10,11 @@ menu = [
 ]
 
 
-def get_user_menu(request):
-    user_menu = menu.copy()
-    if not request.user.is_authenticated:
-        user_menu.pop(0)
-    return user_menu
+# def get_user_menu(request):
+#     user_menu = menu.copy()
+#     if not request.user.is_authenticated:
+#         user_menu.pop(1)
+#     return user_menu
 
 
 class DataMixin:
@@ -26,7 +26,7 @@ class DataMixin:
 
         user_menu = menu.copy()
         if not self.request.user.is_authenticated:  # если не авторизован то убрать из меню строку 1
-            user_menu.pop(0)
+            user_menu.pop(1)
 
         context['menu'] = user_menu
         context['cats'] = cats

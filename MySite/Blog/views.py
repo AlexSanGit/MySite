@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.forms import inlineformset_factory
 from django.http import request, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
@@ -194,23 +195,41 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     # fields = ['title', 'description', 'cat_post', 'images']
     success_url = reverse_lazy('home')
 
+    # Определите, какие поля требуется обработать в формсете изображений
+    PostImageFormSet = inlineformset_factory(Posts, CustomImage, fields=('image',), extra=1)
+
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
 
-        # Получение списка файлов
-        files = self.request.FILES.getlist('images')
+        formset = self.PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
+        new_images = self.request.FILES.getlist('images')
+        deleted_images_count = 0
 
-        # Удаление предыдущих изображений поста
-        for image in post.post_images.all():
-            image_path = image.image.path
-            default_storage.delete(image_path)
-        post.post_images.clear()
+        # Обработайте удаление изображений
+        for image in self.object.post_images.all():
+            delete_field_name = f"delete_image_{image.id}"
+            if self.request.POST.get(delete_field_name) == "True":
+                image.delete()
+                deleted_images_count += 1
 
-        for file in files:
-            CustomImage.objects.create(post=post, image=file)
+        existing_images_count = len(self.object.post_images.all()) - deleted_images_count
+        total_images_count = existing_images_count + len(new_images)
 
-        messages.success(self.request, 'Пост успешно обновлен.')
+        if total_images_count > 3:
+            messages.error(self.request, 'Максимальное количество изображений - 3.')
+            return self.form_invalid(form)
+        else:
+            # Обработайте формсет изображений
+            if formset.is_valid():
+                formset.save()
+
+            # Создание новых изображений
+            for file in new_images:
+                CustomImage.objects.create(post=post, image=file)
+
+            messages.success(self.request, 'Пост успешно обновлен.')
+
         return super().form_valid(form)
 
     def test_func(self):
@@ -242,25 +261,6 @@ class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-# # Функция, которая отправляет сообщение и уведомление автору поста при создании комментария
-# @receiver(post_save, sender=Comments)
-# def send_notification_to_author(sender, instance, created, **kwargs):
-#     if created:
-#         # Получаем автора поста
-#         post_author = instance.post.author
-#
-#         # Формируем URL для просмотра комментария
-#         current_site = get_current_site(request=None)
-#         comment_url = reverse('comment_detail', args=[instance.id])  # Здесь 'comment_detail' - это имя URL для просмотра комментария
-#
-#         # Формируем текст и html для письма
-#         subject = 'У вас новый комментарий к посту'
-#         message = f'Здравствуйте, {post_author.username}!\n\nУ вас новый комментарий к вашему посту "{instance.post.title}".\n\nВы можете просмотреть его по этой ссылке:\n{current_site.domain}{comment_url}'
-#         html_message = render_to_string('email/notification_email.html', {'post_author': post_author, 'comment': instance, 'comment_url': comment_url})
-#         plain_message = strip_tags(html_message)
-#
-#         # Отправляем уведомление
-#         send_mail(subject, plain_message, None, [post_author.email], html_message=html_message)
 def comment_detail_view(request, pk):
     comment = get_object_or_404(Comments, pk=pk)
     # Ваша логика для отображения деталей комментария здесь
@@ -268,47 +268,18 @@ def comment_detail_view(request, pk):
     return render(request, 'comment_detail.html', {'comment': comment})
 
 
-class RegisterUser(CreateView):
-    form_class = RegisterUserForm
-    template_name = 'blog/register.html'
-    success_url = reverse_lazy('home')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.save()
-        login(self.request, user)
-        return response
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Регистрация'
-        return context
-
-
-class LoginUser(LoginView):
-    form_class = LoginUserForm
-    template_name = 'blog/login.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Авторизация'
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('home')
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('login')
-
-
 def about(request):
-    return render(request, 'blog/about.html', {'menu': menu, 'title': 'О сайте'})
+    user_menu = menu.copy()
+    if not request.user.is_authenticated:
+        user_menu.pop(1)  # Индекс элемента "Добавить запись" в списке меню
+    return render(request, 'blog/about.html', {'menu': user_menu, 'title': 'О сайте'})
 
 
 def contact(request):
-    return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
+    user_menu = menu.copy()
+    if not request.user.is_authenticated:
+        user_menu.pop(1)  # Индекс элемента "Добавить запись" в списке меню
+    return render(request, 'blog/contact.html', {'menu': user_menu, 'title': 'Контакты'})
 
 
 # Отображение уведомлений
@@ -337,3 +308,38 @@ def clear_notifications(request):
     profile.notifications = ''
     profile.save()
     return redirect('show_notifications')
+
+
+# class RegisterUser(CreateView):
+#     form_class = RegisterUserForm
+#     template_name = 'blog/register.html'
+#     success_url = reverse_lazy('home')
+#
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         user = form.save()
+#         login(self.request, user)
+#         return response
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Регистрация'
+#         return context
+#
+#
+# class LoginUser(LoginView):
+#     form_class = LoginUserForm
+#     template_name = 'blog/login.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Авторизация'
+#         return context
+#
+#     def get_success_url(self):
+#         return reverse_lazy('home')
+#
+#
+# def logout_user(request):
+#     logout(request)
+#     return redirect('login')

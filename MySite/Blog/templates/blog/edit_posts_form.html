@@ -22,15 +22,95 @@
             {{ form|crispy }}
         </fieldset>
 
-        <div class="row">
+        <ul class="image-list">
             {% for image in post_images %}
-            <li class="image-post-detail"> <img src="{{ image.image.url }}" alt=""></img></li>
+            <li class="image-item">
+                <div class="image-container">
+                    <img src="{{ image.image.url }}" alt="" class="image-post-detail">
+                    <!-- Кнопка удаления с иконкой корзины -->
+                    <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">
+                        <i class="delete-image-icon fa fa-trash"></i> Удалить
+                    </button>
+                </div>
+
+                <input type="hidden" name="delete_image_{{ image.id }}" id="delete_image_{{ image.id }}" value="False">
+            </li>
             {% endfor %}
-        </div>
+        </ul>
+
 
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Сохранить</button>
         </div>
     </form>
 </div>
+
+
+<!-- Добавьте скрипт для обработки кнопок удаления -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-image-btn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const imageId = this.getAttribute("data-image-id");
+                const deleteField = document.getElementById(`delete_image_${imageId}`);
+                deleteField.value = "True";
+                this.parentElement.style.display = "none"; // Скрыть блок с изображением
+            });
+        });
+    });
+
+
+
+
+</script>
+
+<style>
+
+.image-list {
+    display: flex; /* Для отображения изображений в ряд */
+    list-style: none; /* Убирает стандартные маркеры списка */
+    padding: 0; /* Убирает отступы вокруг списка */
+}
+
+.image-item {
+    display: flex; /* Для выравнивания элементов внутри li по вертикали */
+    align-items: center; /* Выравнивание элементов по центру по вертикали */
+    margin-right: 10px; /* Расстояние между изображениями */
+}
+
+.image-container {
+    display: flex; /* Для выравнивания изображения и кнопки по вертикали */
+    flex-direction: column; /* Столбцовая раскладка для элементов */
+    align-items: center; /* Выравнивание элементов по центру по горизонтали */
+}
+
+.image-post-detail {
+    /* Ваши стили для изображения */
+    width: 100px;
+    height: auto;
+    border: 1px solid #ccc;
+    /* ... и так далее */
+}
+
+    .delete-image-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .delete-image-icon {
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+
+
+</style>
+
 {% endblock content %}
