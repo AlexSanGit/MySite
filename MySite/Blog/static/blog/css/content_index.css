@@ -1,0 +1,50 @@
+
+
+.content-index {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-index img {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.content-index h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.post-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.post-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.post-excerpt {
+  font-size: 14px;
+  color: #666;
+}
+
+.post-link {
+  text-decoration: none;
+  color: #3498db;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.post-link:hover {
+  color: #2980b9;
+}

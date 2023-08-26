@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, modelform_factory
 from django.http import request, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.template.loader import render_to_string
@@ -25,7 +25,7 @@ from django.utils.html import strip_tags
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
-from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
+from Blog.forms import CommentForm, AddPostForm
 from Blog.models import Posts, Category, CustomImage, Comments
 from users.models import Profile
 
@@ -193,7 +193,7 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = AddPostForm
     template_name = 'blog/edit_posts_form.html'
     # fields = ['title', 'description', 'cat_post', 'images']
-    success_url = reverse_lazy('home')
+
 
     # Определите, какие поля требуется обработать в формсете изображений
     PostImageFormSet = inlineformset_factory(Posts, CustomImage, fields=('image',), extra=1)
@@ -242,6 +242,18 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['post_images'] = self.object.post_images.all()
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+
+        # При редактировании поста удаляем поле "Новая категория"
+        if self.object:
+            del form.fields['new_category']
+
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy('post', kwargs={'post_slug': self.object.slug})  # Замените на имя вашего маршрута
 
 
 class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

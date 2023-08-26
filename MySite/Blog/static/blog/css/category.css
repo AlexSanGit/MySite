@@ -1,6 +1,27 @@
-.category {
-    color: white;
-    padding: 10px 10px;
-    margin-right: 20px;
+.categories {
+  background-color: #f7f7f7;
+  padding: 10px 0;
+  text-align: center;
+}
 
+.categories ul {
+  list-style: none;
+  padding: 0;
+}
+
+.categories li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.categories a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.categories a:hover {
+  color: #3498db;
 }

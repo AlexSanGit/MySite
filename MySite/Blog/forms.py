@@ -37,7 +37,7 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
-    new_category = forms.CharField(label='Новая подкатегория', max_length=100, required=False)
+    new_category = forms.CharField(label='Новая подкатегория', max_length=40, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -49,22 +49,6 @@ class AddPostForm(forms.ModelForm):
         # Получите список всех категорий с их деревовидной структурой
         categories_tree = self.get_categories_tree()
         self.fields['cat_post'].widget.choices = categories_tree
-
-    # def get_categories_tree(self):
-    #     categories_tree = []
-    #
-    #     # Получите все основные категории
-    #     main_categories = Category.objects.filter(parent=None)
-    #
-    #     # Переберите основные категории и для каждой создайте опцию с атрибутом optgroup
-    #     for main_category in main_categories:
-    #         # Создайте кортеж с именем категории и списком дочерних категорий
-    #         category_group = (
-    #             main_category.name,
-    #             [(child_category.id, child_category.name) for child_category in main_category.children.all()]
-    #         )
-    #         categories_tree.append(category_group)
-    #     return categories_tree
 
     def get_categories_tree(self):
         categories_tree = []
@@ -97,11 +81,11 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Posts
-        fields = ['title', 'description', 'images', 'cat_post', 'new_category']
-        widgets = {
-            'title': forms.TextInput(attrs={'cols': 60}),
-            'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
-        }
+        fields = ['title', 'description',  'cat_post', 'new_category', 'images']
+        # widgets = {
+        #     'title': forms.TextInput(attrs={'cols': 60}),
+        #     'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
+        # }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -121,3 +105,10 @@ class AddPostForm(forms.ModelForm):
             if Category.objects.filter(name=new_category).exists():
                 raise forms.ValidationError('Категория с таким именем уже существует.')
 
+
+# class EditPostForm(forms.ModelForm):
+#     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5, required=False)
+#
+#     class Meta:
+#         model = Posts
+#         fields = ['title', 'description', 'images', 'cat_post']

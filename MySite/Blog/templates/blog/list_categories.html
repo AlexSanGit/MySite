@@ -1,4 +1,5 @@
  {% for category in cats %}
+
     <li>
       <a href="{% url 'category' category.slug %}" {% if category.pk == cat_selected %} class="selected"{% endif %}>
         {{ category.name }}
@@ -22,6 +23,7 @@
         </ul>
       {% endif %}
     </li>
+
 
   {% endfor %}
 

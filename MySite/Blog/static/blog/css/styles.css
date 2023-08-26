@@ -5,7 +5,10 @@ html, body {
 	height: 100%;
 	width: 100%;
 	color: #444;
+    text-align: center; /* Добавьте это свойство для центрирования контента */
+
 }
+
 
 .image-post-detail img {
 	max-width: 150px;
@@ -15,11 +18,7 @@ html, body {
 	border: 10px
 }
 .content-post-detail{
-    padding: 10px 10px 10px 10px;
-
-}
-.content-index{
-    padding: 10px 10px 10px 10px;
+    padding: 10px;
 }
 
 a {

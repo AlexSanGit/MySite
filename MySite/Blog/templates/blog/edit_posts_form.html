@@ -14,13 +14,27 @@
 </ul>
 {% endif %}
 
-<div class="content-section">
+<div class="content-index">
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Редактирование</legend>
-            {{ form|crispy }}
-        </fieldset>
+    <div class="form-container">
+        <div class="form-field">
+            <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-field">
+            <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}:</label>
+            {{ form.description }}
+        </div>
+        <div class="form-field">
+            <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
+            {{ form.cat_post }}
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
+            {{ form.images }}
+        </div>
 
         <ul class="image-list">
             {% for image in post_images %}
@@ -37,7 +51,6 @@
             </li>
             {% endfor %}
         </ul>
-
 
         <div class="form-group">
             <button class="btn btn-outline-info" type="submit">Сохранить</button>
@@ -60,14 +73,9 @@
             });
         });
     });
-
-
-
-
 </script>
 
 <style>
-
 .image-list {
     display: flex; /* Для отображения изображений в ряд */
     list-style: none; /* Убирает стандартные маркеры списка */
@@ -108,9 +116,6 @@
         font-size: 14px;
         vertical-align: middle;
     }
-
-
-
 </style>
 
 {% endblock content %}

@@ -1,6 +1,5 @@
 {% extends 'blog/base.html' %}
 
-
 {% block content %}
 
 {% if messages %}
@@ -15,55 +14,59 @@
 </ul>
 {% endif %}
 
-<ul>
-    {% for p in posts %}
-    <li>
-        <div>
-            <p>Категория: {{p.cat_post}}</p>
-            <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
-            <p class="user-post"> Написал: {{p.author}}
-                <img class="rounded-circle mb-3" src="{{ p.author.profile.image.url }}"
-                     style="width: 25px;height: 25px;"
-                     alt="Avatar"/>
-            </p>
-            <h3>{{p.title}}</h3>
-        </div>
-        <table border=0 cellpadding="0" cellspacing="0">
-            <tr>
-                <th>
-                    <div class="row">
-                        {% for image in p.post_images.all %}
-                        <div>
-                            <p><img class="img-index" src="{{ image.image.url }}"
-                                    alt="Изображение"></p>
+<div class="content-index">
+    <ul >
+        {% for p in posts %}
+        <li class="content-index">
+            <div>
+                <p>Категория: {{p.cat_post}}</p>
+                <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+                <p class="user-post"> Написал: {{p.author}}
+                    <img class="rounded-circle mb-3" src="{{ p.author.profile.image.url }}"
+                         style="width: 25px;height: 25px;"
+                         alt="Avatar"/>
+                </p>
+                <h3>{{p.title}}</h3>
+            </div>
+
+            <table border=0 cellpadding="0" cellspacing="0">
+                <tr>
+                    <th>
+                        <div class="row">
+                            {% for image in p.post_images.all %}
+                            <div>
+                                <p><img class="img-index" src="{{ image.image.url }}"
+                                        alt="Изображение"></p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                </th>
-            </tr>
+                    </th>
+                </tr>
 
-            <tr>
-                <th>
+                <tr>
+                    <th>
 
-                    {% autoescape on %}
-                    {{p.description|linebreaks|truncatewords:50}}
-                    {% endautoescape %}
+                        {% autoescape on %}
+                        {{p.description|linebreaks|truncatewords:50}}
+                        {% endautoescape %}
 
-                    <p>Коментариев: ({{p.comments_posts.all.count}})</p>
-                    <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
+                        <p>Коментариев: ({{p.comments_posts.all.count}})</p>
+                        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
 
-                    <div class="clear"></div>
-                </th>
-            </tr>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
 
 
-        </table>
-        <hr width=50% color="black" align="left">
-        {% endfor %}
-        {% endblock %}
-    </li>
+</table>
+
+{% endfor %}
+{% endblock %}
+</li>
 
 </ul>
+</div>
+
 
 <script>
   setTimeout(function() {
@@ -71,6 +74,7 @@
       message.remove();
     });
   }, 3000);
+
 </script>
 
 
