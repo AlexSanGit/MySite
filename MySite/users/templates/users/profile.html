@@ -18,18 +18,18 @@
 </ul>
 {% endif %}
 <!-- Ссылка на уведомления с восклицательным знаком -->
-<a href="{% url 'show_notifications' %}" class="btn btn-info">
-    {% if profile.notifications %}
-    Мои уведомления <span class="badge badge-danger">!</span>
-    {% else %}
-    Мои уведомления
-    {% endif %}
-</a>
 
-<table border=0 cellpadding="0" cellspacing="0">
-    <h2 class="border-bottom mb-4">Ваш профиль</h2>
-    <tr>
-        <th>
+<!--<a href="{% url 'show_notifications' %}" class="btn btn-info">-->
+<!--    {% if profile.notifications %}-->
+<!--    Мои уведомления <span class="badge badge-danger">!</span>-->
+<!--    {% else %}-->
+<!--    Мои уведомления-->
+<!--    {% endif %}-->
+<!--</a>-->
+
+<div class="content-index">
+    <h3 class="bottom mb-4">Ваш профиль</h3>
+
             <div class="content-section">
 
                 <div class="media">
@@ -72,8 +72,6 @@
 
 
             </div>
-        </th>
-    </tr>
-</table>
+</div>
 
 {% endblock content %}

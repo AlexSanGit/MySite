@@ -1,0 +1,34 @@
+.list-pages {
+  text-align: center; /* Выравнивание по центру */
+  margin-top: 20px; /* Отступ сверху */
+}
+
+.list-pages ul {
+  list-style: none; /* Убирает маркеры списка */
+  padding: 0;
+}
+
+.list-pages li {
+  display: inline-block; /* Элементы в строку */
+  margin: 0 5px; /* Отступы между элементами */
+  font-size: 16px;
+}
+
+.list-pages a,
+.list-pages .page-num-selected {
+  color: #333; /* Цвет текста */
+  text-decoration: none; /* Убирает подчеркивание */
+  padding: 5px 15px; /* Внутренние отступы */
+  border: 1px solid #ccc; /* Рамка вокруг элементов */
+  border-radius: 20%; /* Скругление углов */
+}
+
+.list-pages .page-num-selected {
+  background-color: #333; /* Цвет фона для выбранной страницы */
+  color: #fff; /* Цвет текста для выбранной страницы */
+  border-color: #333; /* Цвет рамки для выбранной страницы */
+}
+
+.list-pages a:hover {
+  background-color: #f2f2f2; /* Цвет фона при наведении */
+}

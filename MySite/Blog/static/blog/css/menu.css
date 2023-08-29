@@ -4,14 +4,14 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-}
-
 header {
     background-color: #333;
     color: white;
-    padding: 10px 0;
+    width: 100%;
+    padding-top: 10px;
+    position: fixed; /* Закрепляет меню на экране */
+    margin: 0 auto;
+    z-index: 100; /* Определяет позиционирование меню по z-индексу */
 }
 
 nav {
@@ -27,9 +27,11 @@ nav {
     display: none;
     flex-direction: column;
     cursor: pointer;
+    padding-top: 10px;
 }
 
 .bar {
+padding-top: 0px;
     width: 25px;
     height: 3px;
     background-color: white;
@@ -37,9 +39,18 @@ nav {
 }
 
 .menu {
-    display: flex;
-    flex-direction: row;
-    list-style: none;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  position: fixed; /* Закрепляет меню на экране */
+  top: 0; /* Прикрепляет меню к верху экрана */
+  width: 100%; /* Занимает всю ширину экрана */
+  background-color: #333; /* Цвет фона меню */
+  color: #fff; /* Цвет текста */
+  padding: 10px 0; /* Отступы внутри меню */
+  padding-left: 30px; /* Отступы внутри меню */
+  z-index: 1000; /* Определяет позиционирование меню по z-индексу */
+  left: 0;
 }
 
 .line {
@@ -47,17 +58,14 @@ nav {
 
 }
 
-
 .menu li:last-child {
     margin-right: 0;
 }
 
 .m-right{
     margin-right: 100;
-
     color: green;
 }
-
 
 .menu a {
     text-decoration: none;
@@ -88,25 +96,32 @@ nav {
 @media screen and (max-width: 768px) {
     .menu {
         display: none;
+        position: absolute;
         flex-direction: column;
         background-color: #333;
-        position: absolute;
-        top: 60px;
+        top: 45px;
         left: 0;
         width: 100%;
+        padding-left: 0px; /* Отступы внутри меню */
     }
 
     .menu.active {
         display: flex;
+
     }
 
     .menu li {
         margin: 0;
         text-align: center;
         padding: 10px 0;
+
     }
 
     .menu-icon {
         display: flex;
+        padding-bottom: 10px; /* Отступы внутри меню */
+        padding-top: 0px; /* Отступы внутри меню */
+
+
     }
 }

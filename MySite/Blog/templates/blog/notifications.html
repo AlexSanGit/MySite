@@ -3,6 +3,7 @@
 {% extends "blog/base.html" %}
 
 {% block content %}
+<div class="content-index">
 
     <h1>Уведомления</h1>
     {% if notifications %}
@@ -31,4 +32,6 @@
 <!--    {% endif %}-->
 
 <a href="{% url 'clear_notifications' %}" class="btn btn-danger ml-2">Очистить уведомления</a>
+
 {% endblock %}
+    </div>

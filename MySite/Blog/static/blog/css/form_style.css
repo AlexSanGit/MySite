@@ -1,7 +1,7 @@
 /* Общие стили для формы */
 .form-container {
-  width: 50%;
-  margin: 20px auto;
+  width: 100%;
+
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -12,7 +12,7 @@
 .form-title {
   text-align: center;
   font-size: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   margin: 0px auto;
 }
 
@@ -87,4 +87,46 @@
 /* Изменение стиля кнопки при наведении */
 .button:hover {
   background-color: #2980b9;
+}
+/* Стили для обычного состояния */
+.comments-form {
+    width: 100%; /* Занимает 100% ширины контейнера */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
+    font-size: 16px;
+}
+
+.comments-form2 {
+  padding: 2px 5px;
+  text-align: left;
+}
+
+.text-comments{
+  color: #187a0c;
+  text-align: center;
+}
+
+.comments-form h5 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.user-comments {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.comments-text {
+  margin-bottom: 10px;
+  margin-left: 30px;
+  word-wrap: break-word; /* или word-break: break-all; */
+}
+
+/* Стиль для случая, когда нет комментариев */
+.no-comments {
+  font-style: italic;
+  color: #888;
 }

@@ -1,62 +1,42 @@
-html, body {
+body {
 	font-family: 'Arial';
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%;
-	color: #444;
     text-align: center; /* Добавьте это свойство для центрирования контента */
-
+    background-color: #c3d5b1;
 }
 
-
 .image-post-detail img {
-	max-width: 150px;
+	max-width: 20%;
 	height: auto;
-	float: left;
-	padding: 0 10px 10px 0;
+	padding-left: 20px;
+	padding-bottom: 20px;
 	border: 10px
 }
 .content-post-detail{
     padding: 10px;
 }
 
+.content-index2 p{
+margin: 0;
+}
+
 a {
 	color: #0059b2;
 	text-decoration: none;
 }
+
 a:hover {
 	color: #CC0000;
 	text-decoration: underline;
 }
-
-img {max-width: 600px; height: auto;}
-
 img.img-index{
-	max-width: 150px;
+	max-width: 20%;
 	height: auto;
-	float: left;
-	padding: 0 10px 10px 0;
-}
-
-img.img-article-left.thumb {
-	max-width: 150px;
-	height: auto;
-}
-
-.comments-form {
-  width: 20em;
-  text-align: left;
-}
-
-.comments-form2 {
-  padding: 2px 5px;
-  text-align: left;
-}
-
-.text-comments{
-  color: #187a0c;
-  text-align: center;
+	float: center;
+	padding-left: 10px;
 }
 
 .content_2d {
@@ -64,6 +44,7 @@ img.img-article-left.thumb {
   text-align: start, top;
   color: #CC0000;
 }
+
 div.article-panel {
     background: #eee;
     padding: 5px 10px 5px 10px;
@@ -76,6 +57,16 @@ div.article-panel {
 	min-height: 70%;
 	height: 70%;
 }
+
+.avatar{
+    width: 20px; /* Установите желаемую ширину */
+    height: 20px; /* Установите желаемую высоту */
+    border-radius: 50%; /* Делает аватарку круглой */
+    overflow: hidden; /* Обрезает содержимое за пределами области */
+    position: relative; /* Необходимо для позиционирования дочерних элементов */
+
+}
+
 .table-page {
 	width: 100%;
 	height: 100%;
@@ -94,19 +85,11 @@ img.img-article {
     font-size: 30px;
 }
 
-.post-description{
-    font-size: 20px;
-    text-decoration: none;
-}
+
 .left-chapters ul li.selected {
     color: #000000;
      }
 
-.form-label {
-    display: inline-block;
-    min-width: 150px;
-    vertical-align: top;
-}
 
 .messages li {
     animation: fade-out 5s forwards;

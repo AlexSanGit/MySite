@@ -6,6 +6,7 @@
             <div class="bar"></div>
             <div class="bar"></div>
         </div>
+
         <ul class="menu">
             {% for m in menu %}
             <li class="line"><a href="{% url m.url_name %}">{{m.title}}</a></li>
@@ -23,5 +24,6 @@
                     href="{% url 'login' %}">Войти</a></li>
             {% endif %}
         </ul>
+
     </nav>
     {% endblock %}

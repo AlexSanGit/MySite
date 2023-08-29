@@ -9,6 +9,7 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link type="text/css" href="{% static 'blog/css/menu.css' %}" rel="stylesheet"/>
+    <link type="text/css" href="{% static 'blog/css/pagination.css' %}" rel="stylesheet"/>
     <link type="text/css" href="{% static 'blog/css/form_style.css' %}" rel="stylesheet"/>
     <link type="text/css" href="{% static 'blog/css/content_index.css' %}" rel="stylesheet"/>
     <script src="{% static 'blog/js/menu.js' %}"></script>
@@ -52,7 +53,7 @@
         <div class="categories">
             <ul>
 
-                <li><a href="{% url 'home' %}">Все категории</a></li>
+                <li><a href="{% url 'home' %}">На главную </a></li>
                 <!-- <li><a href="{% url 'taxihome' %}">Заказ такси</a></li>-->
 
                 {% show_categories '-name' cat_selected%}
@@ -65,6 +66,7 @@
 
             <!-- Блок контента -->
 <!-- <td valign="top">-->
+
                 {% block content %}
 
                 {% endblock %}
@@ -98,6 +100,8 @@
                 </ul>
             </nav>
             {% endif %}
+
+
             </div>
             <!-- Конец блока контента -->
 

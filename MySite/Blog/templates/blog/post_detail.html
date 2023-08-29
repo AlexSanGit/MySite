@@ -17,36 +17,20 @@
 <div class="content-index">
     <p>Категория: {{post.cat_post}}</p>
     <div class="title-detail-post">
-
         {{post.title}}
-
+    </div>
+    <div class="image-post-detail">
+        <div class="row">
+            {% for image in post.post_images.all %}
+            <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
+            {% endfor %}
+        </div>
     </div>
 
-
-    <table border=0 cellpadding="0" cellspacing="0">
-        <tr>
-            <th>
-                <div class="image-post-detail">
-                    <div class="row">
-                        {% for image in post.post_images.all %}
-                        <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
-                        {% endfor %}
-                    </div>
-                </div>
-
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <div class="post-description"> {{post.description|linebreaks}}</div>
-
-            </th>
-        </tr>
-
-    </table>
+    <div class="post-description"> {{post.description|linebreaks}}</div>
 
     <p class="user-post"> Написал: {{post.author}}
-        <img class="rounded-circle mb-3" src="{{ post.author.profile.image.url }}" style="width: 50px;height: 50px;"
+        <img class="avatar" src="{{ post.author.profile.image.url }}" style="width: 50px;height: 50px;"
              alt="Avatar"/>
     </p>
 
@@ -57,39 +41,41 @@
     {% endif %}
     <hr>
     <div class="comments-form">
-
         <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
+
         {% for comments in post.comments_posts.all %}
-        <div class="text-comments">
-            <p class="user-comments">{{ comments.author }} написал {{ comments.created }}:</p>
-            <p>{{ comments.text }} </p>
+        <p class="user-comments">{{ comments.author }} написал {{ comments.created }}:</p>
+        <p class="comments-text">{{ comments.text }} </p>
 
-        </div>
         {% empty %}
-        <p>Пока нет коментариев</p>
+        <p class="no-comments">Пока нет коментариев</p>
         {% endfor %}
-
 
         {% if user.is_authenticated %}
         <!-- Код элементов, которые нужно показать только авторизованным пользователям -->
         <form action="" id="add_form" method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="form-field">
+                <label class="form-label" for="{{ form.text.id_for_label }}">{{ form.text.label }}:</label>
+                {{ form.text }}
+            </div>
             <button class="btn btn-secondary btn-sm mt-1 mb-1" type="submit">Добавить</button>
         </form>
 
         {% else %}
         <!-- Код элементов, которые нужно скрыть для неавторизованных пользователей -->
-        <p>Чтобы оставить коментарий, войдите или зарегистрируйтесь.</p>
+        <p class="no-comments">Чтобы оставить коментарий, войдите или зарегистрируйтесь.</p>
         {% endif %}
 
     </div>
 </div>
+
 <!-- Модальное окно -->
 <div id="myModal" class="modal">
 
     <span class="close" onclick="closeModal()">&times;</span>
     <img id="img01" class="modal-content">
+
 </div>
 
 
