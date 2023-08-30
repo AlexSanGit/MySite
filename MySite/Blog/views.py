@@ -59,7 +59,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
     success_msg = 'Коментарий создан'
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('home')
+        return reverse('post', kwargs={'post_slug': self.object.article.slug})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -74,11 +74,6 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context['title'] = str(Posts.title)
-    #     c_def = self.get_user_context(title='Страница поста')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

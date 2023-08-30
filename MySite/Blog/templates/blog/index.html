@@ -19,13 +19,13 @@
         {% for p in posts %}
         <li class="content-index2">
             <div>
-                <p>Категория: {{p.cat_post}}</p>
-                <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i"}}</p>
+                <p>Оборудование: <a class="index-title" > {{p.cat_post}} </a> </p>
+                <p>Дата: {{p.time_update|date:"d-m-Y H:i"}}</p>
                 <p class="user-post"> Написал: {{p.author}}
                     <img class="avatar" src="{{ p.author.profile.image.url }}"
                          alt="Avatar"/>
                 </p>
-                <p class="index-title">{{p.title}}</p>
+                <p class="index-title"> {{p.title}}</p>
 
             </div>
             <div class="row">

@@ -9,7 +9,7 @@ body {
 }
 
 .image-post-detail img {
-	max-width: 20%;
+	max-width: 10%;
 	height: auto;
 	padding-left: 20px;
 	padding-bottom: 20px;
@@ -33,10 +33,11 @@ a:hover {
 	text-decoration: underline;
 }
 img.img-index{
-	max-width: 20%;
+	max-width: 10%;
 	height: auto;
 	float: center;
 	padding-left: 10px;
+	padding-bottom: 10px;
 }
 
 .content_2d {
@@ -95,6 +96,28 @@ img.img-article {
     animation: fade-out 5s forwards;
     opacity: 1;
 }
+.messages{
+  text-align: center;
+  width:30%;
+  display: block;
+  padding: 10px;
+  margin: 0 auto;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 16px;
+  opacity: 0; /* Начальное состояние: невидимое */
+  animation: fade-in-out 3s ease-in-out forwards; /* Применение анимации */
+
+}
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0; /* Начальное и конечное состояние: невидимое */
+  }
+  10%, 90% {
+    opacity: 1; /* Состояние видимости */
+  }
+}
 
 @keyframes fade-out {
     0% {
@@ -108,3 +131,51 @@ img.img-article {
         display: none;
     }
 }
+.content-profile {
+  width: 30%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+@media screen and (max-width: 768px) {
+.content-profile {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.content-addpage{
+  width: 30%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+@media screen and (max-width: 768px) {
+.content-addpage{
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+

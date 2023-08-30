@@ -37,7 +37,7 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
-    new_category = forms.CharField(label='Новая подкатегория', max_length=40, required=False)
+    new_category = forms.CharField(label='Подкатегория', max_length=40, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -95,15 +95,15 @@ class AddPostForm(forms.ModelForm):
         # print(main_category)
 
         if main_category.parent is not None and new_category:
-            raise forms.ValidationError('Выберите основную категорию')
+            raise forms.ValidationError('Выберите основную категорию!')
 
         if not cat_post and not new_category:
-            raise forms.ValidationError('Выберите категорию или введите новую')
+            raise forms.ValidationError('Выберите категорию или введите новую!')
 
         if new_category:
             # Проверка уникальности имени категории
             if Category.objects.filter(name=new_category).exists():
-                raise forms.ValidationError('Категория с таким именем уже существует.')
+                raise forms.ValidationError('Категория с таким именем уже существует!')
 
 
 # class EditPostForm(forms.ModelForm):

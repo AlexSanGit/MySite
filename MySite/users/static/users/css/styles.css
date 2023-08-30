@@ -1,119 +1,25 @@
-html, body {
-	font-family: 'Arial';
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	width: 100%;
-	color: #444;
+
+.login {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #c3d5b1;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  text-align:center;
 }
 
-.account-img {
-        width: 150px; /* Задайте желаемую ширину изображения */
-        height: auto; /* Задайте желаемую высоту изображения */
-        border-radius: 50%; /* Устанавливаем радиус круглой формы (равный половине ширины или высоты) */
-    }
-
-a {
-	color: #0059b2;
-	text-decoration: none;
-}
-a:hover {
-	color: #CC0000;
-	text-decoration: underline;
+.login:hover {
+  background-color: #2980b9;
 }
 
-img {max-width: 600px; height: auto;}
-
-img.img-article-left {
-	max-width: 300px;
-	height: auto;
-	float: left;
-	padding: 0 10px 10px 0;
-}
-
-img.img-article-left.thumb {
-	max-width: 150px;
-	height: auto;
-}
-
-.comments-form {
-  width: 20em;
-  text-align: left;
-}
-
-.comments-form2 {
-  padding: 2px 5px;
-  text-align: left;
-}
-
-.text-comments{
-  color: #187a0c;
-  text-align: center;
-}
-
-.content_2d {
-  width: 20em;
-  text-align: start, top;
-  color: #CC0000;
-}
-div.article-panel {
-    background: #eee;
-    padding: 5px 10px 5px 10px;
-    box-sizing: border-box;
-    overflow: hidden;
-    color: #555;
-}
-.table-content {
-	width: 100%;
-	min-height: 70%;
-	height: 70%;
-}
-.table-page {
-	width: 100%;
-	height: 100%;
-	vertical-align: top;
-}
-img.img-article {
-	max-width: 300px;
-	height: auto;
-	float: left;
+.btn btn-outline-info{
+     text-align:center;
 
 }
 
-.title-detail-post{
-    font-family: 'Arial';
-    text-align: center;
-    font-size: 30px;
-}
 
-.post-description{
-    font-size: 20px;
-    text-decoration: none;
-}
-.left-chapters ul li.selected {
-    color: #000000;
-     }
 
-.form-label {
-    display: inline-block;
-    min-width: 150px;
-    vertical-align: top;
-}
-
-.messages li {
-    animation: fade-out 3s forwards;
-    opacity: 1;
-}
-
-@keyframes fade-out {
-    0% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        display: none;
-    }
-}

@@ -1,6 +1,6 @@
 
 .content-index {
-  width: 100%;
+  width: 70%;
   border: 1px solid #ddd;
   background-color: #c3d5b1;
   padding: 10px;
@@ -9,10 +9,25 @@
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
+
+@media screen and (max-width: 768px) {
+.content-index {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
 .content-index ul{
    list-style-type: none; /* Убирает маркеры списка */
    margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
 }
+
 
 .user-post{
     margin-bottom:5px;
@@ -24,7 +39,6 @@
     margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
     text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
     overflow: hidden; /* Скрывает текст, который не помещается */
-
 }
 
 .content-index2 {
@@ -67,3 +81,30 @@
 .post-link:hover {
   color: #2980b9;
 }
+
+.content-login {
+  width: 30%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align:center;
+}
+
+@media screen and (max-width: 768px) {
+.content-login {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #c3d5b1;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+

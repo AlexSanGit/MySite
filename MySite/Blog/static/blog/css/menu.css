@@ -18,7 +18,7 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: left;
-    max-width: 1200px;
+
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -48,7 +48,8 @@ padding-top: 0px;
   background-color: #333; /* Цвет фона меню */
   color: #fff; /* Цвет текста */
   padding: 10px 0; /* Отступы внутри меню */
-  padding-left: 30px; /* Отступы внутри меню */
+  padding-left: 25%; /* Отступы внутри меню */
+  align-items: center;
   z-index: 1000; /* Определяет позиционирование меню по z-индексу */
   left: 0;
 }

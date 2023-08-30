@@ -13,12 +13,12 @@
     </li>
     {% endfor %}
 </ul>
-{% endif %}
 
-    <h2>Вы вышли из своей учетной записи</h2>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            <a href="{% url 'login' %}">Войти</a>
-        </small>
-    </div>
+{% endif %}
+<div class="content-login">
+    <h3>Вы вышли из своей учетной записи</h3>
+     <hr>
+    <a class="btn btn-outline-info" href="{% url 'login' %}"> Войти</a>
+
+</div>
 {% endblock content %}

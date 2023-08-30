@@ -44,7 +44,7 @@
         <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
 
         {% for comments in post.comments_posts.all %}
-        <p class="user-comments">{{ comments.author }} написал {{ comments.created }}:</p>
+        <p class="user-comments">{{ comments.author }} написал {{ comments.created }}</p>
         <p class="comments-text">{{ comments.text }} </p>
 
         {% empty %}

@@ -11,8 +11,7 @@
 /* Стили для заголовка формы */
 .form-title {
   text-align: center;
-  font-size: 30px;
-  margin-bottom: 10px;
+  font-size: 20px;
   margin: 0px auto;
 }
 
@@ -63,10 +62,16 @@
   background-color: white;
 }
 
-/* Стили для ошибок валидации */
-.form-error {
-  color: #ff0000;
-  margin-top: 5px;
+.form-error{
+  list-style: none; /* Убирает маркеры списка */
+  margin: 0; /* Обнуляет внешние отступы */
+  padding: 0; /* Обнуляет внутренние отступы */
+  color: red; /* Цвет текста ошибок */
+  text-align:center;
+  font-size:20px;
+}
+.form-error li {
+list-style: none; /* Убирает маркеры списка */
 }
 
 /* Основные стили для кнопки */
@@ -96,6 +101,17 @@
     border-radius: 5px;
     box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
     font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+.comments-form {
+    width: 100%; /* Занимает 100% ширины контейнера */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
+    font-size: 16px;
+}
 }
 
 .comments-form2 {
