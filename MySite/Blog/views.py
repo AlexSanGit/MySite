@@ -89,15 +89,29 @@ class CategoryPosts(DataMixin, ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
 
+    # def get_queryset(self):
+    #     category_slug = self.kwargs['cat_slug']
+    #     # Get the child category using the slug from the URL
+    #     child_category = Category.objects.get(slug=category_slug)
+    #
+    #     # If the selected category is a parent category, get all posts for its descendants
+    #     if not child_category.is_leaf_node():
+    #         return Posts.objects.filter(
+    #             Q(cat_post__in=child_category.get_descendants(include_self=True)),
+    #             is_published=True)
+    #
+    #     # If the selected category is a leaf node (a child category), get posts for the specific category only
+    #     return Posts.objects.filter(cat_post=child_category, is_published=True)
     def get_queryset(self):
         category_slug = self.kwargs['cat_slug']
+
         # Get the child category using the slug from the URL
         child_category = Category.objects.get(slug=category_slug)
 
         # If the selected category is a parent category, get all posts for its descendants
-        if not child_category.is_leaf_node():
+        if child_category.parent_id is None:
             return Posts.objects.filter(
-                Q(cat_post__in=child_category.get_descendants(include_self=True)),
+                Q(cat_post__parent_id=child_category.id) | Q(cat_post=child_category),
                 is_published=True)
 
         # If the selected category is a leaf node (a child category), get posts for the specific category only
@@ -106,7 +120,7 @@ class CategoryPosts(DataMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
-        c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
+        c_def = self.get_user_context(title='Категория - ' + str(c.name))
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -148,17 +162,23 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 obj.cat_post = category
 
             # Проверка, что новая категория не является родителем основной категории
-            # if main_category is not None and main_category.parent != category:
-            if main_category is not None:
-                # Установка основной категории в качестве родителя для новой категории
-                category.parent = main_category
-                category.save()
+            if new_category and main_category is not None:
+                if category.is_descendant_of(main_category):
+                    messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
+                else:
+                    category.parent = main_category
+                    category.save()
+                # # Попытка установить основную категорию в качестве родителя для новой категории
+                # try:
+                #     category.parent = main_category
+                #     category.save()
+                # except Exception as e:
+                #     # Обработка возможных ошибок при установке родителя
+                #     messages.error(self.request, 'Ошибка при установке родителя для новой категории.')
+                #     print(e)
             else:
                 # Вывод сообщения об ошибке
                 messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
-
-            # Если есть основная категория, устанавливаем ее в качестве родительской для новой категории
-            # category.parent = main_category
 
         try:
             obj.save()
@@ -166,6 +186,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 CustomImage.objects.create(post=obj, image=file)
 
         except ValidationError as e:
+            print(e)
             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
             if 'slug' in e.error_dict:
                 slug = f"{slug}-{random.randint(1, 1000)}"

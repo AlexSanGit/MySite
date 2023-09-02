@@ -19,7 +19,15 @@
         {% for p in posts %}
         <li class="content-index2">
             <div>
-                <p>Оборудование: <a class="index-title" > {{p.cat_post}} </a> </p>
+                <!--                <p>Оборудование: <a class="index-title" > {{p.cat_post}} </a> </p>-->
+                <p>Оборудование:
+                    {% if p.cat_post.parent %}
+                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.parent.slug %}">
+                        {{p.cat_post.parent.name }}</a> -
+                    {% endif %}
+                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.slug %}">
+                        {{ p.cat_post.name}}</a>
+
                 <p>Дата: {{p.time_update|date:"d-m-Y H:i"}}</p>
                 <p class="user-post"> Написал: {{p.author}}
                     <img class="avatar" src="{{ p.author.profile.image.url }}"
@@ -34,7 +42,7 @@
                      alt="Изображение">
                 {% endfor %}
             </div>
-                <p class="post-description">{{p.description}}</p>
+            <p class="post-description">{{p.description}}</p>
 
             <p>Коментариев: ({{p.comments_posts.all.count}})</p>
             <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
@@ -55,6 +63,7 @@
       message.remove();
     });
   }, 3000);
+
 
 
 

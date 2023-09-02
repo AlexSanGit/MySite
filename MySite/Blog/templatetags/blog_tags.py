@@ -7,7 +7,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('blog/list_categories.html')
-def show_categories(sort=None, cat_selected=0):
+def show_categories(sort=None):
     if not sort:
         top_categories = Category.objects.filter(parent__isnull=True)
     else:
@@ -22,7 +22,7 @@ def show_categories(sort=None, cat_selected=0):
     for category in top_categories:
         category.child_categories = get_child_categories(category)
 
-    return {"cats": top_categories, "cat_selected": cat_selected}
+    return {"cats": top_categories}
 
 
 
