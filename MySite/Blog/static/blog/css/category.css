@@ -26,3 +26,7 @@
 .categories a:hover {
   color: #3498db;
 }
+
+.children-list {
+    display: none;
+}

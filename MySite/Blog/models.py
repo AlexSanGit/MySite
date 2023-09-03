@@ -30,8 +30,8 @@ class Posts(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     cat_post = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True, verbose_name="Оборудование")
     city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
-    # images = models.ManyToManyField(CustomImage, related_name='posts', blank=True)
-    # images = models.ManyToManyField(CustomImage, blank=True)
+    time_zayavki = models.TimeField(verbose_name="Время заявки", null=True)
+    time_glybinie = models.TimeField(verbose_name="Глубиные", null=True)
 
     def __str__(self):
         return self.title

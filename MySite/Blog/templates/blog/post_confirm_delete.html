@@ -3,7 +3,7 @@
 {% load custom_tags %}
 
 {% block content %}
-
+<div class="content-index">
 
   <h2>Удаление поста</h2>
   <p>Вы действительно хотите удалить пост? "{{ post.title }}"?</p>
@@ -12,5 +12,5 @@
     <button type="submit" class="btn btn-danger">Удалить</button>
     <a href="{% url 'home' %}" class="btn btn-secondary">Отменить</a>
   </form>
-
+</div>
 {% endblock %}

@@ -25,10 +25,28 @@
 .form-field {
   width: 100%;
   padding: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
+  flex: 1; /* Равномерное распределение ширины между полями */
+  margin-right: 10px; /* Отступ между полями (по вашему выбору) */
+}
+.form-field-time{
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex; /* Строки будут располагаться в одну линию */
+  font-size: 14px;
+
+}
+.form-column {
+  flex: 1; /* Равномерное распределение ширины между столбцами */
+  margin-right: 10px; /* Отступ между столбцами (по вашему выбору) */
+}
+
+.form-row {
+  display: flex; /* Строки будут располагаться в одну линию */
+  justify-content: space-between; /* Размещение полей с пространством между ними */
 }
 /* Стили для текстовой области ввода */
 .form-field textarea {

@@ -1,27 +1,13 @@
 import random
-from io import BytesIO
-
 from Blog.menu import DataMixin, menu
-from PIL import Image
-from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.mail import send_mail
 from django.db.models import Q
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.forms import inlineformset_factory, modelform_factory
-from django.http import request, Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
-from django.utils.html import strip_tags
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
@@ -135,6 +121,8 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # obj.save()
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
+        obj.time_zayavki = form.cleaned_data['time_zayavki']
+        obj.time_glybinie = form.cleaned_data['time_glybinie']
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -147,7 +135,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
         new_category = form.cleaned_data.get('new_category')
         main_category = form.cleaned_data.get('cat_post')
-        print(main_category, new_category)
+        # print(main_category, new_category)
 
         if new_category:
             # Получение объекта основной категории
@@ -166,16 +154,13 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 if category.is_descendant_of(main_category):
                     messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
                 else:
-                    category.parent = main_category
-                    category.save()
-                # # Попытка установить основную категорию в качестве родителя для новой категории
-                # try:
-                #     category.parent = main_category
-                #     category.save()
-                # except Exception as e:
-                #     # Обработка возможных ошибок при установке родителя
-                #     messages.error(self.request, 'Ошибка при установке родителя для новой категории.')
-                #     print(e)
+                    try:
+                        category.parent = main_category
+                        category.save()
+                    except Exception as e:
+                        # Обработка возможных ошибок при установке родителя
+                        messages.error(self.request, 'Ошибка при установке родителя для новой категории.')
+
             else:
                 # Вывод сообщения об ошибке
                 messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
@@ -209,18 +194,23 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = AddPostForm
     template_name = 'blog/edit_posts_form.html'
     # fields = ['title', 'description', 'cat_post', 'images']
-
-
     # Определите, какие поля требуется обработать в формсете изображений
     PostImageFormSet = inlineformset_factory(Posts, CustomImage, fields=('image',), extra=1)
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
-
         formset = self.PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
         new_images = self.request.FILES.getlist('images')
         deleted_images_count = 0
+        print(post.author)
+        # Получаем значения времени из POST-запроса
+        time_zayavki = self.request.POST.get('time_zayavki')
+        time_glybinie = self.request.POST.get('time_glybinie')
+
+        # Присваиваем значения времени посту
+        post.time_zayavki = time_zayavki
+        post.time_glybinie = time_glybinie
 
         # Обработайте удаление изображений
         for image in self.object.post_images.all():
@@ -243,7 +233,6 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             # Создание новых изображений
             for file in new_images:
                 CustomImage.objects.create(post=post, image=file)
-
             messages.success(self.request, 'Пост успешно обновлен.')
 
         return super().form_valid(form)

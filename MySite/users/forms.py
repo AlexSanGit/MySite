@@ -21,7 +21,7 @@ class ImagePreviewClearableFileInput(forms.ClearableFileInput):
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-    city = forms.ChoiceField(choices=CITY_CHOICES)
+    city = forms.ChoiceField(choices=CITY_CHOICES, label='Участок')
 
     class Meta:
         model = User
@@ -36,11 +36,12 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
-    image = forms.ImageField(label='Фото', widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
+    city = forms.ChoiceField(choices=CITY_CHOICES, label='Участок')
+    # is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
+    image = forms.ImageField(label='Фото', required=False, widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
 
     class Meta:
         model = Profile
-        fields = ['is_seller', 'city', 'image']
+        fields = ['city', 'image']
 
 

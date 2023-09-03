@@ -28,20 +28,46 @@
                 {{ form.cat_post }}
             </div>
             <div class="form-field">
-                <label class="form-label" for="{{ form.new_category.id_for_label }}">{{ form.new_category.label}}:</label>
+                <label class="form-label" for="{{ form.new_category.id_for_label }}">
+                    {{form.new_category.label}}:</label>
                 {{ form.new_category }}
             </div>
+
+            <div class="form-field">
+                <div class="form-row">
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_zayavki.id_for_label }}">
+                            {{form.time_zayavki.label}}:</label>
+                        <input type="time" name="{{ form.time_zayavki.name }}"
+                               id="{{ form.time_zayavki.id_for_label }}">
+                    </div>
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
+                            {{form.time_glybinie.label}}:</label>
+                        <input type="time" name="{{ form.time_glybinie.name }}"
+                               id="{{ form.time_glybinie.id_for_label }}">
+                    </div>
+                </div>
+            </div>
+
+            <!--            <div class="form-field">-->
+            <!--                <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">-->
+            <!--                    {{form.time_glybinie.label}}:</label>-->
+            <!--                <input type="time" name="{{ form.time_glybinie.name }}" id="{{ form.time_glybinie.id_for_label }}">-->
+
+            <!--            </div>-->
+
             <div class="form-field">
                 <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
                 {{ form.images }}
             </div>
 
 
-        <button class="button" type="submit">Добавить</button>
+            <button class="button" type="submit">Добавить</button>
         </div>
-    </div>
 
 
-</form>
+    </form>
+</div>
 
 {% endblock %}

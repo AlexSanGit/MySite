@@ -27,6 +27,10 @@
    list-style-type: none; /* Убирает маркеры списка */
    margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
 }
+.post-time{
+    font-size: 14px;
+
+}
 
 
 .user-post{
@@ -38,7 +42,7 @@
     word-wrap: break-word; /* или word-break: break-all; */
     margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
     text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
-    overflow: hidden; /* Скрывает текст, который не помещается */
+    font-weight: bold;
 }
 
 .content-index2 {

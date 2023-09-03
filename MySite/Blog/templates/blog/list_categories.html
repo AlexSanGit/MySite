@@ -1,20 +1,17 @@
  {% for category in cats %}
 
     <li>
-      <a href="{% url 'category' category.slug %}" {% if category.pk == cat_selected %} class="selected"{% endif %}>
+      <a href="{% url 'category' category.slug %}" >
         {{ category.name }}
       </a>
       {% if category.child_categories %}
-        <button class="toggle-btn" data-target="children-list-{{ category.pk }}">
+        <button class="toggle-btn" data-target="children-list-{{ category.slug }}">
           &#x25BC;
         </button>
-        <ul id="children-list-{{ category.pk }}" class="children-list">
+        <ul id="children-list-{{ category.slug }}" class="children-list">
           {% for child_category in category.child_categories %}
             <li>
-              <a href="{% url 'category' child_category.slug %}"
-                 {% if child_category.pk == cat_selected %}
-                 class="selected"
-                 {% endif %}>
+              <a href="{% url 'category' child_category.slug %}">
                 {{ child_category.name }}
 
               </a>
@@ -41,6 +38,26 @@
     var targetId = toggleButtons[i].getAttribute('data-target');
     toggleButtons[i].addEventListener('click', toggleChildren.bind(null, targetId));
   }
+
+
+<!--  // Находим все кнопки с классом "toggle-btn"-->
+<!--const toggleButtons = document.querySelectorAll('.toggle-btn');-->
+
+<!--// Добавляем обработчик события клика на каждую кнопку-->
+<!--toggleButtons.forEach(button => {-->
+<!--    button.addEventListener('click', () => {-->
+<!--        // Находим соответствующий дочерний список по data-атрибуту-->
+<!--        const targetId = button.getAttribute('data-target');-->
+<!--        const targetList = document.querySelector(`#${targetId}`);-->
+
+<!--        // Переключаем видимость дочернего списка-->
+<!--        if (targetList.style.display === 'none' || targetList.style.display === '') {-->
+<!--            targetList.style.display = 'block';-->
+<!--        } else {-->
+<!--            targetList.style.display = 'none';-->
+<!--        }-->
+<!--    });-->
+<!--});-->
 </script>
 
 <style>

@@ -1,6 +1,7 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% load custom_tags %}
+
 {% block content %}
 
 
@@ -17,46 +18,70 @@
 <div class="content-index">
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-    <div class="form-container">
-        <div class="form-field">
-            <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
-            {{ form.title }}
-        </div>
-        <div class="form-field">
-            <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}:</label>
-            {{ form.description }}
-        </div>
-        <div class="form-field">
-            <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
-            {{ form.cat_post }}
-        </div>
+        <div class="form-container">
+            <div class="form-field">
+                <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
+                {{ form.title }}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.description.id_for_label }}">
+                    {{ form.description.label}}:</label>
+                    {{ form.description }}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
+                {{ form.cat_post }}
+            </div>
 
-        <div class="form-field">
-            <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
-            {{ form.images }}
-        </div>
-
-        <ul class="image-list">
-            {% for image in post_images %}
-            <li class="image-item">
-                <div class="image-container">
-                    <img src="{{ image.image.url }}" alt="" class="image-post-detail">
-                    <!-- Кнопка удаления с иконкой корзины -->
-                    <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">
-                        <i class="delete-image-icon fa fa-trash"></i> Удалить
-                    </button>
+            <div class="form-field">
+                <div class="form-row">
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_zayavki.id_for_label }}">
+                            {{form.time_zayavki.label}}:</label>
+                        <input type="time" name="{{ form.time_zayavki.name }}"
+                               id="{{ form.time_zayavki.id_for_label }}">
+                    </div>
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
+                            {{form.time_glybinie.label}}:</label>
+                        <input type="time" name="{{ form.time_glybinie.name }}"
+                               id="{{ form.time_glybinie.id_for_label }}">
+                    </div>
                 </div>
+            </div>
 
-                <input type="hidden" name="delete_image_{{ image.id }}" id="delete_image_{{ image.id }}" value="False">
-            </li>
-            {% endfor %}
-        </ul>
 
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Сохранить</button>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
+                {{ form.images }}
+            </div>
+
+            <ul class="image-list">
+                {% for image in post_images %}
+                <li class="image-item">
+                    <div class="image-container">
+                        <img src="{{ image.image.url }}" alt="" class="image-post-detail">
+                        <!-- Кнопка удаления с иконкой корзины -->
+                        <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">
+                            <i class="delete-image-icon fa fa-trash"></i> Удалить
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="delete_image_{{ image.id }}" id="delete_image_{{ image.id }}"
+                           value="False">
+                </li>
+                {% endfor %}
+            </ul>
+
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Сохранить</button>
+            </div>
+
         </div>
     </form>
 </div>
+
+
 
 
 <!-- Добавьте скрипт для обработки кнопок удаления -->
@@ -73,6 +98,7 @@
             });
         });
     });
+
 </script>
 
 <style>
@@ -116,6 +142,7 @@
         font-size: 14px;
         vertical-align: middle;
     }
+
 </style>
 
 {% endblock content %}

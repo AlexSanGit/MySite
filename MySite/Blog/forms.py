@@ -37,7 +37,7 @@ class CommentForm(forms.ModelForm):
 
 
 class AddPostForm(forms.ModelForm):
-    new_category = forms.CharField(label='Подкатегория', max_length=40, required=False)
+    new_category = forms.CharField(label='Добавить новое оборудование', max_length=40, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -81,10 +81,11 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Posts
-        fields = ['title', 'description',  'cat_post', 'new_category', 'images']
+        fields = ['title', 'description',  'cat_post', 'new_category', 'time_zayavki', 'time_glybinie', 'images']
         # widgets = {
-        #     'title': forms.TextInput(attrs={'cols': 60}),
-        #     'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
+            # 'title': forms.TextInput(attrs={'cols': 60}),
+            # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
+            # 'time_zayavki': forms.TimeInput(format='%H:%M'),
         # }
 
     def clean(self):
