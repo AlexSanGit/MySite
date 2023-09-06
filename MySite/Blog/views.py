@@ -13,7 +13,8 @@ from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormVie
 from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm
 from Blog.models import Posts, Category, CustomImage, Comments
-from users.models import Profile
+from users.models import Profile, User
+from datetime import datetime, timedelta
 
 
 class HomePage(DataMixin, ListView):
@@ -32,6 +33,10 @@ class HomePage(DataMixin, ListView):
         context['title'] = 'Главная страница'
         posts = self.get_queryset()
         context['posts'] = posts
+        # Получите профиль текущего пользователя
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            context['profile'] = profile
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -66,6 +71,9 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         post = self.get_object()
         context['post_images'] = post.post_images.all()
         context['title'] = 'Страница поста'
+        # Получаем профиль пользователя текущего поста
+        profile = User.objects.get(username=self.object.author).profile
+        context['profile'] = profile
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -180,6 +188,28 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
             else:
                 raise e
 
+        # Получить время из объекта time_glybinie
+        post_time_glybinie = obj.time_glybinie
+
+        # Получить текущее время из профиля пользователя
+        current_time_glybinie = self.request.user.profile.time_glybinie
+
+        # Выполнить операции с часами и минутами
+        new_hours = current_time_glybinie.hour + post_time_glybinie.hour
+        new_minutes = current_time_glybinie.minute + post_time_glybinie.minute
+
+        # Проверить, если минуты превысили 60, скорректировать часы и минуты
+        if new_minutes >= 60:
+            new_hours += new_minutes // 60
+            new_minutes = new_minutes % 60
+
+        # Создать новую строку времени в формате "часы:минуты"
+        updated_time_glybinie = f"{new_hours:02}:{new_minutes:02}"
+
+        # Обновить значение в профиле пользователя
+        self.request.user.profile.time_glybinie = updated_time_glybinie
+        self.request.user.profile.save()
+
         return HttpResponseRedirect(reverse('home'))
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -233,8 +263,36 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             # Создание новых изображений
             for file in new_images:
                 CustomImage.objects.create(post=post, image=file)
-            messages.success(self.request, 'Пост успешно обновлен.')
 
+        # # Получить время из поля time_glybinie в формате "часы:минуты"
+        # post_time_glybinie = post.time_glybinie
+        #
+        # # Разбить время на часы и минуты
+        # hours, minutes = map(int, post_time_glybinie.split(':'))
+        #
+        # # Получить текущее время из профиля пользователя
+        # current_time_glybinie = self.request.user.profile.time_glybinie
+        #
+        # # Разбить текущее время на часы и минуты
+        # current_hours, current_minutes = current_time_glybinie.hour, current_time_glybinie.minute
+        #
+        # # Выполнить операции с часами и минутами
+        # new_hours = current_hours + hours
+        # new_minutes = current_minutes + minutes
+        #
+        # # Проверить, если минуты превысили 60, скорректировать часы и минуты
+        # if new_minutes >= 60:
+        #     new_hours += new_minutes // 60
+        #     new_minutes = new_minutes % 60
+        #
+        # # Создать новую строку времени в формате "часы:минуты"
+        # updated_time_glybinie = f"{new_hours:02}:{new_minutes:02}"
+        #
+        # # Обновить значение в профиле пользователя
+        # self.request.user.profile.time_glybinie = updated_time_glybinie
+        # self.request.user.profile.save()
+
+        messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
 
     def test_func(self):
@@ -250,6 +308,10 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        # При редактировании поста устанавливаем начальное значение для поля времени
+        if self.object:
+            form.fields['time_zayavki'].initial = self.object.time_zayavki
+            form.fields['time_glybinie'].initial = self.object.time_glybinie
 
         # При редактировании поста удаляем поле "Новая категория"
         if self.object:

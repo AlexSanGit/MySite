@@ -1,7 +1,7 @@
 
 .content-index {
   width: 70%;
-  border: 1px solid #ddd;
+  border: 1px solid #0080FF;
   background-color: #c3d5b1;
   padding: 10px;
   margin-top: 20px;
@@ -28,7 +28,7 @@
    margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
 }
 .post-time{
-    font-size: 14px;
+    font-size: 16px;
 
 }
 
@@ -45,9 +45,14 @@
     font-weight: bold;
 }
 
+.uchastok_title{
+     white-space: nowrap !important;
+     font-weight: bold;
+}
+
 .content-index2 {
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #2b9d3f;
   background-color: #c3d5b1;
   padding: 10px;
   margin-top: 20px;

@@ -30,8 +30,8 @@ class Posts(models.Model):
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     cat_post = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True, verbose_name="Оборудование")
     city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
-    time_zayavki = models.TimeField(verbose_name="Время заявки", null=True)
-    time_glybinie = models.TimeField(verbose_name="Глубиные", null=True)
+    time_zayavki = models.TimeField(verbose_name="Время заявки", default='00:00')
+    time_glybinie = models.TimeField(verbose_name="Глубиные:", default='00:00')
 
     def __str__(self):
         return self.title

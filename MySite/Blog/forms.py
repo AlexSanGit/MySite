@@ -42,6 +42,8 @@ class AddPostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['time_zayavki'].initial = '00:00'
+        self.fields['time_glybinie'].initial = '00:00'
         self.fields['cat_post'].empty_label = "Категория не выбрана"
         self.fields['title'].label = "Заголовок"
         self.fields['description'].label = "Описание"
@@ -82,11 +84,12 @@ class AddPostForm(forms.ModelForm):
     class Meta:
         model = Posts
         fields = ['title', 'description',  'cat_post', 'new_category', 'time_zayavki', 'time_glybinie', 'images']
-        # widgets = {
+        widgets = {
             # 'title': forms.TextInput(attrs={'cols': 60}),
             # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
-            # 'time_zayavki': forms.TimeInput(format='%H:%M'),
-        # }
+            'time_zayavki': forms.TimeInput(format='%H:%M'),
+            'time_glybinie': forms.TimeInput(format='%H:%M'),
+        }
 
     def clean(self):
         cleaned_data = super().clean()

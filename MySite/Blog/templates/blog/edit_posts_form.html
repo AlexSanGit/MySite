@@ -26,7 +26,7 @@
             <div class="form-field">
                 <label class="form-label" for="{{ form.description.id_for_label }}">
                     {{ form.description.label}}:</label>
-                    {{ form.description }}
+                {{ form.description }}
             </div>
             <div class="form-field">
                 <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
@@ -37,19 +37,20 @@
                 <div class="form-row">
                     <div class="form-column">
                         <label class="form-label" for="{{ form.time_zayavki.id_for_label }}">
-                            {{form.time_zayavki.label}}:</label>
+                            {{ form.time_zayavki.label }}:</label>
                         <input type="time" name="{{ form.time_zayavki.name }}"
-                               id="{{ form.time_zayavki.id_for_label }}">
+                               id="{{ form.time_zayavki.id_for_label }}"
+                               value="{{ form.time_zayavki.value|default:''|date:'H:i' }}">
                     </div>
                     <div class="form-column">
                         <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
-                            {{form.time_glybinie.label}}:</label>
+                            {{form.time_glybinie.label}}</label>
                         <input type="time" name="{{ form.time_glybinie.name }}"
-                               id="{{ form.time_glybinie.id_for_label }}">
+                               id="{{ form.time_glybinie.id_for_label }}"
+                               value="{{ form.time_glybinie.value|default:''|date:'H:i' }}" readonly>
                     </div>
                 </div>
             </div>
-
 
             <div class="form-field">
                 <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
@@ -82,8 +83,6 @@
 </div>
 
 
-
-
 <!-- Добавьте скрипт для обработки кнопок удаления -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -98,6 +97,8 @@
             });
         });
     });
+
+
 
 </script>
 
@@ -142,6 +143,8 @@
         font-size: 14px;
         vertical-align: middle;
     }
+
+
 
 </style>
 

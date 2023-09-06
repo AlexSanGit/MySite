@@ -83,7 +83,7 @@ img.img-article {
 .title-detail-post{
     font-family: 'Arial';
     text-align: left;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
 }
 
@@ -158,7 +158,7 @@ img.img-article {
 
 .content-addpage{
   width: 30%;
-  border: 1px solid #ddd;
+  border: 1px solid #30ab93;
   background-color: #c3d5b1;
   padding: 10px;
   margin-top: 20px;

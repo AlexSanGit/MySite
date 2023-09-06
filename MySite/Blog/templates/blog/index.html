@@ -29,11 +29,12 @@
                         {{ p.cat_post.name}}</a>
 
                 <p>Дата: {{p.time_update|date:"d-m-Y H:i"}}</p>
-                <p class="user-post"> Написал: {{p.author}}
+                <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
+                    <span class="uchastok_title">  {{ profile.get_city_display}}</span>
                     <img class="avatar" src="{{ p.author.profile.image.url }}"
                          alt="Avatar"/>
                 </p>
-                <p class="index-title"> {{p.title}}</p>
+                 Заголовок: <p class="index-title"> {{p.title}}</p>
 
             </div>
             <div class="row">
@@ -42,7 +43,7 @@
                      alt="Изображение">
                 {% endfor %}
             </div>
-            <p class="post-description">{{p.description}}</p>
+            Описание: <p class="post-description">{{p.description}}</p>
 
             <p>Коментариев: ({{p.comments_posts.all.count}})</p>
             <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>

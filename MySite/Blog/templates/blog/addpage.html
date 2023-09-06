@@ -70,4 +70,19 @@
     </form>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var timeZayavkiInput = document.getElementById("{{ form.time_zayavki.id_for_label }}");
+        var timeGlybiniInput = document.getElementById("{{ form.time_glybinie.id_for_label }}");
+
+        if (timeZayavkiInput && !timeZayavkiInput.value) {
+            timeZayavkiInput.value = "08:30";
+        }
+        if (timeGlybiniInput  && !timeGlybiniInput .value) {
+            timeGlybiniInput .value = "00:00";
+        }
+    });
+
+</script>
+
 {% endblock %}

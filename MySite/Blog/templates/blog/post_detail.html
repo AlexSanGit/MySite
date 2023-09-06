@@ -15,24 +15,37 @@
 {% endif %}
 
 <div class="content-index">
-    <p >Участок: {{post.cat_post.parent}}-{{post.cat_post.name}}</p>
-    <div class="title-detail-post">
+    <p >Оборудование:
+        {% if post.cat_post.parent %}
+        <span class="uchastok_title"> {{post.cat_post.parent}}-</span>
+        {% endif %}
+        <span class="uchastok_title">{{post.cat_post.name}}</span> </p>
+
+    Заголовок :<div class="title-detail-post">
         {{post.title}}
     </div>
-    <div class="image-post-detail">
+
+
+    {% if post.time_glybinie == '00:00' %}
+    <div class="post-time"> Глубиные:
+
+        {{post.time_glybinie}}</div>
+        {% endif %}
+    Описание :<div class="post-description"> {{post.description|linebreaks}}</div>
+        <div class="image-post-detail">
         <div class="row">
             {% for image in post.post_images.all %}
             <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
             {% endfor %}
         </div>
     </div>
-    <div class="post-time"> Время заявки: {{post.time_zayavki}}</div>
-    <div class="post-time"> Глубиные: {{post.time_glybinie}}</div>
+    <div class="post-time"> Время вызова: {{post.time_zayavki}}</div>
+    <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
+        {{ profile.get_city_display}}
+        {{post.time_update|date:"d.m.Y H:i"}}
 
-    Описание:<div class="post-description"> {{post.description|linebreaks}}</div>
 
-    <p class="user-post"> Написал: {{post.author}}
-        <img class="avatar" src="{{ post.author.profile.image.url }}" style="width: 50px;height: 50px;"
+        <img class="avatar" src="{{ post.author.profile.image.url }}"
              alt="Avatar"/>
     </p>
 
