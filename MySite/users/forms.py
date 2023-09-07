@@ -46,9 +46,10 @@ class ProfileUpdateForm(forms.ModelForm):
     city = forms.ChoiceField(choices=CITY_CHOICES, label='Участок')
     # is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
     image = forms.ImageField(label='Фото', required=False, widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
+    phone = forms.IntegerField(required=False, label="Сот.телефон")
 
     class Meta:
         model = Profile
-        fields = ['city', 'image']
+        fields = ['city',  'phone', 'image']
 
 

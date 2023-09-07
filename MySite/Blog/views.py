@@ -131,6 +131,8 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         files = self.request.FILES.getlist('images')
         obj.time_zayavki = form.cleaned_data['time_zayavki']
         obj.time_glybinie = form.cleaned_data['time_glybinie']
+        simulyation_value = form.cleaned_data.get('simulyation', False)
+        form.instance.simulyation = simulyation_value
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -233,11 +235,15 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         formset = self.PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
         new_images = self.request.FILES.getlist('images')
         deleted_images_count = 0
-        print(post.author)
+
         # Получаем значения времени из POST-запроса
         time_zayavki = self.request.POST.get('time_zayavki')
         time_glybinie = self.request.POST.get('time_glybinie')
 
+        simulyation_value = form.cleaned_data['simulyation']
+        post.simulyation = simulyation_value
+
+        print(simulyation_value)
         # Присваиваем значения времени посту
         post.time_zayavki = time_zayavki
         post.time_glybinie = time_glybinie
@@ -291,7 +297,7 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # # Обновить значение в профиле пользователя
         # self.request.user.profile.time_glybinie = updated_time_glybinie
         # self.request.user.profile.save()
-
+        post.save()
         messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
 
@@ -321,6 +327,15 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('post', kwargs={'post_slug': self.object.slug})  # Замените на имя вашего маршрута
+
+
+class PostsSimulyationView(ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Posts.objects.filter(simulyation=True)
 
 
 class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -387,6 +402,19 @@ def clear_notifications(request):
     profile.notifications = ''
     profile.save()
     return redirect('show_notifications')
+
+
+class UserListView(DataMixin, ListView):
+    model = User  # Используйте свою модель пользователя, если она отличается
+    template_name = 'blog/user_list.html'  # Создайте соответствующий шаблон
+    context_object_name = 'users'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profiles'] = Profile.objects.all()  # Получите все профили пользователей
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
 
 
 # class RegisterUser(CreateView):

@@ -17,6 +17,8 @@
                {% if has_unread_notifications %}
             <li class="line"> <a href="{% url 'show_notifications'  %}" class="notification-blink" >Есть уведомления!</a> </li>
                 {% endif %}
+            <li class="line"> <a href="{% url 'posts_simulyation' %}">Посты с симуляцией</a></li>
+            <li class="line"><a href="{% url 'user_list' %}">Список пользователей</a></li>
 
             <li class="m-right"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
             {% else %}

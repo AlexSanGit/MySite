@@ -22,6 +22,12 @@
   margin: 0px 10px 10px 0px;
 }
 
+/* Стиль метки по умолчанию */
+.form-label-sim {
+    color: red; /* Синий цвет метки */
+    font-weight: bold;
+}
+
 .form-field {
   width: 100%;
   padding: 5px;

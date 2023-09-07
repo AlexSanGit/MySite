@@ -40,7 +40,7 @@
                         <!--                        <h3 class="account-heading">Имя: {{ user.first_name }} {{ user.last_name }}</h3>-->
 
                         <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
-                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>
+<!--                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>-->
                         <p class="text-secondary">Глубиные : {{ profile.time_glybinie }}</p>
 <!--                        <p class="text-secondary">Отзывы: {{ profile.review }}</p>-->
 <!--                        <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}-->
@@ -67,6 +67,7 @@
                         {{ p_form|crispy }}
                     </fieldset>
 
+
                     <div class="form-group">
                         <button class="btn btn-outline-info" type="submit">Обновить</button>
                     </div>
@@ -75,5 +76,13 @@
 
             </div>
 </div>
+<!--<script>-->
 
+<!--const element = document.getElementById('id_phone');-->
+<!--const maskOptions = {-->
+<!--  mask: '+{7}(000)000-00-00'-->
+<!--};-->
+<!--const mask = IMask(element, maskOptions);-->
+
+<!--</script>-->
 {% endblock content %}

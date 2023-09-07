@@ -1,0 +1,29 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="content-index">
+    <h3>Список пользователей</h3>
+
+    <ul>
+        {% for user in users %}
+            <li class="user-list">Имя: {{ user.first_name }} {{ user.last_name }}
+        {% for profile in profiles %}
+                {% if profile.user == user %}
+                    <p>Участок: {{ profile.get_city_display }}</p>
+                    <p>Глубинные: {{ profile.time_glybinie }}</p>
+                    <p>Сот.Телефон: {{ profile.phone }}</p>
+
+                        {% endif %}
+            {% empty %}
+                <p>Профиль не найден</p>
+            {% endfor %}
+</li>
+
+            <!-- Дополнительные поля и информация о пользователе -->
+        {% empty %}
+            <li>Нет зарегистрированных пользователей</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

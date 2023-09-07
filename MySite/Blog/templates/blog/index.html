@@ -27,6 +27,10 @@
                     {% endif %}
                     <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.slug %}">
                         {{ p.cat_post.name}}</a>
+                    <span style="font-weight: bold;color:red">{% if p.simulyation %}
+                        Есть симуляция!
+                    {% endif %}
+                    </span>
 
                 <p>Дата: {{p.time_update|date:"d-m-Y H:i"}}</p>
                 <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
@@ -34,7 +38,7 @@
                     <img class="avatar" src="{{ p.author.profile.image.url }}"
                          alt="Avatar"/>
                 </p>
-                 Заголовок: <p class="index-title"> {{p.title}}</p>
+                Заголовок: <p class="index-title"> {{p.title}}</p>
 
             </div>
             <div class="row">
@@ -64,6 +68,8 @@
       message.remove();
     });
   }, 3000);
+
+
 
 
 

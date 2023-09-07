@@ -32,6 +32,8 @@ class Posts(models.Model):
     city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
     time_zayavki = models.TimeField(verbose_name="Время заявки", default='00:00')
     time_glybinie = models.TimeField(verbose_name="Глубиные:", default='00:00')
+    simulyation = models.BooleanField(default=False, verbose_name="Симуляция")
+
 
     def __str__(self):
         return self.title

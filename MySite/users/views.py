@@ -65,6 +65,8 @@ def profile(request, user_id):
             # Обновление поля city
             first_name = u_form.cleaned_data.get('first_name')
             last_name =  u_form.cleaned_data.get('last_name')
+            phone = p_form.cleaned_data.get('phone')
+            prof.phone = phone
             city = request.POST.get('city', '')
             prof.city = city
             # u_form.save()

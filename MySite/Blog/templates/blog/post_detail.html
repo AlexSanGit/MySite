@@ -19,18 +19,21 @@
         {% if post.cat_post.parent %}
         <span class="uchastok_title"> {{post.cat_post.parent}}-</span>
         {% endif %}
-        <span class="uchastok_title">{{post.cat_post.name}}</span> </p>
-
-    Заголовок :<div class="title-detail-post">
-        {{post.title}}
-    </div>
-
-
-    {% if post.time_glybinie == '00:00' %}
-    <div class="post-time"> Глубиные:
-
-        {{post.time_glybinie}}</div>
+        <span class="uchastok_title">{{post.cat_post.name}}</span>
+        <span style="font-weight: bold;color:red">{% if post.simulyation %}
+            Есть симуляция!
         {% endif %}
+        </span> </p>
+            Заголовок :<div class="title-detail-post">
+                {{post.title}}
+            </div>
+
+
+<!--    {% if post.time_glybinie == '00:00' %}-->
+<!--    <div class="post-time"> Глубиные:-->
+
+<!--        {{post.time_glybinie}}</div>-->
+<!--        {% endif %}-->
     Описание :<div class="post-description"> {{post.description|linebreaks}}</div>
         <div class="image-post-detail">
         <div class="row">

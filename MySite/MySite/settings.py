@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'users',
     'taxiapp',
     'multiselectfield',
-
+    'phonenumber_field',
 
 ]
 # AUTH_USER_MODEL = 'users.User'

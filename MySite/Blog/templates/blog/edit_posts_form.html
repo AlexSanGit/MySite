@@ -3,9 +3,9 @@
 {% load custom_tags %}
 
 {% block content %}
+<div class="content-index">
 
-
-{% if messages %}
+    {% if messages %}
 <ul class="messages">
     {% for message in messages %}
     <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
@@ -15,7 +15,7 @@
 </ul>
 {% endif %}
 
-<div class="content-index">
+
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-container">
@@ -43,6 +43,7 @@
                                value="{{ form.time_zayavki.value|default:''|date:'H:i' }}">
                     </div>
                     <div class="form-column">
+
                         <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
                             {{form.time_glybinie.label}}</label>
                         <input type="time" name="{{ form.time_glybinie.name }}"
@@ -52,9 +53,14 @@
                 </div>
             </div>
 
+                <label class="form-label-sim" for="{{ form.simulyation.id_for_label }}">
+                    Есть симуляция:
+                </label>
+                {{ form.simulyation }}
+
             <div class="form-field">
-                <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
-                {{ form.images }}
+                <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:
+                {{ form.images }} </label>
             </div>
 
             <ul class="image-list">
@@ -97,8 +103,6 @@
             });
         });
     });
-
-
 
 </script>
 
@@ -143,8 +147,6 @@
         font-size: 14px;
         vertical-align: middle;
     }
-
-
 
 </style>
 

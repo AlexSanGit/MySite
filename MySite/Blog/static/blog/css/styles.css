@@ -91,7 +91,17 @@ img.img-article {
 .left-chapters ul li.selected {
     color: #000000;
      }
+.user-list{
+ border: 1px solid #0080FF;
+ border-radius: 5px;
+ padding: 10px;
 
+}
+.user-list p{
+
+
+
+}
 
 .messages li {
     animation: fade-out 5s forwards;
@@ -99,7 +109,7 @@ img.img-article {
 }
 .messages{
   text-align: center;
-  width:30%;
+  width:70%;
   display: block;
   padding: 10px;
   margin: 0 auto;

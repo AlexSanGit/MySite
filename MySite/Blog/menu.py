@@ -6,6 +6,7 @@ menu = [
     {'title': "Добавить запись", 'url_name': 'add_page'},
     {'title': "О сайте", 'url_name': 'about'},
     {'title': "Обратная связь", 'url_name': 'contact'},
+
     # {'title': "Профиль", 'url_name': 'user_detail/1'},
 ]
 

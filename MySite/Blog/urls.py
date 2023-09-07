@@ -15,4 +15,6 @@ urlpatterns = [
     path('post/<int:pk>/delete/', DeletePostView.as_view(), name='post-delete'),
     path('comments/<int:pk>/', comment_detail_view, name='comment_detail'),
     # path('get_child_categories/', views.get_child_categories, name='get_child_categories'),
+    path('posts/simulyation/', views.PostsSimulyationView.as_view(), name='posts_simulyation'),
+    path('users/', views.UserListView.as_view(), name='user_list'),
 ]
