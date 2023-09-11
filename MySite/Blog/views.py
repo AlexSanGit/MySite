@@ -17,7 +17,7 @@ from users.models import Profile, User
 from datetime import datetime, timedelta
 
 
-class HomePage(DataMixin, ListView):
+class HomePage(LoginRequiredMixin, DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -41,7 +41,7 @@ class HomePage(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostDetail(DataMixin, DetailView, FormMixin):
+class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
     model = Posts
     template_name = 'blog/post_detail.html'
     slug_url_kwarg = 'post_slug'
@@ -49,8 +49,8 @@ class PostDetail(DataMixin, DetailView, FormMixin):
     form_class = CommentForm
     success_msg = 'Коментарий создан'
 
-    def get_success_url(self, **kwargs):
-        return reverse('post', kwargs={'post_slug': self.object.article.slug})
+    # def get_success_url(self, **kwargs):
+    #     return reverse('post', kwargs={'post_slug': self.object.article.slug})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -59,12 +59,20 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         else:
             return self.form_invalid(form)
 
+    def get_success_url(self, **kwargs):
+        return reverse('post', kwargs={'post_slug': self.object.article.slug})
+
     def form_valid(self, form):  # проверка поля коментария
         self.object = form.save(commit=False)
         self.object.article = self.get_object()
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        # Используйте filter() для получения записи с определенным slug
+        return get_object_or_404(Posts, slug=self.kwargs['post_slug'])
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,7 +86,7 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class CategoryPosts(DataMixin, ListView):
+class CategoryPosts(LoginRequiredMixin, DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -131,6 +139,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         files = self.request.FILES.getlist('images')
         obj.time_zayavki = form.cleaned_data['time_zayavki']
         obj.time_glybinie = form.cleaned_data['time_glybinie']
+        obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
         simulyation_value = form.cleaned_data.get('simulyation', False)
         form.instance.simulyation = simulyation_value
 
@@ -269,34 +278,6 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             # Создание новых изображений
             for file in new_images:
                 CustomImage.objects.create(post=post, image=file)
-
-        # # Получить время из поля time_glybinie в формате "часы:минуты"
-        # post_time_glybinie = post.time_glybinie
-        #
-        # # Разбить время на часы и минуты
-        # hours, minutes = map(int, post_time_glybinie.split(':'))
-        #
-        # # Получить текущее время из профиля пользователя
-        # current_time_glybinie = self.request.user.profile.time_glybinie
-        #
-        # # Разбить текущее время на часы и минуты
-        # current_hours, current_minutes = current_time_glybinie.hour, current_time_glybinie.minute
-        #
-        # # Выполнить операции с часами и минутами
-        # new_hours = current_hours + hours
-        # new_minutes = current_minutes + minutes
-        #
-        # # Проверить, если минуты превысили 60, скорректировать часы и минуты
-        # if new_minutes >= 60:
-        #     new_hours += new_minutes // 60
-        #     new_minutes = new_minutes % 60
-        #
-        # # Создать новую строку времени в формате "часы:минуты"
-        # updated_time_glybinie = f"{new_hours:02}:{new_minutes:02}"
-        #
-        # # Обновить значение в профиле пользователя
-        # self.request.user.profile.time_glybinie = updated_time_glybinie
-        # self.request.user.profile.save()
         post.save()
         messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
@@ -329,13 +310,18 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy('post', kwargs={'post_slug': self.object.slug})  # Замените на имя вашего маршрута
 
 
-class PostsSimulyationView(ListView):
+class PostsSimulyationView(DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
         return Posts.objects.filter(simulyation=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Добавить запись")
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -376,25 +362,51 @@ def contact(request):
     return render(request, 'blog/contact.html', {'menu': user_menu, 'title': 'Контакты'})
 
 
-# Отображение уведомлений
 def show_notifications(request):
     profile = Profile.objects.get(user=request.user)
     notifications = profile.notifications.split('\n') if profile.notifications else []
 
+    # Создайте новый список уведомлений, исключая те, связанные с несуществующими постами
     processed_notifications = []
     for notification in notifications:
         if "Пост" in notification:
             post_title = notification.split('"')[1]
             try:
-                post = Posts.objects.get(title=post_title)
+                post = Posts.objects.get(slug=post_title)
                 post_link = str(post.get_absolute_url())
                 processed_notifications.append((post_link, notification))
             except Posts.DoesNotExist:
-                processed_notifications.append((None, notification))
+                # Если пост не существует, удаляем уведомление из профиля пользователя
+                continue
         else:
             processed_notifications.append((None, notification))
 
-    return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu,})
+    # Обновите уведомления в профиле пользователя
+    profile.notifications = '\n'.join([notification[1] for notification in processed_notifications])
+    profile.save()
+
+    return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
+
+
+# Отображение уведомлений
+# def show_notifications(request):
+#     profile = Profile.objects.get(user=request.user)
+#     notifications = profile.notifications.split('\n') if profile.notifications else []
+#
+#     processed_notifications = []
+#     for notification in notifications:
+#         if "Пост" in notification:
+#             post_title = notification.split('"')[1]
+#             try:
+#                 post = get_object_or_404(Posts, slug=post_title)
+#                 post_link = str(post.get_absolute_url())
+#                 processed_notifications.append((post_link, notification))
+#             except Posts.DoesNotExist:
+#                 processed_notifications.append((None, notification))
+#         else:
+#             processed_notifications.append((None, notification))
+#
+#     return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
 
 
 def clear_notifications(request):
@@ -416,6 +428,8 @@ class UserListView(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+def welcome(request):
+    return render(request, 'blog/welcome.html')
 
 # class RegisterUser(CreateView):
 #     form_class = RegisterUserForm

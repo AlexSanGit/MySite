@@ -3,7 +3,7 @@
 {% load custom_tags %}
 
 {% block content %}
-<div class="content-index">
+<div class="content-addpage">
 
     {% if messages %}
 <ul class="messages">
@@ -31,6 +31,10 @@
             <div class="form-field">
                 <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
                 {{ form.cat_post }}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.ot_kogo_zayavka.id_for_label }}">{{ form.ot_kogo_zayavka.label }}:</label>
+                {{ form.ot_kogo_zayavka }}
             </div>
 
             <div class="form-field">
@@ -65,9 +69,9 @@
 
             <ul class="image-list">
                 {% for image in post_images %}
-                <li class="image-item">
+                <li class="image-post-detail">
                     <div class="image-container">
-                        <img src="{{ image.image.url }}" alt="" class="image-post-detail">
+                        <img src="{{ image.image.url }}" alt="">
                         <!-- Кнопка удаления с иконкой корзины -->
                         <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">
                             <i class="delete-image-icon fa fa-trash"></i> Удалить
@@ -80,8 +84,8 @@
                 {% endfor %}
             </ul>
 
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Сохранить</button>
+            <div class="form-field">
+                <button class="button" type="submit">Сохранить</button>
             </div>
 
         </div>
@@ -111,6 +115,7 @@
     display: flex; /* Для отображения изображений в ряд */
     list-style: none; /* Убирает стандартные маркеры списка */
     padding: 0; /* Убирает отступы вокруг списка */
+
 }
 
 .image-item {
@@ -124,29 +129,24 @@
     flex-direction: column; /* Столбцовая раскладка для элементов */
     align-items: center; /* Выравнивание элементов по центру по горизонтали */
 }
-
-.image-post-detail {
-    /* Ваши стили для изображения */
-    width: 100px;
-    height: auto;
-    border: 1px solid #ccc;
-    /* ... и так далее */
+.image-container img{
+    padding:5px;
 }
 
-    .delete-image-btn {
-        background-color: #f44336;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        display: inline-block;
-    }
+.delete-image-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
 
-    .delete-image-icon {
-        font-size: 14px;
-        vertical-align: middle;
-    }
+.delete-image-icon {
+    font-size: 14px;
+    vertical-align: middle;
+}
 
 </style>
 

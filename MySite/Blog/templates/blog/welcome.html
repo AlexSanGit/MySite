@@ -1,0 +1,22 @@
+ {% extends 'blog/base.html' %}
+
+{% block content %}
+
+<div class="content-index">
+<div class="welcome">
+
+
+
+    <h1>Добро пожаловать на сайт журнала вызовов!</h1>
+    {% if user.is_authenticated %}
+    <button class="button-green"><a href="{% url 'home' %}">Вы уже вторизованы! перейдите на главную страницу</a></button>
+    {% else %}
+    <h3>Пожалуйста, выберите действие:</h3>
+    <ul >
+        <button class="button"> <a href="{% url 'register' %}">Зарегистрироваться</a> </button>
+        <button class="button-green"><a href="{% url 'login' %}">Войти</a></button>
+    </ul>
+</div>
+    </div>
+{% endif %}
+ {% endblock %}

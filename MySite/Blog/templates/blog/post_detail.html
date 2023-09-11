@@ -15,7 +15,7 @@
 {% endif %}
 
 <div class="content-index">
-    <p >Оборудование:
+    <p>Оборудование:
         {% if post.cat_post.parent %}
         <span class="uchastok_title"> {{post.cat_post.parent}}-</span>
         {% endif %}
@@ -23,30 +23,49 @@
         <span style="font-weight: bold;color:red">{% if post.simulyation %}
             Есть симуляция!
         {% endif %}
-        </span> </p>
-            Заголовок :<div class="title-detail-post">
-                {{post.title}}
+        </span></p>
+    Заголовок :
+    <div class="title-detail-post">
+        {{post.title}}
+    </div>
+    <!--    {% if post.time_glybinie == '00:00' %}-->
+    <!--    <div class="post-time"> Глубиные:-->
+
+    <!--        {{post.time_glybinie}}</div>-->
+    <!--        {% endif %}-->
+    Описание :
+    <div class="post-description"> {{post.description|linebreaks}}</div>
+
+<div id="myModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+        <div class="slider">
+            <div class="slider-content">
+                {% for image in post.post_images.all %}
+                <img src="{{ image.image.url }}" alt="">
+                {% endfor %}
             </div>
+            <div class="slider-controls">
+                <button class="prev" onclick="prevSlide()">&#10094;</button>
+                <button class="next" onclick="nextSlide()">&#10095;</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-<!--    {% if post.time_glybinie == '00:00' %}-->
-<!--    <div class="post-time"> Глубиные:-->
-
-<!--        {{post.time_glybinie}}</div>-->
-<!--        {% endif %}-->
-    Описание :<div class="post-description"> {{post.description|linebreaks}}</div>
-        <div class="image-post-detail">
+    <div class="image-post-detail">
         <div class="row">
             {% for image in post.post_images.all %}
             <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
             {% endfor %}
         </div>
     </div>
+
+    <p>От кого заявка:<span class="post-description"> {{post.ot_kogo_zayavka}}</span>
     <div class="post-time"> Время вызова: {{post.time_zayavki}}</div>
     <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
-        {{ profile.get_city_display}}
+        {{ profile.get_city_display}} ({{user.username }})
         {{post.time_update|date:"d.m.Y H:i"}}
-
 
         <img class="avatar" src="{{ post.author.profile.image.url }}"
              alt="Avatar"/>
@@ -54,13 +73,14 @@
 
     {% if user.is_authenticated and user == post.author %}
     <!-- Элементы, которые будут видны только автору поста -->
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Редактировать</a>
-    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Удалить</a>
+    <a class="button" href="{% url 'post-update' object.id %}">Редактировать</a>
+    <a class="button-red" href="{% url 'post-delete' object.id %}">Удалить</a>
     {% endif %}
-    <hr>
-    <div class="comments-form">
-        <h5>Коментарии ({{post.comments_posts.all.count}})</h5>
 
+    <div class="comments-form">
+        {% if post.comments_posts.all.count > 0 %}
+        <p>Коментарии ({{post.comments_posts.all.count}})</p>
+        {% endif %}
         {% for comments in post.comments_posts.all %}
         <p class="user-comments">{{ comments.author }} написал {{ comments.created }}</p>
         <p class="comments-text">{{ comments.text }} </p>
@@ -77,7 +97,7 @@
                 <label class="form-label" for="{{ form.text.id_for_label }}">{{ form.text.label }}:</label>
                 {{ form.text }}
             </div>
-            <button class="btn btn-secondary btn-sm mt-1 mb-1" type="submit">Добавить</button>
+            <button class="button" type="submit">Добавить</button>
         </form>
 
         {% else %}
@@ -89,12 +109,12 @@
 </div>
 
 <!-- Модальное окно -->
-<div id="myModal" class="modal">
+<!--<div id="myModal" class="modal">-->
 
-    <span class="close" onclick="closeModal()">&times;</span>
-    <img id="img01" class="modal-content">
+<!--    <span class="close" onclick="closeModal()">&times;</span>-->
+<!--    <img id="img01" class="modal-content">-->
 
-</div>
+<!--</div>-->
 
 
 {% endblock %}

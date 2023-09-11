@@ -49,10 +49,14 @@
                     </div>
                 </div>
             </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.ot_kogo_zayavka.id_for_label }}">{{ form.ot_kogo_zayavka.label }}:</label>
+                {{ form.ot_kogo_zayavka }}
+            </div>
 
             <label class="form-label">
                 <input type="checkbox" id="is_featured" name="is_featured">
-                <span style="font-weight: bold;color:red" >Симуляция! </span>
+                <span style="font-weight: bold;color:red">Симуляция! </span>
             </label>
 
             <div class="form-field">
@@ -80,6 +84,8 @@
             timeGlybiniInput .value = "00:00";
         }
     });
+
+
 
 </script>
 

@@ -33,7 +33,7 @@ class Posts(models.Model):
     time_zayavki = models.TimeField(verbose_name="Время заявки", default='00:00')
     time_glybinie = models.TimeField(verbose_name="Глубиные:", default='00:00')
     simulyation = models.BooleanField(default=False, verbose_name="Симуляция")
-
+    ot_kogo_zayavka = models.CharField(max_length=50, verbose_name="От кого заявка", null=True)
 
     def __str__(self):
         return self.title
@@ -153,12 +153,12 @@ def send_notification_to_author(sender, instance, created, **kwargs):
         profile, created = Profile.objects.get_or_create(user=post_author)
         post_title = instance.article.title
         post_slug = instance.article.slug
-        post_link = Posts.objects.get(title=post_title).get_absolute_url()  # Используйте get_absolute_url()
+        post_link = Posts.objects.get(slug=post_slug).get_absolute_url()  # Используйте get_absolute_url()
         # post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
-        print(post_link)
+        # print(post_link)
 
         if profile.notifications:
-            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Ссылка: {post_link}'
+            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Нажмите чтобы перейти.'
         else:
-            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Ссылка: {post_link}'
+            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Нажмите чтобы перейти.'
         profile.save()

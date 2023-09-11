@@ -37,23 +37,21 @@ padding-top: 0px;
     background-color: white;
     margin: 3px 0;
 }
+.menu-li{
+    border: 1px solid #0080FF;
+    border-radius: 5px;
+    padding:5px;
+    background: radial-gradient(circle, #2bb8ba, #8ee0e2);
+    }
 
-.menu {
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  position: fixed; /* Закрепляет меню на экране */
-  top: 0; /* Прикрепляет меню к верху экрана */
-  width: 100%; /* Занимает всю ширину экрана */
-  background-color: #333; /* Цвет фона меню */
-  color: #fff; /* Цвет текста */
-  padding: 10px 0; /* Отступы внутри меню */
-  padding-left: 25%; /* Отступы внутри меню */
-  align-items: center;
-  z-index: 1000; /* Определяет позиционирование меню по z-индексу */
-  left: 0;
+.menu-child{
+    border: 1px solid #0080FF;
+    border-radius: 5px;
+    padding:1px;
+    background-color: #8ee0e2;
+//background: radial-gradient(circle, #2bb8ba, #9df7be);
+
 }
-
 .line {
     margin-right: 20px;
 
@@ -87,6 +85,21 @@ padding-top: 0px;
     50% {
         color: green; /* Второй цвет */
     }
+}
+.menu {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  position: fixed; /* Закрепляет меню на экране */
+  top: 0; /* Прикрепляет меню к верху экрана */
+  width: 100%; /* Занимает всю ширину экрана */
+  background-color: #333; /* Цвет фона меню */
+  color: #fff; /* Цвет текста */
+  padding: 10px 0; /* Отступы внутри меню */
+  padding-left: 25%; /* Отступы внутри меню */
+  align-items: center;
+  z-index: 1000; /* Определяет позиционирование меню по z-индексу */
+  left: 0;
 }
 /* Применение анимации к элементу */
 .notification-blink {

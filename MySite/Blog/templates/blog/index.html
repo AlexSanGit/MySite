@@ -33,7 +33,7 @@
                     </span>
 
                 <p>Дата: {{p.time_update|date:"d-m-Y H:i"}}</p>
-                <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
+                <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }} ({{ user.username}})
                     <span class="uchastok_title">  {{ profile.get_city_display}}</span>
                     <img class="avatar" src="{{ p.author.profile.image.url }}"
                          alt="Avatar"/>

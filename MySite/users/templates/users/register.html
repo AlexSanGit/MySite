@@ -6,26 +6,58 @@
 
 <div class="content-login">
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %}
-        class="{{ message.tags }}"
-        {% endif %}>
-        {{ message|message_with_animation }}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %}
+            class="{{ message.tags }}"
+            {% endif %}>
+            {{ message|message_with_animation }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <form method="POST">
         {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Добро пожаловать</legend>
-            {{ form|crispy }}
-        </fieldset>
+
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
+            {{ form.username}}
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label>
+            {{ form.password1 }}
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label>
+            {{ form.password2 }}
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.city.id_for_label }}">{{ form.city.label }}:</label>
+            {{ form.city }}
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.welcome_code_for_label }}">{{ form.welcome_code.label }}:</label>
+            {{ form.welcome_code }}
+        </div>
+        <div class="form-field">
+            <label class="form-label" for="{{ form.first_name_for_label }}">{{ form.first_name.label }}:</label>
+            {{ form.first_name }}
+        </div>
+        <div class="form-field">
+            <label class="form-label" for="{{ form.last_name_for_label }}">{{ form.last_name.label }}:</label>
+            {{ form.last_name }}
+        </div>
+
+
         <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Регистрация</button>
+            <button class="button" type="submit">Регистрация</button>
         </div>
     </form>
     <div class="border-top pt-3">

@@ -16,25 +16,33 @@
 </ul>
 {% endif %}
 
-        <div class="content-login">
+<div class="content-login">
 
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Вход</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Войти</button>
-            </div>
-        </form>
+    <form method="POST">
+        {% csrf_token %}
 
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Нужен аккаунт? <a class="ml-2" href="{% url 'register' %}">Регистрация</a>
-            </small>
+        <div class="form-field">
+            <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
+            {{ form.username}}
         </div>
+
+        <div class="form-field">
+            <label class="form-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label>
+            {{ form.password }}
+        </div>
+
+
+        <div class="form-group">
+            <button class="button" type="submit">Войти</button>
+        </div>
+    </form>
+
+    <div style="margin:10px;">
+        <p>
+            Нужен аккаунт? <a style="color:green;" href="{% url 'register' %}">Регистрация</a>
+        </p>
     </div>
+</div>
 
 
 {% endblock content %}

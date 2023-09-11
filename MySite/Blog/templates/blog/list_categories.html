@@ -1,6 +1,6 @@
  {% for category in cats %}
 
-    <li>
+    <li class="menu-li">
       <a href="{% url 'category' category.slug %}" >
         {{ category.name }}
       </a>
@@ -11,7 +11,7 @@
         <ul id="children-list-{{ category.slug }}" class="children-list">
           {% for child_category in category.child_categories %}
             <li>
-              <a href="{% url 'category' child_category.slug %}">
+              <a class="menu-child" href="{% url 'category' child_category.slug %}">
                 {{ child_category.name }}
 
               </a>

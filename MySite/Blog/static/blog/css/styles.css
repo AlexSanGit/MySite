@@ -5,26 +5,27 @@ body {
 	height: 100%;
 	width: 100%;
     text-align: center; /* Добавьте это свойство для центрирования контента */
-    background-color: #c3d5b1;
-}
+    //background-image: url('/media/back.jpg');
+    background-size: cover; /* Растягивает изображение на всю высоту и ширину body */
+    background-repeat: no-repeat; /* Запрещает повторение изображения */
+    background: radial-gradient(circle, #2bb8ba, #ccf9dd);
 
-.image-post-detail img {
-	max-width: 10%;
-	height: auto;
-	padding-left: 20px;
-	padding-bottom: 20px;
-	border: 10px
 }
-.content-post-detail{
-    padding: 10px;
+.welcome{
+    font-weight: bold;
+    text-align: center;
 }
-
+.link-read-post{
+    font-weight: bold;
+    padding: 5px 5px 5px 0px;
+    font-size:18px;
+}
 .content-index2 p{
 margin: 0;
 }
 
 a {
-	color: #0059b2;
+	color: blue;
 	text-decoration: none;
 }
 
@@ -33,11 +34,12 @@ a:hover {
 	text-decoration: underline;
 }
 img.img-index{
-	max-width: 10%;
-	height: auto;
 	float: center;
 	padding-left: 10px;
 	padding-bottom: 10px;
+	width: 100px; /* Замените это значением на ваше предпочтение */
+    height: 100px; /* Замените это значением на ваше предпочтение */
+    object-fit: cover; /* Подстраивает изображение под указанный размер, сохраняя пропорции */
 }
 
 .content_2d {
@@ -81,7 +83,7 @@ img.img-article {
 }
 
 .title-detail-post{
-    font-family: 'Arial';
+
     text-align: left;
     font-size: 18px;
     font-weight: bold;
@@ -98,9 +100,6 @@ img.img-article {
 
 }
 .user-list p{
-
-
-
 }
 
 .messages li {
@@ -113,12 +112,12 @@ img.img-article {
   display: block;
   padding: 10px;
   margin: 0 auto;
-  background-color: #3498db;
-  color: #fff;
-  border-radius: 5px;
-  font-size: 16px;
+  color: green;
+  font-weight: bold;
+  font-size: 18px;
   opacity: 0; /* Начальное состояние: невидимое */
   animation: fade-in-out 3s ease-in-out forwards; /* Применение анимации */
+  list-style-type: none; /* Убирает маркеры списка */
 
 }
 @keyframes fade-in-out {
@@ -142,51 +141,50 @@ img.img-article {
         display: none;
     }
 }
-.content-profile {
-  width: 30%;
-  border: 1px solid #ddd;
-  background-color: #c3d5b1;
-  padding: 10px;
-  margin-top: 20px;
-  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
 
-@media screen and (max-width: 768px) {
-.content-profile {
-  width: 100%;
-  border: 1px solid #ddd;
-  background-color: #c3d5b1;
+/* Основные стили для кнопки */
+.button {
+  display: inline-block;
   padding: 10px;
-  margin-top: 20px;
-  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
+  margin:5px 5px 0px 0px;
+  font-size: 16px;
+  text-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
-
-.content-addpage{
-  width: 30%;
-  border: 1px solid #30ab93;
-  background-color: #c3d5b1;
+.button-red{
+  display: inline-block;
   padding: 10px;
-  margin-top: 20px;
-  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #d91818;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
-@media screen and (max-width: 768px) {
-.content-addpage{
-  width: 100%;
-  border: 1px solid #ddd;
-  background-color: #c3d5b1;
+.button-green{
+  display: inline-block;
   padding: 10px;
-  margin-top: 20px;
-  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
+  font-size: 16px;
+
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
-
-
+.button a{
+    color:white;
+}
+.button-green a{
+    color:white;
+}

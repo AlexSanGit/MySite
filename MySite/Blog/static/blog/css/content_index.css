@@ -1,26 +1,40 @@
 
 .content-index {
+  //background: linear-gradient(to bottom, #2bb8ba, #ccf9dd);
   width: 70%;
   border: 1px solid #0080FF;
-  background-color: #c3d5b1;
+  background-color: #8ee0e2;
   padding: 10px;
   margin-top: 20px;
   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align:left;
 }
 
 @media screen and (max-width: 768px) {
 .content-index {
   width: 100%;
   border: 1px solid #0080FF;
-  background-color: #c3d5b1;
+  background-color: #8ee0e2;
   padding: 10px;
   margin-top: 20px;
   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
+}
+
+.content-index2 {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
+  width: 100%;
+  border: 1px solid #2b9d3f;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .content-index ul{
@@ -31,18 +45,23 @@
     font-size: 16px;
 
 }
-
-
 .user-post{
     margin-bottom:5px;
 }
 .post-description{
-    font-size: 20px;
+    font-size: 18px;
     text-decoration: none;
     word-wrap: break-word; /* или word-break: break-all; */
     margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-    text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
+    //text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
     font-weight: bold;
+    padding:5px 0px 20px 0px;
+
+}
+.marg-center{
+    margin: 0 auto;
+    text-align:center;
+
 }
 
 .uchastok_title{
@@ -50,16 +69,7 @@
      font-weight: bold;
 }
 
-.content-index2 {
-  width: 100%;
-  border: 1px solid #2b9d3f;
-  background-color: #c3d5b1;
-  padding: 10px;
-  margin-top: 20px;
-  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
+
 
 .post-item {
   border-bottom: 1px solid #ddd;
@@ -92,9 +102,10 @@
 }
 
 .content-login {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
   width: 30%;
   border: 1px solid #ddd;
-  background-color: #c3d5b1;
+  background-color: #8ee0e2;
   padding: 10px;
   margin-top: 20px;
   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
@@ -105,13 +116,74 @@
 
 @media screen and (max-width: 768px) {
 .content-login {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
   width: 100%;
   border: 1px solid #ddd;
-  background-color: #c3d5b1;
+  background-color: #8ee0e2;
   padding: 10px;
   margin-top: 20px;
   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
 
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+.image-post-detail img {
+	padding-left: 20px;
+	padding-bottom: 20px;
+	float: center;
+	width: 100px; /* Замените это значением на ваше предпочтение */
+    height: 100px; /* Замените это значением на ваше предпочтение */
+    object-fit: cover; /* Подстраивает изображение под указанный размер, сохраняя пропорции */
+}
+.content-post-detail{
+    padding: 10px;
+}
+.content-profile {
+  width: 30%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+@media screen and (max-width: 768px) {
+.content-profile {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.content-addpage li{
+ list-style-type: none; /* Убирает маркеры списка */
+}
+.content-addpage{
+  width: 30%;
+  border: 1px solid #30ab93;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+@media screen and (max-width: 768px) {
+.content-addpage{
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }

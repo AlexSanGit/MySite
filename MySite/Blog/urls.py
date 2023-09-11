@@ -3,7 +3,8 @@ from Blog import views
 from Blog.views import *
 
 urlpatterns = [
-    path('', HomePage.as_view(), name='home'),
+    path('', views.welcome, name='welcome'),
+    path('index/', HomePage.as_view(), name='home'),
     path('post/<slug:post_slug>/', PostDetail.as_view(), name='post'),
     path('category/<slug:cat_slug>/', CategoryPosts.as_view(), name='category'),
     path('about/', about, name='about'),

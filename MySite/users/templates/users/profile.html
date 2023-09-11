@@ -29,52 +29,74 @@
 <!--</a>-->
 <div class="content-profile">
 
-    <h3 class="bottom mb-4">Ваш профиль</h3>
+    <h2>Ваш профиль</h2>
 
-            <div class="content-section">
+    <div class="form-title">
 
-                <div class="media">
-                    <!--                    <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">-->
-                    <div class="media-body">
-                        <h3 class="account-heading">Логин: {{ user.username }}</h3>
-                        <!--                        <h3 class="account-heading">Имя: {{ user.first_name }} {{ user.last_name }}</h3>-->
+        <div class="form-container">
+            <!--                    <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">-->
+            <div class="media-body">
+                <h4 class="account-heading">Логин: {{ user.username }}</h4>
+                <!--                        <h3 class="account-heading">Имя: {{ user.first_name }} {{ user.last_name }}</h3>-->
 
-                        <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
-<!--                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>-->
-                        <p class="text-secondary">Глубиные : {{ profile.time_glybinie }}</p>
-<!--                        <p class="text-secondary">Отзывы: {{ profile.review }}</p>-->
-<!--                        <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}-->
-<!--                            Пока нет рейтинга-->
-<!--                            {% else %}-->
-<!--                            {{ profile.rating }}-->
-<!--                            {% endif%}-->
-<!--                        </p>-->
+                <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
+                <!--                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>-->
+                <p class="text-secondary">Глубиные : {{ profile.time_glybinie }}</p>
+                <!--                        <p class="text-secondary">Отзывы: {{ profile.review }}</p>-->
+                <!--                        <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}-->
+                <!--                            Пока нет рейтинга-->
+                <!--                            {% else %}-->
+                <!--                            {{ profile.rating }}-->
+                <!--                            {% endif%}-->
+                <!--                        </p>-->
 
-<!--                        <p class="text-secondary">Статус: {% if profile.is_seller %}-->
-<!--                            Продавец-->
-<!--                            {% else %}-->
-<!--                            Покупатель-->
-<!--                            {% endif%}-->
-<!--                        </p>-->
-                    </div>
-                </div>
-
-                <!-- Форма обновления профиля -->
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <fieldset class="form-group">
-                        {{ u_form|crispy }}
-                        {{ p_form|crispy }}
-                    </fieldset>
-
-
-                    <div class="form-group">
-                        <button class="btn btn-outline-info" type="submit">Обновить</button>
-                    </div>
-                </form>
-
-
+                <!--                        <p class="text-secondary">Статус: {% if profile.is_seller %}-->
+                <!--                            Продавец-->
+                <!--                            {% else %}-->
+                <!--                            Покупатель-->
+                <!--                            {% endif%}-->
+                <!--                        </p>-->
             </div>
+        </div>
+ <!-- Форма обновления профиля -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        <div class="form-container">
+            <div class="form-field">
+                <label class="form-label" for="{{ u_form.first_name.id_for_label }}">
+                    {{ u_form.first_name.label}}:</label>
+                {{ u_form.first_name }}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ u_form.last_name.id_for_label }}">
+                    {{ u_form.last_name.label}}:</label>
+                {{ u_form.last_name }}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ p_form.city.id_for_label }}">
+                    {{ p_form.city.label}}:</label>
+                {{ p_form.city}}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ p_form.phone_for_label }}">
+                    {{ p_form.phone.label}}:</label>
+                {{ p_form.phone}}
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ p_form.image_for_label }}">
+                    {{ p_form.image.label}}:</label>
+            <div class="form-image">   {{ p_form.image}} </div>
+            </div>
+        </div>
+
+
+            <div class="form-group">
+                <button class="button" type="submit">Обновить</button>
+            </div>
+        </form>
+
+
+    </div>
 </div>
 <!--<script>-->
 

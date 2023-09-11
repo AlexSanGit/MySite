@@ -39,6 +39,7 @@ class CommentForm(forms.ModelForm):
 class AddPostForm(forms.ModelForm):
     new_category = forms.CharField(label='Добавить новое оборудование', max_length=40, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
+    ot_kogo_zayavka = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,6 +47,7 @@ class AddPostForm(forms.ModelForm):
         self.fields['time_glybinie'].initial = '00:00'
         self.fields['cat_post'].empty_label = "Категория не выбрана"
         self.fields['title'].label = "Заголовок"
+        self.fields['ot_kogo_zayavka'].label = "От кого заявка"
         self.fields['description'].label = "Описание"
         self.fields['images'].label = "Изображение"
         # Получите список всех категорий с их деревовидной структурой
@@ -84,7 +86,7 @@ class AddPostForm(forms.ModelForm):
     class Meta:
         model = Posts
         fields = ['title', 'description',  'cat_post', 'new_category', 'time_zayavki',
-                  'time_glybinie', 'simulyation','images']
+                  'time_glybinie', 'simulyation', 'images', 'ot_kogo_zayavka']
         widgets = {
             # 'title': forms.TextInput(attrs={'cols': 60}),
             # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
