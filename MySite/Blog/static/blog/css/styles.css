@@ -102,24 +102,7 @@ img.img-article {
 .user-list p{
 }
 
-.messages li {
-    animation: fade-out 5s forwards;
-    opacity: 1;
-}
-.messages{
-  text-align: center;
-  width:70%;
-  display: block;
-  padding: 10px;
-  margin: 0 auto;
-  color: green;
-  font-weight: bold;
-  font-size: 18px;
-  opacity: 0; /* Начальное состояние: невидимое */
-  animation: fade-in-out 3s ease-in-out forwards; /* Применение анимации */
-  list-style-type: none; /* Убирает маркеры списка */
 
-}
 @keyframes fade-in-out {
   0%, 100% {
     opacity: 0; /* Начальное и конечное состояние: невидимое */

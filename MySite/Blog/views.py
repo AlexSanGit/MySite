@@ -73,7 +73,6 @@ class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
         # Используйте filter() для получения записи с определенным slug
         return get_object_or_404(Posts, slug=self.kwargs['post_slug'])
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
@@ -371,8 +370,10 @@ def show_notifications(request):
     for notification in notifications:
         if "Пост" in notification:
             post_title = notification.split('"')[1]
+            post_slug = notification.split('"')[3].strip()
+            print(post_slug)
             try:
-                post = Posts.objects.get(slug=post_title)
+                post = Posts.objects.get(slug=post_slug)
                 post_link = str(post.get_absolute_url())
                 processed_notifications.append((post_link, notification))
             except Posts.DoesNotExist:

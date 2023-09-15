@@ -103,7 +103,7 @@
 
 .content-login {
 //background: radial-gradient(circle, #2bb8ba, #ccf9dd);
-  width: 30%;
+  width: 40%;
   border: 1px solid #ddd;
   background-color: #8ee0e2;
   padding: 10px;
@@ -140,7 +140,7 @@
     padding: 10px;
 }
 .content-profile {
-  width: 30%;
+  width: 40%;
   border: 1px solid #ddd;
   background-color: #8ee0e2;
   padding: 10px;
@@ -167,7 +167,7 @@
  list-style-type: none; /* Убирает маркеры списка */
 }
 .content-addpage{
-  width: 30%;
+  width: 40%;
   border: 1px solid #30ab93;
   background-color: #8ee0e2;
   padding: 10px;

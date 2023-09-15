@@ -1,5 +1,5 @@
 {% extends "blog/base.html" %}
-{% load crispy_forms_tags %}
+
 {% load custom_tags %}
 
 {% block content %}
@@ -20,39 +20,53 @@
 
     <form method="POST">
         {% csrf_token %}
+       <div class="form-error">{{ form.non_field_errors }}</div>
+
+
+<!--        {% for f in form %}-->
+<!--        <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>-->
+<!--        <div class="form-error">{{ f.errors }}</div>-->
+<!--        {% endfor %}-->
 
 
         <div class="form-field">
             <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
             {{ form.username}}
+             <div class="form-error">{{ form.username.errors }}</div>
         </div>
 
         <div class="form-field">
             <label class="form-label" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label>
             {{ form.password1 }}
+            <div class="form-error">{{ form.password1.errors }}</div>
         </div>
 
         <div class="form-field">
             <label class="form-label" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label>
             {{ form.password2 }}
+            <div class="form-error">{{ form.password2.errors }}</div>
         </div>
 
         <div class="form-field">
             <label class="form-label" for="{{ form.city.id_for_label }}">{{ form.city.label }}:</label>
             {{ form.city }}
+            <div class="form-error">{{ form.city.errors }}</div>
         </div>
 
         <div class="form-field">
             <label class="form-label" for="{{ form.welcome_code_for_label }}">{{ form.welcome_code.label }}:</label>
             {{ form.welcome_code }}
+           <div class="form-error">{{ form.welcome_code.errors }}</div>
         </div>
         <div class="form-field">
             <label class="form-label" for="{{ form.first_name_for_label }}">{{ form.first_name.label }}:</label>
             {{ form.first_name }}
+
         </div>
         <div class="form-field">
             <label class="form-label" for="{{ form.last_name_for_label }}">{{ form.last_name.label }}:</label>
             {{ form.last_name }}
+
         </div>
 
 
@@ -60,11 +74,81 @@
             <button class="button" type="submit">Регистрация</button>
         </div>
     </form>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            Уже есть аккаунт? <a class="ml-2" href="#">Вход</a>
-        </small>
+    <div style="margin:10px;">
+
+            Уже есть аккаунт? <a style="color:green;" href="{% url 'login' %}"> Вход </a>
+
     </div>
 </div>
+{% endblock %}
 
-{% endblock content %}
+<!--<div class="content-login">-->
+
+<!--    {% if messages %}-->
+<!--    <ul class="messages">-->
+<!--        {% for message in messages %}-->
+<!--        <li {% if message.tags %}-->
+<!--            class="{{ message.tags }}"-->
+<!--            {% endif %}>-->
+<!--            {{ message|message_with_animation }}-->
+<!--        </li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+<!--    {% endif %}-->
+
+<!--    <form method="POST">-->
+<!--        {% csrf_token %}-->
+
+
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>-->
+<!--            <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" placeholder="Введите ваше имя">-->
+
+
+<!--        </div>-->
+
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label>-->
+<!--             <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" placeholder="Ваш пароль, не менее 8 символов">-->
+
+<!--        </div>-->
+
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label>-->
+<!--         <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" placeholder="Повторите пароль">-->
+<!--        </div>-->
+
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.city.id_for_label }}">{{ form.city.label }}: </label>-->
+<!--            {{ form.city }}-->
+<!--        </div>-->
+
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.welcome_code_for_label }}">{{ form.welcome_code.label }}:</label>-->
+<!--             <input type="text" name="{{ form.welcome_code.name }}" id="{{ form.welcome_code.id_for_label }}" placeholder="Этот код где то надо взять">-->
+
+<!--        </div>-->
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.first_name_for_label }}">{{ form.first_name.label }}:</label>-->
+<!--            <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" placeholder="Имя желательно">-->
+
+<!--        </div>-->
+<!--        <div class="form-field">-->
+<!--            <label class="form-label" for="{{ form.last_name_for_label }}">{{ form.last_name.label }}:</label>-->
+<!--            <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" placeholder="Ну и фамилия тоже">-->
+<!--        </div>-->
+
+
+<!--        <div class="form-group">-->
+<!--            <button class="button" type="submit">Регистрация</button>-->
+<!--        </div>-->
+<!--    </form>-->
+<!--    <div class="border-top pt-3">-->
+<!--        <small class="text-muted">-->
+<!--            Уже есть аккаунт? <a class="ml-2" href="#">Вход</a>-->
+<!--        </small>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+

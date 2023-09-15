@@ -7,6 +7,25 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
+.messages li {
+    animation: fade-out 5s forwards;
+    opacity: 1;
+}
+.messages{
+  text-align: center;
+  width:70%;
+  display: block;
+  padding: 10px;
+  margin: 0 auto;
+  color: green;
+  font-weight: bold;
+  font-size: 18px;
+  opacity: 0; /* Начальное состояние: невидимое */
+  animation: fade-in-out 3s ease-in-out forwards; /* Применение анимации */
+  list-style-type: none; /* Убирает маркеры списка */
+
+}
+
 /* Стили для заголовка формы */
 .form-title {
   text-align: center;
@@ -101,7 +120,11 @@
 list-style: none; /* Убирает маркеры списка */
 }
 
-
+/* Стилизация подсказки для поля формы */
+.my-input::placeholder {
+    color: #999; /* Цвет текста подсказки */
+    font-style: italic; /* Курсивный шрифт */
+}
 
 /* Изменение стиля кнопки при наведении */
 .button:hover {

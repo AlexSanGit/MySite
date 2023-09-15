@@ -1,31 +1,50 @@
-
-    {% block main-menu %}
-    <nav>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-
-        <ul class="menu">
-            {% for m in menu %}
-            <li class="line"><a href="{% url m.url_name %}">{{m.title}}</a></li>
-            {% endfor %}
-
-            {% if request.user.is_authenticated %}
-            <li class="line"><a href="{% url 'profile' user.id %}">Мой профиль </a></li>
-               {% if has_unread_notifications %}
-            <li class="line"> <a href="{% url 'show_notifications'  %}" class="notification-blink" >Есть уведомления!</a> </li>
-                {% endif %}
-            <li class="line"> <a href="{% url 'posts_simulyation' %}">Симуляции</a></li>
-            <li class="line"><a href="{% url 'user_list' %}">Список пользователей</a></li>
-
-            <li class="m-right"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
-            {% else %}
-            <li class="m-right"><a href="{% url 'register' %}">Регистрация</a> | <a
-                    href="{% url 'login' %}">Войти</a></li>
+{% block main-menu %}
+<nav>
+    <div class="menu-icon" onclick="toggleMenu()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        {% if has_unread_notifications %}
+        <div class="notification-blink">
+            <span class="notification-icon-mobile">!</span>
             {% endif %}
-        </ul>
+        </div>
+    </div>
 
-    </nav>
-    {% endblock %}
+    <ul class="menu">
+        {% for m in menu %}
+        <li class="line"><a href="{% url m.url_name %}">{{m.title}}</a></li>
+        {% endfor %}
+
+        {% if request.user.is_authenticated %}
+        <li class="line">
+            <a href="{% url 'profile' user.id %}">Мой профиль </a></li>
+
+        <!--        {% if has_unread_notifications %}-->
+        <!--        <li class="line">-->
+        <!--            <a href="{% url 'show_notifications'  %}" class="notification-blink">Есть уведомления!</a></li>-->
+        <!--        {% endif %}-->
+
+        {% if has_unread_notifications %}
+        <li class="line">
+            <a href="{% url 'show_notifications' %}" class="notification-blink">
+                <span class="notification-icon">!</span>
+                Есть уведомления!
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="line">
+            <a href="{% url 'posts_simulyation' %}">Симуляции</a></li>
+        <li class="line">
+            <a href="{% url 'user_list' %}">Список пользователей</a></li>
+
+        <li class="m-right"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
+        {% else %}
+        <li class="m-right"><a href="{% url 'register' %}">Регистрация</a> | <a
+                href="{% url 'login' %}">Войти</a></li>
+        {% endif %}
+    </ul>
+
+</nav>
+{% endblock %}

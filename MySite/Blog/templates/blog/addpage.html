@@ -9,28 +9,32 @@
 
         <div class="form-error">{{ form.non_field_errors }}</div>
 
-        <!--    {% for f in form %}-->
-        <!--    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>-->
-        <!--    <div class="form-error">{{ f.errors }}</div>-->
-        <!--    {% endfor %}-->
+<!--            {% for f in form %}-->
+<!--            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>-->
+<!--            <div class="form-error">{{ f.errors }}</div>-->
+<!--            {% endfor %}-->
 
         <div class="form-container">
             <div class="form-field">
                 <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
                 {{ form.title }}
+                 <div class="form-error">{{ form.title.errors }}</div>
             </div>
             <div class="form-field">
                 <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label}}:</label>
                 {{ form.description }}
+                <div class="form-error">{{ form.title.errors }}</div>
             </div>
             <div class="form-field">
                 <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
                 {{ form.cat_post }}
+                <div class="form-error">{{ form.title.errors }}</div>
             </div>
             <div class="form-field">
                 <label class="form-label" for="{{ form.new_category.id_for_label }}">
                     {{form.new_category.label}}:</label>
                 {{ form.new_category }}
+                <div class="form-error">{{ form.title.errors }}</div>
             </div>
 
             <div class="form-field">
@@ -40,18 +44,21 @@
                             {{form.time_zayavki.label}}:</label>
                         <input type="time" name="{{ form.time_zayavki.name }}"
                                id="{{ form.time_zayavki.id_for_label }}">
+                        <div class="form-error">{{ form.time_zayavki.errors }}</div>
                     </div>
                     <div class="form-column">
                         <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
                             {{form.time_glybinie.label}}:</label>
                         <input type="time" name="{{ form.time_glybinie.name }}"
                                id="{{ form.time_glybinie.id_for_label }}">
+                        <div class="form-error">{{ form.time_glybinie.errors }}</div>
                     </div>
                 </div>
             </div>
             <div class="form-field">
                 <label class="form-label" for="{{ form.ot_kogo_zayavka.id_for_label }}">{{ form.ot_kogo_zayavka.label }}:</label>
                 {{ form.ot_kogo_zayavka }}
+                <div class="form-error">{{ form.ot_kogo_zayavka.errors }}</div>
             </div>
 
             <label class="form-label">
@@ -62,6 +69,7 @@
             <div class="form-field">
                 <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
                 {{ form.images }}
+                <div class="form-error">{{ form.images.errors }}</div>
             </div>
 
 

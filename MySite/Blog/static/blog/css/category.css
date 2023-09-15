@@ -12,7 +12,7 @@
 .categories li {
   display: inline-block;
   margin: 2px;
-  background-color:#c3d5b1;
+ // background-color:#c3d5b1;
 }
 
 .categories a {

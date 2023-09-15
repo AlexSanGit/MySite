@@ -42,6 +42,7 @@ padding-top: 0px;
     border-radius: 5px;
     padding:5px;
     background: radial-gradient(circle, #2bb8ba, #8ee0e2);
+
     }
 
 .menu-child{
@@ -55,10 +56,6 @@ padding-top: 0px;
 .line {
     margin-right: 20px;
 
-}
-
-.menu li:last-child {
-    margin-right: 0;
 }
 
 .m-right{
@@ -76,19 +73,13 @@ padding-top: 0px;
 .menu a:hover {
     color: #ff9900;
 }
-
-
-@keyframes blink {
-    0%, 100% {
-        color: red; /* Первый цвет */
-    }
-    50% {
-        color: green; /* Второй цвет */
-    }
+.ul menu{
+justify-content: center
 }
+
 .menu {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   list-style: none;
   position: fixed; /* Закрепляет меню на экране */
   top: 0; /* Прикрепляет меню к верху экрана */
@@ -96,15 +87,11 @@ padding-top: 0px;
   background-color: #333; /* Цвет фона меню */
   color: #fff; /* Цвет текста */
   padding: 10px 0; /* Отступы внутри меню */
-  padding-left: 25%; /* Отступы внутри меню */
-  align-items: center;
+  //padding-left: 25%; /* Отступы внутри меню */
   z-index: 1000; /* Определяет позиционирование меню по z-индексу */
   left: 0;
 }
-/* Применение анимации к элементу */
-.notification-blink {
-    animation: blink 1s infinite; /* Мигать каждую секунду бесконечно */
-}
+
 
 /* Медиа-запрос для адаптивности */
 @media screen and (max-width: 768px) {
@@ -121,21 +108,43 @@ padding-top: 0px;
 
     .menu.active {
         display: flex;
-
     }
 
     .menu li {
         margin: 0;
         text-align: center;
         padding: 10px 0;
-
     }
 
     .menu-icon {
         display: flex;
         padding-bottom: 10px; /* Отступы внутри меню */
         padding-top: 0px; /* Отступы внутри меню */
-
-
     }
+}
+
+.notification-icon {
+    color: red; /* Цвет восклицательного знака */
+    font-size: 20px; /* Размер шрифта знака */
+    margin-right: 5px; /* Отступ между знаком и текстом */
+}
+
+.notification-blink {
+    animation: blink 1s infinite alternate; /* Анимация мигания */
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+.notification-icon-mobile {
+    color: red; /* Цвет восклицательного знака */
+    font-size: 20px; /* Размер шрифта знака */
+    position: absolute; /* Абсолютное позиционирование */
+    top: 10px; /* Расположение относительно верхнего края .menu-icon */
+    right: 15px; /* Расположение относительно правого края .menu-icon */
 }
