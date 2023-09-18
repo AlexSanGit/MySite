@@ -45,8 +45,9 @@ class AddPostForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['time_zayavki'].initial = '00:00'
         self.fields['time_glybinie'].initial = '00:00'
+        self.fields['city'].initial = 'asu'
         self.fields['cat_post'].empty_label = "Категория не выбрана"
-        self.fields['title'].label = "Заголовок"
+        self.fields['title'].label = "Краткое описание"
         self.fields['ot_kogo_zayavka'].label = "От кого заявка"
         self.fields['description'].label = "Описание"
         self.fields['images'].label = "Изображение"
@@ -85,8 +86,8 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Posts
-        fields = ['title', 'description',  'cat_post', 'new_category', 'time_zayavki',
-                  'time_glybinie', 'simulyation', 'images', 'ot_kogo_zayavka']
+        fields = ['city', 'title', 'description',  'cat_post', 'new_category', 'time_zayavki',
+                  'time_glybinie', 'simulyation', 'important', 'images', 'ot_kogo_zayavka']
         widgets = {
             # 'title': forms.TextInput(attrs={'cols': 60}),
             # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
@@ -111,6 +112,7 @@ class AddPostForm(forms.ModelForm):
             # Проверка уникальности имени категории
             if Category.objects.filter(name=new_category).exists():
                 raise forms.ValidationError('Категория с таким именем уже существует!')
+
 
 
 # class EditPostForm(forms.ModelForm):

@@ -11,9 +11,9 @@
             {% for post_link, notification in notifications %}
                 <li>
                     {% if post_link %}
-                        <a href="{{ post_link }}">{{ notification }}</a>
+                        <a href="{{ post_link }}">{{ notification}}</a>
                     {% else %}
-                        {{ notification }}
+                       {{ notification }}
                     {% endif %}
                 </li>
             {% endfor %}

@@ -187,3 +187,15 @@ list-style: none; /* Убирает маркеры списка */
   font-style: italic;
   color: #888;
 }
+/* CSS для расположения чекбоксов в ряд */
+.checkbox-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Расстояние между чекбоксами */
+    align-items: center; /* Выравнивание элементов по центру */
+}
+
+/* Стили для чекбоксов */
+.checkbox-row input[type="checkbox"] {
+    margin-right: 5px; /* Расстояние между чекбоксами и текстом */
+}

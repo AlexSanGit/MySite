@@ -42,7 +42,7 @@
                 <p class="text-secondary">Зарегистрирован: {{ user.date_joined }}</p>
                 <!--                        <p class="text-secondary">Ваш Email: {{ user.email }}</p>-->
                 <p class="text-secondary">Глубиные : {{ profile.time_glybinie }}</p>
-                <p class="text-secondary">Глубиные : {{ profile.notifications }}</p>
+
                 <!--                        <p class="text-secondary">Отзывы: {{ profile.review }}</p>-->
                 <!--                        <p class="text-secondary">Рейтинг: {% if profile.rating == 0 %}-->
                 <!--                            Пока нет рейтинга-->
@@ -59,26 +59,44 @@
                 <!--                        </p>-->
             </div>
         </div>
- <!-- Форма обновления профиля -->
+        <!-- Форма обновления профиля -->
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-        <div class="form-container">
-            <div class="form-field">
-                <label class="form-label" for="{{ u_form.first_name.id_for_label }}">
-                    {{ u_form.first_name.label}}:</label>
-                {{ u_form.first_name }}
+            <div class="form-container">
+                <div class="form-field">
+                    <label class="form-label" for="{{ u_form.first_name.id_for_label }}">
+                        {{ u_form.first_name.label}}:</label>
+                    {{ u_form.first_name }}
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="{{ u_form.last_name.id_for_label }}">
+                        {{ u_form.last_name.label}}:</label>
+                    {{ u_form.last_name }}
+                </div>
+                <div class="form-field">
+                    <label class="form-label" for="{{ p_form.city.id_for_label }}">
+                        {{ p_form.city.label}}:</label>
+                    {{ p_form.city}}
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="{{ p_form.city_filter_for_label }}">
+                        Отображаемые записи:</label>
+
+                    <div class="checkbox-row">
+        {% for value, label in p_form.city_filter.field.choices %}
+            <label>
+                <input type="checkbox" name="{{ p_form.city_filter.name }}" value="{{ value }}"
+                       {% if value in p_form.city_filter.value %}checked{% endif %}>
+                {{ label }}
+            </label>
+        {% endfor %}
+    </div>
+                </div>
             </div>
+
             <div class="form-field">
-                <label class="form-label" for="{{ u_form.last_name.id_for_label }}">
-                    {{ u_form.last_name.label}}:</label>
-                {{ u_form.last_name }}
-            </div>
-            <div class="form-field">
-                <label class="form-label" for="{{ p_form.city.id_for_label }}">
-                    {{ p_form.city.label}}:</label>
-                {{ p_form.city}}
-            </div>
-            <div class="form-field">
+
                 <label class="form-label" for="{{ p_form.phone_for_label }}">
                     {{ p_form.phone.label}}:</label>
                 {{ p_form.phone}}
@@ -86,18 +104,18 @@
             <div class="form-field">
                 <label class="form-label" for="{{ p_form.image_for_label }}">
                     {{ p_form.image.label}}:</label>
-            <div class="form-image">   {{ p_form.image}} </div>
+                <div class="form-image"> {{ p_form.image}}</div>
             </div>
-        </div>
-
-
-            <div class="form-group">
-                <button class="button" type="submit">Обновить</button>
-            </div>
-        </form>
-
-
     </div>
+
+
+    <div class="form-group">
+        <button class="button" type="submit">Обновить</button>
+    </div>
+    </form>
+
+
+</div>
 </div>
 <!--<script>-->
 

@@ -19,7 +19,7 @@
         {% for p in posts %}
         <li class="content-index2">
             <div>
-                <!--                <p>Оборудование: <a class="index-title" > {{p.cat_post}} </a> </p>-->
+                <p class ="uchastok_title" >Участок:  {{p.get_city_display}} </p>
                 <p>Оборудование:
                     {% if p.cat_post.parent %}
                     <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.parent.slug %}">

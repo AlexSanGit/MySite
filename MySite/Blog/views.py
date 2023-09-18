@@ -1,4 +1,6 @@
 import random
+import re
+
 from Blog.menu import DataMixin, menu
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -26,7 +28,23 @@ class HomePage(LoginRequiredMixin, DataMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(is_published=True)  # only show published posts
+        queryset = queryset.filter(is_published=True)  # Только опубликованные посты
+
+        # Получите профиль текущего пользователя, если он аутентифицирован
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+
+            # Получите выбранные города из профиля пользователя
+            selected_cities = profile.city_filter.split(",") if profile.city_filter else []
+
+            # Если есть выбранные города, фильтруйте посты по ним
+            if selected_cities:
+                city_filter_q = Q()
+                for city in selected_cities:
+                    city_filter_q |= Q(city=city)
+                queryset = queryset.filter(city_filter_q)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -136,6 +154,8 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # obj.save()
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
+        obj.city = form.cleaned_data['city']
+        # Установите начальное значение для city_filter
         obj.time_zayavki = form.cleaned_data['time_zayavki']
         obj.time_glybinie = form.cleaned_data['time_glybinie']
         obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
@@ -369,16 +389,18 @@ def show_notifications(request):
     processed_notifications = []
     for notification in notifications:
         if "Пост" in notification:
-            post_title = notification.split('"')[1]
-            post_slug = notification.split('"')[3].strip()
-            print(post_slug)
-            try:
-                post = Posts.objects.get(slug=post_slug)
-                post_link = str(post.get_absolute_url())
-                processed_notifications.append((post_link, notification))
-            except Posts.DoesNotExist:
-                # Если пост не существует, удаляем уведомление из профиля пользователя
-                continue
+            # Ищем ссылку на пост с помощью регулярного выражения
+            match = re.search(r'Нажмите чтобы перейти: (.*?)$', notification)
+            if match:
+                post_link = match.group(1).strip()
+                post_slug = post_link.split('/')[-2]  # Извлекаем slug из post_link
+                try:
+                    post = Posts.objects.get(slug=post_slug)
+                    post_link = str(post.get_absolute_url())
+                    processed_notifications.append((post_link, notification))
+                except Posts.DoesNotExist:
+                    # Если пост не существует, удаляем уведомление из профиля пользователя
+                    continue
         else:
             processed_notifications.append((None, notification))
 
@@ -409,12 +431,11 @@ def show_notifications(request):
 #
 #     return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
 
-
 def clear_notifications(request):
     profile = Profile.objects.get(user=request.user)
     profile.notifications = ''
     profile.save()
-    return redirect('show_notifications')
+    return redirect('home')
 
 
 class UserListView(DataMixin, ListView):

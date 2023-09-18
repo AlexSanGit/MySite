@@ -14,6 +14,10 @@ class Profile(models.Model):
     phone = models.IntegerField(default=0, blank=True)
     notifications = models.TextField(blank=True, null=True)
     time_glybinie = models.TimeField(blank=True, null=True)
+    city_filter = models.CharField(
+        max_length=255,  # Укажите подходящую максимальную длину
+        blank=True,
+    )
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'

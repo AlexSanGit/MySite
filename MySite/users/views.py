@@ -55,9 +55,7 @@ def profile(request, user_id):
 
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(request.POST,
-                                   request.FILES,
-                                   instance=request.user.profile)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid():
              # Обновление фото
             if 'image' in request.FILES:
@@ -67,6 +65,14 @@ def profile(request, user_id):
             last_name =  u_form.cleaned_data.get('last_name')
             phone = p_form.cleaned_data.get('phone')
             prof.phone = phone
+
+            # Получите выбранные города из формы и преобразуйте их в строку
+            selected_cities = p_form.cleaned_data.get('city_filter', [])
+            city_filter_value = ",".join(selected_cities)
+            print(city_filter_value)
+             # Сохраните значение в модели Profile
+            prof.city_filter = city_filter_value
+
             city = request.POST.get('city', '')
             prof.city = city
             # u_form.save()
@@ -85,8 +91,9 @@ def profile(request, user_id):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
-    user = get_object_or_404(User, id=user_id)
-    prof = get_object_or_404(Profile, user=user)
+
+    # user = get_object_or_404(User, id=user_id)
+    # prof = get_object_or_404(Profile, user=user)
     context = {
         'u_form': u_form,
         'p_form': p_form,

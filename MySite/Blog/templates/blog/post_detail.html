@@ -15,6 +15,7 @@
 {% endif %}
 
 <div class="content-index">
+    <p class ="uchastok_title" >Участок:  {{post.get_city_display}} </p>
     <p>Оборудование:
         {% if post.cat_post.parent %}
         <span class="uchastok_title"> {{post.cat_post.parent}}-</span>

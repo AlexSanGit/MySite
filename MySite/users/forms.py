@@ -47,9 +47,14 @@ class ProfileUpdateForm(forms.ModelForm):
     # is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
     image = forms.ImageField(label='Фото', required=False, widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
     phone = forms.IntegerField(required=False, label="Сот.телефон")
+    city_filter = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,  # Для отображения как чекбоксы
+        choices=CITY_CHOICES,  # Ваш список городов
+    )
 
     class Meta:
         model = Profile
-        fields = ['city',  'phone', 'image']
+        fields = ['city',  'phone', 'image', 'city_filter']
 
 

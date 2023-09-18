@@ -20,6 +20,11 @@
         {% csrf_token %}
         <div class="form-container">
             <div class="form-field">
+                <label class="form-label" for="{{ form.city.id_for_label }}">Участок:</label>
+                {{ form.city }}
+                <div class="form-error">{{ form.city.errors }}</div>
+            </div>
+            <div class="form-field">
                 <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
                 {{ form.title }}
             </div>

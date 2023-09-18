@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.html import strip_tags
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
+from users.choices.city_choices import CITY_CHOICES
 from users.models import Profile
 
 
@@ -29,11 +30,13 @@ class Posts(models.Model):
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_published = models.BooleanField(default=True, verbose_name="Публикация")
     cat_post = models.ForeignKey('Category', on_delete=models.PROTECT, blank=True, verbose_name="Оборудование")
-    city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
+    # city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
+    city = models.CharField(max_length=3, choices=CITY_CHOICES, blank=True, null=True)
     time_zayavki = models.TimeField(verbose_name="Время заявки", default='00:00')
     time_glybinie = models.TimeField(verbose_name="Глубиные:", default='00:00')
     simulyation = models.BooleanField(default=False, verbose_name="Симуляция")
     ot_kogo_zayavka = models.CharField(max_length=50, verbose_name="От кого заявка", null=True)
+    important = models.BooleanField(default=False, verbose_name="Важное")
 
     def __str__(self):
         return self.title
@@ -152,13 +155,20 @@ def send_notification_to_author(sender, instance, created, **kwargs):
         # Сохраняем уведомление в профиле пользователя
         profile, created = Profile.objects.get_or_create(user=post_author)
         post_title = instance.article.title
-        post_slug = instance.article.slug
-        post_link = Posts.objects.get(slug=post_slug).get_absolute_url()  # Используйте get_absolute_url()
-        # post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
-        # print(post_link)
+        post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
 
         if profile.notifications:
-            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. Нажмите чтобы перейти.'
+            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. ' \
+                                     f'Нажмите чтобы перейти: {post_link}'
         else:
-            profile.notifications = f'Пост "{post_title}" получил новый комментарий. Нажмите чтобы перейти.'
+            profile.notifications = f'\nПост "{post_title}" получил новый комментарий. ' \
+                                     f'Нажмите чтобы перейти: {post_link}'
         profile.save()
+
+# if profile.notifications:
+#     profile.notifications += f'\nПользователь "{comment_author}" написал комментарий к "{post_title}". ' \
+#                              f'Нажмите чтобы перейти к посту: {post_link}'
+# else:
+#     profile.notifications = f'\nПользователь "{comment_author}" написал коментарий к "{post_title}".' \
+#                             f' Нажмите чтобы перейти.'
+# profile.save()
