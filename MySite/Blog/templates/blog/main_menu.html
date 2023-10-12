@@ -36,8 +36,11 @@
 
         <li class="line">
             <a href="{% url 'posts_simulyation' %}">Симуляции</a></li>
+         <li class="line">
+            <a href="{% url 'posts_important' %}">Важные</a></li>
         <li class="line">
             <a href="{% url 'user_list' %}">Список пользователей</a></li>
+
 
         <li class="m-right"> Привет {{user.username}} | <a href="{% url 'logout' %}">Выйти</a></li>
         {% else %}

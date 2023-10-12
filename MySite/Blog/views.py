@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.forms import inlineformset_factory, modelform_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, request
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView
@@ -66,9 +66,6 @@ class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
     context_object_name = 'post'
     form_class = CommentForm
     success_msg = 'Коментарий создан'
-
-    # def get_success_url(self, **kwargs):
-    #     return reverse('post', kwargs={'post_slug': self.object.article.slug})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -161,6 +158,11 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
         simulyation_value = form.cleaned_data.get('simulyation', False)
         form.instance.simulyation = simulyation_value
+        # Получение второго пользователя из формы
+        second_user = form.cleaned_data.get('second_user')
+        if second_user:
+            obj.second_user = second_user
+
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -236,9 +238,20 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # Создать новую строку времени в формате "часы:минуты"
         updated_time_glybinie = f"{new_hours:02}:{new_minutes:02}"
 
-        # Обновить значение в профиле пользователя
-        self.request.user.profile.time_glybinie = updated_time_glybinie
-        self.request.user.profile.save()
+        # Если текущий день месяца равен 1, обнулите поле glubinie
+        # Получите текущую дату и время
+        now = datetime.now()
+        if now.day == 1:
+            zero_time_glybinie = f"{00:02}:{00:02}"
+            # Получите всех пользователей и обнулите поле glubinie для их профилей
+            users = User.objects.all()
+            for user in users:
+                user.profile.time_glybinie = zero_time_glybinie
+                user.profile.save()
+        else:
+            # Обновить значение в профиле пользователя
+            self.request.user.profile.time_glybinie = updated_time_glybinie
+            self.request.user.profile.save()
 
         return HttpResponseRedirect(reverse('home'))
 
@@ -270,8 +283,11 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         simulyation_value = form.cleaned_data['simulyation']
         post.simulyation = simulyation_value
+        # second_user = self.request.POST.get('second_user')
+        second_user = form.cleaned_data['second_user']
+        post.second_user = second_user
 
-        print(simulyation_value)
+        # print(simulyation_value)
         # Присваиваем значения времени посту
         post.time_zayavki = time_zayavki
         post.time_glybinie = time_glybinie
@@ -339,7 +355,21 @@ class PostsSimulyationView(DataMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Добавить запись")
+        c_def = self.get_user_context(title="Симуляции")
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class PostsImportantView(DataMixin, ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Posts.objects.filter(important=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Важные записи")
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -411,26 +441,6 @@ def show_notifications(request):
     return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
 
 
-# Отображение уведомлений
-# def show_notifications(request):
-#     profile = Profile.objects.get(user=request.user)
-#     notifications = profile.notifications.split('\n') if profile.notifications else []
-#
-#     processed_notifications = []
-#     for notification in notifications:
-#         if "Пост" in notification:
-#             post_title = notification.split('"')[1]
-#             try:
-#                 post = get_object_or_404(Posts, slug=post_title)
-#                 post_link = str(post.get_absolute_url())
-#                 processed_notifications.append((post_link, notification))
-#             except Posts.DoesNotExist:
-#                 processed_notifications.append((None, notification))
-#         else:
-#             processed_notifications.append((None, notification))
-#
-#     return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
-
 def clear_notifications(request):
     profile = Profile.objects.get(user=request.user)
     profile.notifications = ''
@@ -453,36 +463,3 @@ class UserListView(DataMixin, ListView):
 def welcome(request):
     return render(request, 'blog/welcome.html')
 
-# class RegisterUser(CreateView):
-#     form_class = RegisterUserForm
-#     template_name = 'blog/register.html'
-#     success_url = reverse_lazy('home')
-#
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         user = form.save()
-#         login(self.request, user)
-#         return response
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Регистрация'
-#         return context
-#
-#
-# class LoginUser(LoginView):
-#     form_class = LoginUserForm
-#     template_name = 'blog/login.html'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Авторизация'
-#         return context
-#
-#     def get_success_url(self):
-#         return reverse_lazy('home')
-#
-#
-# def logout_user(request):
-#     logout(request)
-#     return redirect('login')

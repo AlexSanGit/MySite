@@ -63,9 +63,18 @@
             </div>
 
                 <label class="form-label-sim" for="{{ form.simulyation.id_for_label }}">
-                    Есть симуляция:
+                 <span class="sim-import ">
+                 <span>   Есть симуляция: {{ form.simulyation }} </span>
+                 <span>      Важное: {{ form.important}}</span>
+                 </span>
                 </label>
-                {{ form.simulyation }}
+            <div class="form-field">
+                <label class="form-label" for="{{ form.second_user.id_for_label }}">
+                    {{ form.second_user.label}}</label>
+                {{ form.second_user }}
+                <div class="form-error">{{ form.second_user.errors }}</div>
+            </div>
+
 
             <div class="form-field">
                 <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:

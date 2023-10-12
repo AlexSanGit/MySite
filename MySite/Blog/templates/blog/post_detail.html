@@ -16,15 +16,21 @@
 
 <div class="content-index">
     <p class ="uchastok_title" >Участок:  {{post.get_city_display}} </p>
+    <p>Время записи: <span style="font-weight: bold;" > {{post.time_update|date:"d-m-Y H:i"}} </span> </p>
     <p>Оборудование:
         {% if post.cat_post.parent %}
         <span class="uchastok_title"> {{post.cat_post.parent}}-</span>
         {% endif %}
         <span class="uchastok_title">{{post.cat_post.name}}</span>
-        <span style="font-weight: bold;color:red">{% if post.simulyation %}
-            Есть симуляция!
-        {% endif %}
-        </span></p>
+
+            {% if post.simulyation %}
+                    <span style="font-weight: bold;color:red;padding-right:10;">Есть симуляция!</span>
+                    {% endif %}
+
+                    {% if post.important %}
+                    <span style="font-weight: bold;color:red">Важное!</span>
+                    {% endif %}
+    </p>
     Заголовок :
     <div class="title-detail-post">
         {{post.title}}
@@ -63,15 +69,18 @@
     </div>
 
     <p>От кого заявка:<span class="post-description"> {{post.ot_kogo_zayavka}}</span>
+
     <div class="post-time"> Время вызова: {{post.time_zayavki}}</div>
-    <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
-        {{ profile.get_city_display}} ({{user.username }})
-        {{post.time_update|date:"d.m.Y H:i"}}
+    <p class="user-post"> Исполнил: {{ user.first_name }} {{ user.last_name }}
+        {{ profile.get_city_display}}
+
 
         <img class="avatar" src="{{ post.author.profile.image.url }}"
              alt="Avatar"/>
     </p>
-
+     {% if post.second_user %}
+    <p class="user-post"> Совместно с {{post.second_user.first_name}} {{post.second_user.last_name}} </p>
+     {% endif %}
     {% if user.is_authenticated and user == post.author %}
     <!-- Элементы, которые будут видны только автору поста -->
     <a class="button" href="{% url 'post-update' object.id %}">Редактировать</a>

@@ -44,6 +44,7 @@
 .form-label-sim {
     color: red; /* Синий цвет метки */
     font-weight: bold;
+    margin-right:15px;
 }
 
 .form-field {
@@ -133,7 +134,8 @@ list-style: none; /* Убирает маркеры списка */
 /* Стили для обычного состояния */
 .comments-form {
     width: 100%; /* Занимает 100% ширины контейнера */
-    padding: 10px;
+    padding: 5px;
+    margin-top:10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
@@ -143,7 +145,8 @@ list-style: none; /* Убирает маркеры списка */
 @media screen and (max-width: 768px) {
 .comments-form {
     width: 100%; /* Занимает 100% ширины контейнера */
-    padding: 10px;
+    padding: 5px;
+    margin-top:10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
@@ -198,4 +201,9 @@ list-style: none; /* Убирает маркеры списка */
 /* Стили для чекбоксов */
 .checkbox-row input[type="checkbox"] {
     margin-right: 5px; /* Расстояние между чекбоксами и текстом */
+}
+
+.sim-import {
+  display: flex;
+  justify-content: space-around; /* Равномерное распределение между элементами */
 }

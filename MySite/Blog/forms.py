@@ -1,13 +1,7 @@
 from Blog.models import Comments, Posts, Category
-from django.utils.html import strip_tags
-
-from .widgets import MultipleFileInput
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django import forms
-from django.core.exceptions import ValidationError
-
-from django.http import request
 from multiupload.fields import MultiFileField
 
 
@@ -40,11 +34,18 @@ class AddPostForm(forms.ModelForm):
     new_category = forms.CharField(label='Добавить новое оборудование', max_length=40, required=False)
     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024*1024*5, required=False)
     ot_kogo_zayavka = forms.CharField(required=False)
+    second_user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        required=False,
+        label='Совместно с ..'
+       )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['time_zayavki'].initial = '00:00'
         self.fields['time_glybinie'].initial = '00:00'
+        self.fields['second_user'].empty_label = "Не выбрано"
+        self.fields['second_user'].label_from_instance = self.label_from_instance
         self.fields['city'].initial = 'asu'
         self.fields['cat_post'].empty_label = "Категория не выбрана"
         self.fields['title'].label = "Краткое описание"
@@ -84,10 +85,13 @@ class AddPostForm(forms.ModelForm):
                 subcategories.extend(self.get_subcategories(child, depth + 1))
         return subcategories
 
+    def label_from_instance(self, obj):
+        return f"{obj.first_name} {obj.last_name}" if obj.first_name else obj.username
+
     class Meta:
         model = Posts
         fields = ['city', 'title', 'description',  'cat_post', 'new_category', 'time_zayavki',
-                  'time_glybinie', 'simulyation', 'important', 'images', 'ot_kogo_zayavka']
+                  'time_glybinie', 'simulyation', 'important', 'images', 'ot_kogo_zayavka', 'second_user']
         widgets = {
             # 'title': forms.TextInput(attrs={'cols': 60}),
             # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
@@ -114,10 +118,3 @@ class AddPostForm(forms.ModelForm):
                 raise forms.ValidationError('Категория с таким именем уже существует!')
 
 
-
-# class EditPostForm(forms.ModelForm):
-#     images = MultiFileField(min_num=1, max_num=3, max_file_size=1024 * 1024 * 5, required=False)
-#
-#     class Meta:
-#         model = Posts
-#         fields = ['title', 'description', 'images', 'cat_post']

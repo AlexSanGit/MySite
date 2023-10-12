@@ -1,13 +1,8 @@
-from django.contrib import messages
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.html import strip_tags
 from mptt.fields import TreeForeignKey
 from mptt.models import MPTTModel
 from users.choices.city_choices import CITY_CHOICES
@@ -37,6 +32,7 @@ class Posts(models.Model):
     simulyation = models.BooleanField(default=False, verbose_name="Симуляция")
     ot_kogo_zayavka = models.CharField(max_length=50, verbose_name="От кого заявка", null=True)
     important = models.BooleanField(default=False, verbose_name="Важное")
+    second_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='second_user_posts', null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -75,27 +71,6 @@ class Category(MPTTModel):
         ordering = ['id']
 
 
-class Message(models.Model):
-    post = models.ForeignKey(Posts, on_delete=models.CASCADE)
-    sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.CASCADE)
-    message = models.TextField()
-    sent_time = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.message
-
-
-class Offer(models.Model):
-    post = models.ForeignKey(Posts, on_delete=models.CASCADE)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    address = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.price
-
-
 class Comments(models.Model):
     article = models.ForeignKey(Posts, on_delete=models.CASCADE, verbose_name='Статья', blank=True, null=True,
                                 related_name='comments_posts')
@@ -115,30 +90,6 @@ class Comments(models.Model):
         return 'Comment by {} on {}'.format(self.author, self.article)
 
 
-# @receiver(post_save, sender=Comments)
-# def send_notification_to_author(sender, instance, created, **kwargs):
-#     if created:
-#         # Получаем автора комментария
-#         comment_author = instance.author
-#
-#         # Получаем автора поста
-#         post_author = instance.article.author
-#
-#         # Формируем URL для просмотра комментария
-#         comment_url = reverse('comment_detail',
-#                               args=[instance.id])  # Здесь 'comment_detail' - это имя URL для просмотра комментария
-#
-#         # Формируем текст и html для письма
-#         subject = 'У вас новый комментарий к посту'
-#         message = f'Здравствуйте, {post_author.username}!\n\nУ вас новый комментарий к вашему посту "{instance.article.title}".\n\nВы можете просмотреть его по этой ссылке:\n{comment_url}'
-#         html_message = f'Здравствуйте, {post_author.username}!<br><br>У вас новый комментарий к вашему посту "{instance.article.title}".<br><br>Вы можете просмотреть его по этой <a href="{comment_url}">ссылке</a>.'
-#
-#         # Отправляем уведомление
-#         send_mail(subject, message, None, [post_author.email], html_message=html_message)
-
-
-# myapp/models.py
-
 @receiver(post_save, sender=Comments)
 def send_notification_to_author(sender, instance, created, **kwargs):
     if created:
@@ -150,25 +101,18 @@ def send_notification_to_author(sender, instance, created, **kwargs):
 
         # Закомментируйте или удалите это условие,
         # чтобы уведомления отправлялись даже автору поста
-        # if comment_author != post_author:
+        if comment_author != post_author:
+            # Сохраняем уведомление в профиле пользователя
+            profile, created = Profile.objects.get_or_create(user=post_author)
+            post_title = instance.article.title
+            post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
 
-        # Сохраняем уведомление в профиле пользователя
-        profile, created = Profile.objects.get_or_create(user=post_author)
-        post_title = instance.article.title
-        post_link = instance.article.get_absolute_url()  # Получаем ссылку на пост
+            if profile.notifications:
+                profile.notifications += f'\nПост "{post_title}" получил новый комментарий. ' \
+                                         f'Нажмите чтобы перейти: {post_link}'
+            else:
+                profile.notifications = f'\nПост "{post_title}" получил новый комментарий. ' \
+                                         f'Нажмите чтобы перейти: {post_link}'
+            profile.save()
 
-        if profile.notifications:
-            profile.notifications += f'\nПост "{post_title}" получил новый комментарий. ' \
-                                     f'Нажмите чтобы перейти: {post_link}'
-        else:
-            profile.notifications = f'\nПост "{post_title}" получил новый комментарий. ' \
-                                     f'Нажмите чтобы перейти: {post_link}'
-        profile.save()
 
-# if profile.notifications:
-#     profile.notifications += f'\nПользователь "{comment_author}" написал комментарий к "{post_title}". ' \
-#                              f'Нажмите чтобы перейти к посту: {post_link}'
-# else:
-#     profile.notifications = f'\nПользователь "{comment_author}" написал коментарий к "{post_title}".' \
-#                             f' Нажмите чтобы перейти.'
-# profile.save()

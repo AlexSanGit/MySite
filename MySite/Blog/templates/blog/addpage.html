@@ -61,12 +61,19 @@
                 {{ form.ot_kogo_zayavka }}
                 <div class="form-error">{{ form.ot_kogo_zayavka.errors }}</div>
             </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.second_user.id_for_label }}">
+                    {{ form.second_user.label}}</label>
+                {{ form.second_user }}
+                <div class="form-error">{{ form.second_user.errors }}</div>
+            </div>
 
             <label class="form-label">
                 <input type="checkbox" id="is_featured" name="is_featured">
-                <span style="font-weight: bold;color:red">Симуляция! </span>
+                <span style="font-weight: bold;color:red;padding-right:10px;">Симуляция! </span>
+
                 <input type="checkbox" id="important" name="important">
-                <span style="font-weight: bold;color:red">Важное! </span>
+                <span style="font-weight: bold;color:red;">Важное! </span>
 
             </label>
 
