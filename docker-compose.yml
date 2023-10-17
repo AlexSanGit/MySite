@@ -1,7 +1,7 @@
 services:
   web-app:
     build:
-      context: .
+      context: ..
     ports:
       - "8000:8000"
     volumes:

@@ -3,6 +3,13 @@
 {% load custom_tags %}
 
 {% block content %}
+<!--{% if form.errors %}-->
+<!--    <ul class="form-errors">-->
+<!--        {% for field, error_list in form.errors.items %}-->
+<!--            <li>{{ field }}: {{ error_list|join:", " }}</li>-->
+<!--        {% endfor %}-->
+<!--    </ul>-->
+<!--{% endif %}-->
 
 {% if messages %}
 <ul class="messages">
@@ -23,12 +30,24 @@
 
         <div class="form-field">
             <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
-            {{ form.username}}
+            {{ form.username }}
+            <div class="form-error">{% if form.errors %}
+    <ul class="form-errors">
+        {% for field, error_list in form.errors.items %}
+            {% if field == '__all__' %}
+                <li>{{ error_list|join:", " }}</li>
+            {% else %}
+                <li>{{ field }}: {{ error_list|join:", " }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}</div>
         </div>
 
         <div class="form-field">
             <label class="form-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label>
             {{ form.password }}
+            <div class="form-error">{{ form.password.errors }}</div>
         </div>
 
 
