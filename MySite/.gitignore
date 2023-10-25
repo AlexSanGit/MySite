@@ -1,0 +1,7 @@
+
+/venv/
+/.idea/
+/MySite/media/
+/MySite/users/migrations/
+/MySite/Blog/migrations/
+/__pycache__/

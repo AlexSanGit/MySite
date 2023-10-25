@@ -1,27 +1,25 @@
 import random
-from io import BytesIO
+import re
 
-from PIL import Image
+from Blog.menu import DataMixin, menu
 from django.contrib import messages
-from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Q
-from django.http import request, Http404
+from django.forms import inlineformset_factory, modelform_factory
+from django.http import HttpResponseRedirect, request
 from django.shortcuts import redirect, render, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
-from Blog.forms import CommentForm, AddPostForm, RegisterUserForm, LoginUserForm
-from Blog.models import Posts, Category, CustomImage
-from Blog.utils import DataMixin, menu
+from Blog.forms import CommentForm, AddPostForm
+from Blog.models import Posts, Category, CustomImage, Comments
+from users.models import Profile, User
+from datetime import datetime, timedelta
 
 
-class HomePage(DataMixin, ListView):
+class HomePage(LoginRequiredMixin, DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
@@ -30,27 +28,44 @@ class HomePage(DataMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(is_published=True)  # only show published posts
+        queryset = queryset.filter(is_published=True)  # Только опубликованные посты
+
+        # Получите профиль текущего пользователя, если он аутентифицирован
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+
+            # Получите выбранные города из профиля пользователя
+            selected_cities = profile.city_filter.split(",") if profile.city_filter else []
+
+            # Если есть выбранные города, фильтруйте посты по ним
+            if selected_cities:
+                city_filter_q = Q()
+                for city in selected_cities:
+                    city_filter_q |= Q(city=city)
+                queryset = queryset.filter(city_filter_q)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         posts = self.get_queryset()
         context['posts'] = posts
+        # Получите профиль текущего пользователя
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            context['profile'] = profile
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class PostDetail(DataMixin, DetailView, FormMixin):
+class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
     model = Posts
     template_name = 'blog/post_detail.html'
     slug_url_kwarg = 'post_slug'
     context_object_name = 'post'
     form_class = CommentForm
     success_msg = 'Коментарий создан'
-
-    def get_success_url(self, **kwargs):
-        return reverse_lazy('home')
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -59,43 +74,60 @@ class PostDetail(DataMixin, DetailView, FormMixin):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):         # проверка поля коментария
+    def get_success_url(self, **kwargs):
+        return reverse('post', kwargs={'post_slug': self.object.article.slug})
+
+    def form_valid(self, form):  # проверка поля коментария
         self.object = form.save(commit=False)
         self.object.article = self.get_object()
         self.object.author = self.request.user
         self.object.save()
         return super().form_valid(form)
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # context['title'] = str(Posts.title)
-    #     c_def = self.get_user_context(title='Страница поста')
+    def get_object(self, queryset=None):
+        # Используйте filter() для получения записи с определенным slug
+        return get_object_or_404(Posts, slug=self.kwargs['post_slug'])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
         context['post_images'] = post.post_images.all()
         context['title'] = 'Страница поста'
+        # Получаем профиль пользователя текущего поста
+        profile = User.objects.get(username=self.object.author).profile
+        context['profile'] = profile
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 
-        # return dict(list(context.items()) + list(c_def.items()))
 
-
-class CategoryPosts(DataMixin, ListView):
+class CategoryPosts(LoginRequiredMixin, DataMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
 
+    # def get_queryset(self):
+    #     category_slug = self.kwargs['cat_slug']
+    #     # Get the child category using the slug from the URL
+    #     child_category = Category.objects.get(slug=category_slug)
+    #
+    #     # If the selected category is a parent category, get all posts for its descendants
+    #     if not child_category.is_leaf_node():
+    #         return Posts.objects.filter(
+    #             Q(cat_post__in=child_category.get_descendants(include_self=True)),
+    #             is_published=True)
+    #
+    #     # If the selected category is a leaf node (a child category), get posts for the specific category only
+    #     return Posts.objects.filter(cat_post=child_category, is_published=True)
     def get_queryset(self):
         category_slug = self.kwargs['cat_slug']
+
         # Get the child category using the slug from the URL
         child_category = Category.objects.get(slug=category_slug)
 
         # If the selected category is a parent category, get all posts for its descendants
-        if not child_category.is_leaf_node():
+        if child_category.parent_id is None:
             return Posts.objects.filter(
-                Q(cat_post__in=child_category.get_descendants(include_self=True)),
+                Q(cat_post__parent_id=child_category.id) | Q(cat_post=child_category),
                 is_published=True)
 
         # If the selected category is a leaf node (a child category), get posts for the specific category only
@@ -104,7 +136,7 @@ class CategoryPosts(DataMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         c = Category.objects.get(slug=self.kwargs['cat_slug'])
-        c_def = self.get_user_context(title='Категория - ' + str(c.name), cat_selected=c.pk)
+        c_def = self.get_user_context(title='Категория - ' + str(c.name))
         return dict(list(context.items()) + list(c_def.items()))
 
 
@@ -119,6 +151,18 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # obj.save()
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
+        obj.city = form.cleaned_data['city']
+        # Установите начальное значение для city_filter
+        obj.time_zayavki = form.cleaned_data['time_zayavki']
+        obj.time_glybinie = form.cleaned_data['time_glybinie']
+        obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
+        simulyation_value = form.cleaned_data.get('simulyation', False)
+        form.instance.simulyation = simulyation_value
+        # Получение второго пользователя из формы
+        second_user = form.cleaned_data.get('second_user')
+        if second_user:
+            obj.second_user = second_user
+
 
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
@@ -130,35 +174,86 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         form.instance.slug = slug
 
         new_category = form.cleaned_data.get('new_category')
+        main_category = form.cleaned_data.get('cat_post')
+        # print(main_category, new_category)
+
         if new_category:
-            # Проверка уникальности имени категории
-            if Category.objects.filter(name=new_category).exists():
-                messages.error(self.request, 'Категория с таким именем уже существует.')
-                return self.form_invalid(form)
+            # Получение объекта основной категории
+            try:
+                # Попытка получить уже существующую категорию с указанным именем
+                category = Category.objects.get(name=new_category)
+            except Category.DoesNotExist:
+                # Если категория не существует, создаем новую
+                slug = slugify(new_category)
+                category = Category.objects.create(name=new_category, slug=slug)
+                # Связываем пост с выбранной или созданной категорией
+                obj.cat_post = category
 
-            # Создание новой категории
-            slug = slugify(new_category)
-            category, created = Category.objects.get_or_create(name=new_category, slug=slug)
+            # Проверка, что новая категория не является родителем основной категории
+            if new_category and main_category is not None:
+                if category.is_descendant_of(main_category):
+                    messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
+                else:
+                    try:
+                        category.parent = main_category
+                        category.save()
+                    except Exception as e:
+                        # Обработка возможных ошибок при установке родителя
+                        messages.error(self.request, 'Ошибка при установке родителя для новой категории.')
 
-            # Связывание поста с новой категорией
-            obj.cat_post = category
+            else:
+                # Вывод сообщения об ошибке
+                messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
 
         try:
             obj.save()
             for file in files:
                 CustomImage.objects.create(post=obj, image=file)
 
-            response = super().form_valid(form)  # Сохраняем пост
         except ValidationError as e:
+            print(e)
             # если возникает ошибка уникальности поля, генерируем новый slug и пытаемся сохранить объект поста еще раз
             if 'slug' in e.error_dict:
                 slug = f"{slug}-{random.randint(1, 1000)}"
                 form.instance.slug = slug
-                response = super().form_valid(form)
+                return self.form_valid(form)
             else:
                 raise e
 
-        return response
+        # Получить время из объекта time_glybinie
+        post_time_glybinie = obj.time_glybinie
+
+        # Получить текущее время из профиля пользователя
+        current_time_glybinie = self.request.user.profile.time_glybinie
+
+        # Выполнить операции с часами и минутами
+        new_hours = current_time_glybinie.hour + post_time_glybinie.hour
+        new_minutes = current_time_glybinie.minute + post_time_glybinie.minute
+
+        # Проверить, если минуты превысили 60, скорректировать часы и минуты
+        if new_minutes >= 60:
+            new_hours += new_minutes // 60
+            new_minutes = new_minutes % 60
+
+        # Создать новую строку времени в формате "часы:минуты"
+        updated_time_glybinie = f"{new_hours:02}:{new_minutes:02}"
+
+        # Если текущий день месяца равен 1, обнулите поле glubinie
+        # Получите текущую дату и время
+        now = datetime.now()
+        if now.day == 1:
+            zero_time_glybinie = f"{00:02}:{00:02}"
+            # Получите всех пользователей и обнулите поле glubinie для их профилей
+            users = User.objects.all()
+            for user in users:
+                user.profile.time_glybinie = zero_time_glybinie
+                user.profile.save()
+        else:
+            # Обновить значение в профиле пользователя
+            self.request.user.profile.time_glybinie = updated_time_glybinie
+            self.request.user.profile.save()
+
+        return HttpResponseRedirect(reverse('home'))
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -172,25 +267,54 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     form_class = AddPostForm
     template_name = 'blog/edit_posts_form.html'
     # fields = ['title', 'description', 'cat_post', 'images']
-    success_url = reverse_lazy('home')
+    # Определите, какие поля требуется обработать в формсете изображений
+    PostImageFormSet = inlineformset_factory(Posts, CustomImage, fields=('image',), extra=1)
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
+        formset = self.PostImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
+        new_images = self.request.FILES.getlist('images')
+        deleted_images_count = 0
 
-        # Получение списка файлов
-        files = self.request.FILES.getlist('images')
+        # Получаем значения времени из POST-запроса
+        time_zayavki = self.request.POST.get('time_zayavki')
+        time_glybinie = self.request.POST.get('time_glybinie')
 
-        # Удаление предыдущих изображений поста
-        for image in post.post_images.all():
-            image_path = image.image.path
-            default_storage.delete(image_path)
-        post.post_images.clear()
+        simulyation_value = form.cleaned_data['simulyation']
+        post.simulyation = simulyation_value
+        # second_user = self.request.POST.get('second_user')
+        second_user = form.cleaned_data['second_user']
+        post.second_user = second_user
 
-        for file in files:
-            CustomImage.objects.create(post=post, image=file)
+        # print(simulyation_value)
+        # Присваиваем значения времени посту
+        post.time_zayavki = time_zayavki
+        post.time_glybinie = time_glybinie
 
-        messages.success(self.request, 'Пост обновлен.')
+        # Обработайте удаление изображений
+        for image in self.object.post_images.all():
+            delete_field_name = f"delete_image_{image.id}"
+            if self.request.POST.get(delete_field_name) == "True":
+                image.delete()
+                deleted_images_count += 1
+
+        existing_images_count = len(self.object.post_images.all()) - deleted_images_count
+        total_images_count = existing_images_count + len(new_images)
+
+        if total_images_count > 3:
+            messages.error(self.request, 'Максимальное количество изображений - 3.')
+            return self.form_invalid(form)
+        else:
+            # Обработайте формсет изображений
+            if formset.is_valid():
+                formset.save()
+
+            # Создание новых изображений
+            for file in new_images:
+                CustomImage.objects.create(post=post, image=file)
+        post.save()
+        messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
 
     def test_func(self):
@@ -199,6 +323,55 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_images'] = self.object.post_images.all()
+        return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # При редактировании поста устанавливаем начальное значение для поля времени
+        if self.object:
+            form.fields['time_zayavki'].initial = self.object.time_zayavki
+            form.fields['time_glybinie'].initial = self.object.time_glybinie
+
+        # При редактировании поста удаляем поле "Новая категория"
+        if self.object:
+            del form.fields['new_category']
+
+        return form
+
+    def get_success_url(self):
+        return reverse_lazy('post', kwargs={'post_slug': self.object.slug})  # Замените на имя вашего маршрута
+
+
+class PostsSimulyationView(DataMixin, ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Posts.objects.filter(simulyation=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Симуляции")
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class PostsImportantView(DataMixin, ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Posts.objects.filter(important=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Важные записи")
+        return dict(list(context.items()) + list(c_def.items()))
+
 
 class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Posts
@@ -206,78 +379,87 @@ class DeletePostView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('home')
     # slug_url_kwarg = 'slug'
     context_object_name = 'post'
+    success_msg = 'Коментарий создан'
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Пост успешно удален.')
+        return super().delete(request, *args, **kwargs)
 
     def test_func(self):
         post = self.get_object()
-        messages.success(self.request, 'Пост успешно удален')
         return self.request.user == post.author
 
-    # def get_object(self, queryset=None):
-    #     slug = self.kwargs.get('slug')
-    #     return Posts.objects.get(slug=slug)
-    #
-    # def test_func(self):
-    #     post = self.get_object()
-    #     if self.request.user == post.author:
-    #         return True
-    #     return False
 
-
-class RegisterUser(CreateView):
-    form_class = RegisterUserForm
-    template_name = 'blog/register.html'
-    success_url = reverse_lazy('home')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.save()
-        login(self.request, user)
-        return response
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Регистрация'
-        return context
-
-
-class LoginUser(LoginView):
-    form_class = LoginUserForm
-    template_name = 'blog/login.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Авторизация'
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('home')
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('login')
+def comment_detail_view(request, pk):
+    comment = get_object_or_404(Comments, pk=pk)
+    # Ваша логика для отображения деталей комментария здесь
+    # Например, вы можете отобразить шаблон с деталями комментария
+    return render(request, 'comment_detail.html', {'comment': comment})
 
 
 def about(request):
-    return render(request, 'blog/about.html', {'menu': menu, 'title': 'О сайте'})
+    user_menu = menu.copy()
+    if not request.user.is_authenticated:
+        user_menu.pop(1)  # Индекс элемента "Добавить запись" в списке меню
+    return render(request, 'blog/about.html', {'menu': user_menu, 'title': 'О сайте'})
 
 
 def contact(request):
-    return render(request, 'blog/contact.html', {'menu': menu, 'title': 'Контакты'})
+    user_menu = menu.copy()
+    if not request.user.is_authenticated:
+        user_menu.pop(1)  # Индекс элемента "Добавить запись" в списке меню
+    return render(request, 'blog/contact.html', {'menu': user_menu, 'title': 'Контакты'})
 
 
-# class UserDetail(LoginRequiredMixin, DataMixin, DetailView):
-#     template_name = 'blog/user_detail.html'
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title="Профиль")
-#         return dict(list(context.items()) + list(c_def.items()))
+def show_notifications(request):
+    profile = Profile.objects.get(user=request.user)
+    notifications = profile.notifications.split('\n') if profile.notifications else []
 
-# def user_detail(request, user_id):
-#     user = get_object_or_404(User, id=user_id)
-#     profile = get_object_or_404(UserProfile, user=user)
-#     context = {'user': user, 'profile': profile, 'menu': menu}
-#     return render(request, 'blog/user_detail.html', context)
+    # Создайте новый список уведомлений, исключая те, связанные с несуществующими постами
+    processed_notifications = []
+    for notification in notifications:
+        if "Пост" in notification:
+            # Ищем ссылку на пост с помощью регулярного выражения
+            match = re.search(r'Нажмите чтобы перейти: (.*?)$', notification)
+            if match:
+                post_link = match.group(1).strip()
+                post_slug = post_link.split('/')[-2]  # Извлекаем slug из post_link
+                try:
+                    post = Posts.objects.get(slug=post_slug)
+                    post_link = str(post.get_absolute_url())
+                    processed_notifications.append((post_link, notification))
+                except Posts.DoesNotExist:
+                    # Если пост не существует, удаляем уведомление из профиля пользователя
+                    continue
+        else:
+            processed_notifications.append((None, notification))
 
+    # Обновите уведомления в профиле пользователя
+    profile.notifications = '\n'.join([notification[1] for notification in processed_notifications])
+    profile.save()
+
+    return render(request, 'blog/notifications.html', {'notifications': processed_notifications, 'menu': menu})
+
+
+def clear_notifications(request):
+    profile = Profile.objects.get(user=request.user)
+    profile.notifications = ''
+    profile.save()
+    return redirect('home')
+
+
+class UserListView(DataMixin, ListView):
+    model = User  # Используйте свою модель пользователя, если она отличается
+    template_name = 'blog/user_list.html'  # Создайте соответствующий шаблон
+    context_object_name = 'users'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profiles'] = Profile.objects.all()  # Получите все профили пользователей
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+def welcome(request):
+    return render(request, 'blog/welcome.html')
 

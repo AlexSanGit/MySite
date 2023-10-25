@@ -1,4 +1,4 @@
-/* Стили для модального окна */
+/* Стили для модального окна
 .modal {
       display: none;
       position: fixed;
@@ -13,11 +13,12 @@
 }
 
 .modal-content {
-    margin: 20px auto 0;
+    margin: 70px auto 0;
     display: block;
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
+
 }
 
 .close {
@@ -37,5 +38,71 @@
     text-decoration: none;
     cursor: pointer;
 }
+*/
 
+.modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
 
+}
+
+.modal-content {
+    margin: 70px auto 0;
+    display: block;
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+
+}
+
+.close {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-content {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.slider img {
+    width: 100%;
+    height: auto;
+}
+
+.slider-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.slider-controls button {
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px 15px;
+    margin: 0 5px;
+    color: white;
+}
+
+.slider-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}

@@ -1,60 +1,45 @@
-html, body {
+body {
 	font-family: 'Arial';
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: 100%;
-	color: #444;
-}
+    text-align: center; /* Добавьте это свойство для центрирования контента */
+    //background-image: url('/media/back.jpg');
+    background-size: cover; /* Растягивает изображение на всю высоту и ширину body */
+    background-repeat: no-repeat; /* Запрещает повторение изображения */
+    background: radial-gradient(circle, #2bb8ba, #ccf9dd);
 
-.image-post-detail img {
-	max-width: 150px;
-	height: auto;
-	float: left;
-	padding: 0 10px 10px 0;
-	border: 10px
 }
-.content-post-detail{
-    padding: 10px 100px 100px 210px;
-
+.welcome{
+    font-weight: bold;
+    text-align: center;
+}
+.link-read-post{
+    font-weight: bold;
+    padding: 5px 5px 5px 0px;
+    font-size:18px;
+}
+.content-index2 p{
+margin: 0;
 }
 
 a {
-	color: #0059b2;
+	color: blue;
 	text-decoration: none;
 }
+
 a:hover {
 	color: #CC0000;
 	text-decoration: underline;
 }
-
-img {max-width: 600px; height: auto;}
-
 img.img-index{
-	max-width: 150px;
-	height: auto;
-	float: left;
-	padding: 0 10px 10px 0;
-}
-
-img.img-article-left.thumb {
-	max-width: 150px;
-	height: auto;
-}
-
-.comments-form {
-  width: 20em;
-  text-align: left;
-}
-
-.comments-form2 {
-  padding: 2px 5px;
-  text-align: left;
-}
-
-.text-comments{
-  color: #187a0c;
-  text-align: center;
+	float: center;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	width: 100px; /* Замените это значением на ваше предпочтение */
+    height: 100px; /* Замените это значением на ваше предпочтение */
+    object-fit: cover; /* Подстраивает изображение под указанный размер, сохраняя пропорции */
 }
 
 .content_2d {
@@ -62,6 +47,7 @@ img.img-article-left.thumb {
   text-align: start, top;
   color: #CC0000;
 }
+
 div.article-panel {
     background: #eee;
     padding: 5px 10px 5px 10px;
@@ -74,6 +60,16 @@ div.article-panel {
 	min-height: 70%;
 	height: 70%;
 }
+
+.avatar{
+    width: 20px; /* Установите желаемую ширину */
+    height: 20px; /* Установите желаемую высоту */
+    border-radius: 50%; /* Делает аватарку круглой */
+    overflow: hidden; /* Обрезает содержимое за пределами области */
+    position: relative; /* Необходимо для позиционирования дочерних элементов */
+
+}
+
 .table-page {
 	width: 100%;
 	height: 100%;
@@ -87,28 +83,33 @@ img.img-article {
 }
 
 .title-detail-post{
-    font-family: 'Arial';
+
     text-align: left;
-    font-size: 25px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.post-description{
-    font-size: 15px;
-    text-decoration: none;
-}
+
 .left-chapters ul li.selected {
     color: #000000;
      }
+.user-list{
+ border: 1px solid #0080FF;
+ border-radius: 5px;
+ padding: 10px;
 
-.form-label {
-    display: inline-block;
-    min-width: 150px;
-    vertical-align: top;
+}
+.user-list p{
 }
 
-.messages li {
-    animation: fade-out 5s forwards;
-    opacity: 1;
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0; /* Начальное и конечное состояние: невидимое */
+  }
+  10%, 90% {
+    opacity: 1; /* Состояние видимости */
+  }
 }
 
 @keyframes fade-out {
@@ -122,4 +123,51 @@ img.img-article {
         opacity: 0;
         display: none;
     }
+}
+
+/* Основные стили для кнопки */
+.button {
+  display: inline-block;
+  padding: 10px;
+  margin:5px 5px 0px 0px;
+  font-size: 16px;
+  text-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.button-red{
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #d91818;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.button-green{
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: green;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.button a{
+    color:white;
+}
+.button-green a{
+    color:white;
 }

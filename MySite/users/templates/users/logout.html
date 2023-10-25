@@ -1,5 +1,6 @@
-{% extends "users/base.html" %}
+{% extends "blog/base.html" %}
 {% load custom_tags %}
+
 {% block content %}
 
 {% if messages %}
@@ -12,12 +13,12 @@
     </li>
     {% endfor %}
 </ul>
-{% endif %}
 
-    <h2>Вы вышли из своей учетной записи</h2>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            <a href="{% url 'login' %}">Войти</a>
-        </small>
-    </div>
+{% endif %}
+<div class="content-login">
+    <h2 style="margin:10px;"> Вы вышли из своей учетной записи</h2>
+
+    <button class="button" >  <a href="{% url 'login' %}"> Войти</a> </button>
+
+</div>
 {% endblock content %}

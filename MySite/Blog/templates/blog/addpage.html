@@ -1,20 +1,113 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<h1>{{title}}</h1>
+<div class="content-addpage">
+    <h2 class="form-title">{{title}}</h2>
 
-<form action="{% url 'add_page' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+    <form action="{% url 'add_page' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <div class="form-error">{{ form.non_field_errors }}</div>
+        <div class="form-error">{{ form.non_field_errors }}</div>
 
-{% for f in form %}
-<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
+        <div class="form-container">
+            <div class="form-field">
+                <label class="form-label" for="{{ form.city.id_for_label }}">Участок:</label>
+                {{ form.city }}
+                <div class="form-error">{{ form.city.errors }}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
+                {{ form.title }}
+                <div class="form-error">{{ form.title.errors }}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label}}:</label>
+                {{ form.description }}
+                <div class="form-error">{{ form.description.errors }}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.cat_post.id_for_label }}">{{ form.cat_post.label }}:</label>
+                {{ form.cat_post }}
+                <div class="form-error">{{ form.cat_post.errors }}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.new_category.id_for_label }}">
+                    {{form.new_category.label}}:</label>
+                {{ form.new_category }}
+                <div class="form-error">{{ form.new_category.errors }}</div>
+            </div>
+
+            <div class="form-field">
+                <div class="form-row">
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_zayavki.id_for_label }}">
+                            {{form.time_zayavki.label}}:</label>
+                        <input type="time" name="{{ form.time_zayavki.name }}"
+                               id="{{ form.time_zayavki.id_for_label }}">
+                        <div class="form-error">{{ form.time_zayavki.errors }}</div>
+                    </div>
+                    <div class="form-column">
+                        <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
+                            {{form.time_glybinie.label}}:</label>
+                        <input type="time" name="{{ form.time_glybinie.name }}"
+                               id="{{ form.time_glybinie.id_for_label }}">
+                        <div class="form-error">{{ form.time_glybinie.errors }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.ot_kogo_zayavka.id_for_label }}">
+                    {{ form.ot_kogo_zayavka.label}}:</label>
+                {{ form.ot_kogo_zayavka }}
+                <div class="form-error">{{ form.ot_kogo_zayavka.errors }}</div>
+            </div>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.second_user.id_for_label }}">
+                    {{ form.second_user.label}}</label>
+                {{ form.second_user }}
+                <div class="form-error">{{ form.second_user.errors }}</div>
+            </div>
+
+            <label class="form-label">
+                <input type="checkbox" id="is_featured" name="is_featured">
+                <span style="font-weight: bold;color:red;padding-right:10px;">Симуляция! </span>
+
+                <input type="checkbox" id="important" name="important">
+                <span style="font-weight: bold;color:red;">Важное! </span>
+
+            </label>
 
 
-    <button type="submit">Добавить</button>
-</form>
+            <div class="form-field">
+                <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:</label>
+                {{ form.images }}
+                <div class="form-error">{{ form.images.errors }}</div>
+            </div>
+
+
+            <button class="button" type="submit">Добавить</button>
+        </div>
+
+
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var timeZayavkiInput = document.getElementById("{{ form.time_zayavki.id_for_label }}");
+        var timeGlybiniInput = document.getElementById("{{ form.time_glybinie.id_for_label }}");
+
+        if (timeZayavkiInput && !timeZayavkiInput.value) {
+            timeZayavkiInput.value = "08:30";
+        }
+        if (timeGlybiniInput  && !timeGlybiniInput .value) {
+            timeGlybiniInput .value = "00:00";
+        }
+    });
+
+
+
+
+</script>
 
 {% endblock %}

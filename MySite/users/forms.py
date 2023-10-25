@@ -20,12 +20,19 @@ class ImagePreviewClearableFileInput(forms.ClearableFileInput):
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
-    city = forms.ChoiceField(choices=CITY_CHOICES)
+    # email = forms.EmailField()
+    city = forms.ChoiceField(choices=CITY_CHOICES, label='Участок')
+    welcome_code = forms.IntegerField(required=True, label="Код приглашения")
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'city']
+        fields = ['username', 'password1', 'password2', 'city', 'welcome_code', 'first_name', 'last_name']
+
+    def clean_welcome_code(self):
+        welcome_code = self.cleaned_data['welcome_code']
+        if welcome_code < 10000 or welcome_code > 99999:
+            raise forms.ValidationError('Код приглашения должен содержать 5 цифр.')
+        return welcome_code
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -36,11 +43,18 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
-    image = forms.ImageField(label='Фото', widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
+    city = forms.ChoiceField(choices=CITY_CHOICES, label='Участок')
+    # is_seller = forms.BooleanField(label='Поставьте галочку если вы продавец', required=False)
+    image = forms.ImageField(label='Фото', required=False, widget=ImagePreviewClearableFileInput(attrs={'accept': 'image/*'}))
+    phone = forms.IntegerField(required=False, label="Сот.телефон")
+    city_filter = forms.MultipleChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,  # Для отображения как чекбоксы
+        choices=CITY_CHOICES,  # Ваш список городов
+    )
 
     class Meta:
         model = Profile
-        fields = ['is_seller', 'city', 'image']
+        fields = ['city',  'phone', 'image', 'city_filter']
 
 

@@ -5,7 +5,6 @@ from users.choices.city_choices import CITY_CHOICES
 
 
 class Profile(models.Model):
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_seller = models.BooleanField(default=False)
     rating = models.IntegerField(default=0)
@@ -13,6 +12,12 @@ class Profile(models.Model):
     image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
     city = models.CharField(verbose_name='Город', max_length=3, choices=CITY_CHOICES, blank=True)
     phone = models.IntegerField(default=0, blank=True)
+    notifications = models.TextField(blank=True, null=True)
+    time_glybinie = models.TimeField(blank=True, null=True)
+    city_filter = models.CharField(
+        max_length=255,  # Укажите подходящую максимальную длину
+        blank=True,
+    )
 
     # def __str__(self):
     #     return f'{self.user.username} Profile'

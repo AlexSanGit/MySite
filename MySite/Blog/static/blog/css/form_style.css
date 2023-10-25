@@ -1,0 +1,209 @@
+/* Общие стили для формы */
+.form-container {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.messages li {
+    animation: fade-out 5s forwards;
+    opacity: 1;
+}
+.messages{
+  text-align: center;
+  width:70%;
+  display: block;
+  padding: 10px;
+  margin: 0 auto;
+  color: green;
+  font-weight: bold;
+  font-size: 18px;
+  opacity: 0; /* Начальное состояние: невидимое */
+  animation: fade-in-out 3s ease-in-out forwards; /* Применение анимации */
+  list-style-type: none; /* Убирает маркеры списка */
+
+}
+
+/* Стили для заголовка формы */
+.form-title {
+  text-align: center;
+  font-size: 20px;
+  margin: 0px auto;
+}
+
+/* Стили для полей формы */
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin: 0px 10px 10px 0px;
+}
+
+/* Стиль метки по умолчанию */
+.form-label-sim {
+    color: red; /* Синий цвет метки */
+    font-weight: bold;
+    margin-right:15px;
+}
+
+.form-field {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  flex: 1; /* Равномерное распределение ширины между полями */
+  margin-right: 10px; /* Отступ между полями (по вашему выбору) */
+  text-align:left;
+  font-weight: bold;
+}
+
+.form-field-time{
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex; /* Строки будут располагаться в одну линию */
+  font-size: 14px;
+
+}
+.form-column {
+  flex: 1; /* Равномерное распределение ширины между столбцами */
+  margin-right: 10px; /* Отступ между столбцами (по вашему выбору) */
+}
+
+.form-row {
+  display: flex; /* Строки будут располагаться в одну линию */
+  justify-content: space-between; /* Размещение полей с пространством между ними */
+}
+/* Стили для текстовой области ввода */
+.form-field textarea {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  resize: vertical; /* Позволяет вертикальное изменение размера текстовой области */
+}
+/* Стили для текстовой области ввода */
+.form-field input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 2px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+
+}
+
+/* Стили для выпадающего списка */
+.form-field select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 2px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+}
+
+.form-error{
+  list-style: none; /* Убирает маркеры списка */
+  margin: 0; /* Обнуляет внешние отступы */
+  padding: 0; /* Обнуляет внутренние отступы */
+  color: red; /* Цвет текста ошибок */
+  text-align:center;
+  font-size:20px;
+}
+.form-error li {
+list-style: none; /* Убирает маркеры списка */
+}
+
+/* Стилизация подсказки для поля формы */
+.my-input::placeholder {
+    color: #999; /* Цвет текста подсказки */
+    font-style: italic; /* Курсивный шрифт */
+}
+
+/* Изменение стиля кнопки при наведении */
+.button:hover {
+  background-color: #2980b9;
+}
+/* Стили для обычного состояния */
+.comments-form {
+    width: 100%; /* Занимает 100% ширины контейнера */
+    padding: 5px;
+    margin-top:10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
+    font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+.comments-form {
+    width: 100%; /* Занимает 100% ширины контейнера */
+    padding: 5px;
+    margin-top:10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Учёт границы и отступов в общей ширине */
+    font-size: 16px;
+}
+
+}
+.form-image{
+    text-align: center;
+}
+
+.comments-form2 {
+  padding: 2px 5px;
+  text-align: left;
+}
+
+.text-comments{
+  color: #187a0c;
+  text-align: center;
+}
+
+.comments-form h5 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.user-comments {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.comments-text {
+  margin-bottom: 10px;
+  margin-left: 30px;
+  word-wrap: break-word; /* или word-break: break-all; */
+}
+
+/* Стиль для случая, когда нет комментариев */
+.no-comments {
+  font-style: italic;
+  color: #888;
+}
+/* CSS для расположения чекбоксов в ряд */
+.checkbox-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Расстояние между чекбоксами */
+    align-items: center; /* Выравнивание элементов по центру */
+}
+
+/* Стили для чекбоксов */
+.checkbox-row input[type="checkbox"] {
+    margin-right: 5px; /* Расстояние между чекбоксами и текстом */
+}
+
+.sim-import {
+  display: flex;
+  justify-content: space-around; /* Равномерное распределение между элементами */
+}

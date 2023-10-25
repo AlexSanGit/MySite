@@ -1,0 +1,191 @@
+
+.content-index {
+  //background: linear-gradient(to bottom, #2bb8ba, #ccf9dd);
+  width: 70%;
+  border: 1px solid #0080FF;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align:left;
+}
+
+@media screen and (max-width: 768px) {
+.content-index {
+  width: 100%;
+  border: 1px solid #0080FF;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.content-index2 {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
+  width: 100%;
+  border: 1px solid #2b9d3f;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-index ul{
+   list-style-type: none; /* Убирает маркеры списка */
+   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+}
+.post-time{
+    font-size: 16px;
+
+}
+.user-post{
+    margin-bottom:5px;
+}
+.post-description{
+    font-size: 18px;
+    text-decoration: none;
+    word-wrap: break-word; /* или word-break: break-all; */
+    margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+    //text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
+    font-weight: bold;
+    padding:5px 0px 20px 0px;
+
+}
+.marg-center{
+    margin: 0 auto;
+    text-align:center;
+
+}
+
+.uchastok_title{
+     white-space: nowrap !important;
+     font-weight: bold;
+}
+
+
+
+.post-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+}
+
+.index-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+  text-align: left;
+  font-weight: bold;
+  word-wrap: break-word; /* или word-break: break-all; */
+
+}
+
+.post-excerpt {
+  font-size: 14px;
+  color: #666;
+}
+
+.post-link {
+  text-decoration: none;
+  color: #3498db;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.post-link:hover {
+  color: #2980b9;
+}
+
+.content-login {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
+  width: 40%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  text-align:center;
+}
+
+@media screen and (max-width: 768px) {
+.content-login {
+//background: radial-gradient(circle, #2bb8ba, #ccf9dd);
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+.image-post-detail img {
+	padding-left: 20px;
+	padding-bottom: 20px;
+	float: center;
+	width: 100px; /* Замените это значением на ваше предпочтение */
+    height: 100px; /* Замените это значением на ваше предпочтение */
+    object-fit: cover; /* Подстраивает изображение под указанный размер, сохраняя пропорции */
+}
+.content-post-detail{
+    padding: 10px;
+}
+.content-profile {
+  width: 40%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+@media screen and (max-width: 768px) {
+.content-profile {
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.content-addpage li{
+ list-style-type: none; /* Убирает маркеры списка */
+}
+.content-addpage{
+  width: 40%;
+  border: 1px solid #30ab93;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+@media screen and (max-width: 768px) {
+.content-addpage{
+  width: 100%;
+  border: 1px solid #ddd;
+  background-color: #8ee0e2;
+  padding: 10px;
+  margin-top: 20px;
+  margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+

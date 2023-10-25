@@ -1,18 +1,15 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+<div class="content-addpost">
 <h1>{{title}}</h1>
+   <p style="padding:10px;font-size:18px;">Пожелания и варианты доработки сайта можете отправить администратору сайта на Email:</p>
+   <h3>algeneralsan@gmail.com</h3>
 
-<form method="post">
-    {% csrf_token %}
 
-    <div class="form-error">{{ form.non_field_errors }}</div>
 
-{% for f in form %}
-<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
 
-</form>
+
+</div>
 
 {% endblock %}

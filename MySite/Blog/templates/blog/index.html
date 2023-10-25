@@ -1,90 +1,71 @@
 {% extends 'blog/base.html' %}
+
 {% block content %}
 
-<ul>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li {% if message.tags %} class="{{ message.tags }}" {% endif %} {{ message }}>
-            {% endfor %}
-    </ul>
-    {% endif %}
-    <!-- Кнопка для открытия всплывающего сообщения -->
-    <!--<button type="button" class="btn btn-primary" onclick="showMessage()">Открыть сообщение</button>-->
-
-    <!-- Функция для отображения всплывающего сообщения -->
-    <!--<script>-->
-    <!--function showMessage() {-->
-    <!--  // Создаем элемент с сообщением-->
-    <!--  var message = document.createElement("div");-->
-    <!--  message.innerHTML = "Это всплывающее сообщение";-->
-    <!--  message.style.position = "fixed";-->
-    <!--  message.style.top = "50%";-->
-    <!--  message.style.left = "50%";-->
-    <!--  message.style.transform = "translate(-50%, -50%)";-->
-    <!--  message.style.padding = "10px";-->
-    <!--  message.style.backgroundColor = "#f1c40f";-->
-    <!--  message.style.color = "#fff";-->
-    <!--  message.style.borderRadius = "5px";-->
-
-    <!--  // Добавляем элемент на страницу-->
-    <!--  document.body.appendChild(message);-->
-
-    <!--  // Через 5 секунд удаляем элемент-->
-    <!--  setTimeout(function() {-->
-    <!--    document.body.removeChild(message);-->
-    <!--  }, 5000);-->
-    <!--}-->
-    <!--</script>-->
-
-    {% for p in posts %}
-
-    <li>
-        <div>
-            <p>Категория: {{p.cat_post}}</p>
-            <p>Дата публикации: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
-            <h3>{{p.title}}</h3>
-        </div>
-        <table border=0 cellpadding="0" cellspacing="0">
-            <tr>
-                <th>
-
-                    <div class="row">
-                        {% for image in p.post_images.all %}
-
-                        <div>
-                            <p><img class="img-index" src="{{ image.image.url }}"
-                                 alt="Изображение"></p>
-                        </div>
-
-                        {% endfor %}
-                    </div>
-
-                </th>
-            </tr>
-
-            <tr>
-                <th>
-
-                    {% autoescape on %}
-                    {{p.description|linebreaks|truncatewords:50}}
-                    {% endautoescape %}
-
-                    <p>Коментариев: ({{p.comments_posts.all.count}})</p>
-                    <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
-
-                    <div class="clear"></div>
-                </th>
-            </tr>
-
-
-        </table>
-        <hr>
-        {% endfor %}
-        {% endblock %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %}
+        class="{{ message.tags }}"
+        {% endif %}>
+        {{ message}}
     </li>
-
+    {% endfor %}
 </ul>
+{% endif %}
+
+<div class="content-index">
+    <ul>
+        {% for p in posts %}
+        <li class="content-index2">
+            <div>
+                <p class ="uchastok_title" >Участок:  {{p.get_city_display}} </p>
+                <p>Время записи: <span style="font-weight: bold;" > {{p.time_update|date:"d-m-Y H:i"}} </span> </p>
+                <p>Оборудование:
+                    {% if p.cat_post.parent %}
+                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.parent.slug %}">
+                        {{p.cat_post.parent.name }}</a> -
+                    {% endif %}
+                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.slug %}">
+                        {{ p.cat_post.name}}</a>
+
+                    {% if p.simulyation %}
+                    <span style="font-weight: bold;color:red;padding-right:10;">Есть симуляция!</span>
+                    {% endif %}
+                    {% if p.important %}
+                    <span style="font-weight: bold;color:red">Важное!</span>
+                    {% endif %}
+                 </p>
+                Краткое описание: <p style="font-weight: bold;padding-bottom:10px;" >{{p.title}}</p>
+
+            </div>
+            <div class="row">
+                {% for image in p.post_images.all %}
+                <img class="img-index" src="{{ image.image.url }}"
+                     alt="Изображение">
+                {% endfor %}
+            </div>
+            Описание: <p class="post-description">{{p.description}}</p>
+
+
+                <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
+                    <span class="uchastok_title">  {{ profile.get_city_display}}</span>
+                    <img class="avatar" src="{{ p.author.profile.image.url }}"
+                         alt="Avatar"/>
+                </p>
+
+            <p>Коментариев: ({{p.comments_posts.all.count}})</p>
+            <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
+
+
+            {% endfor %}
+
+        </li>
+    </ul>
+    {% endblock %}
+
+</div>
+
 
 <script>
   setTimeout(function() {
@@ -92,6 +73,10 @@
       message.remove();
     });
   }, 3000);
+
+
+
+
 
 
 </script>

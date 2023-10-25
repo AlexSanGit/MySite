@@ -1,14 +1,18 @@
 {% extends "blog/base.html" %}
-{% load crispy_forms_tags %}
+
 {% load custom_tags %}
 
 {% block content %}
+<div class="content-index">
+  <div class="marg-center">
+
   <h2>Удаление поста</h2>
-  <p>Вы действительно хотите удалить пост? "{{ post.title }}"?</p>
+  <p style="margin: 10px;font-weight: bold;">Вы действительно хотите удалить пост? "{{ post.title }}"?</p>
   <form method="POST">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Удалить</button>
-    <a href="{% url 'home' %}" class="btn btn-secondary">Отменить</a>
+    <button type="submit" class="button-red">Удалить</button>
+    <a href="{% url 'home' %}" class="button">Отменить</a>
   </form>
-
+    </div>
+</div>
 {% endblock %}

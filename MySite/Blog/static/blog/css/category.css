@@ -1,0 +1,32 @@
+.categories {
+  padding: 10px 0;
+  text-align: center;
+  padding-top: 60px;
+}
+
+.categories ul {
+  list-style: none;
+  padding: 0;
+}
+
+.categories li {
+  display: inline-block;
+  margin: 2px;
+ // background-color:#c3d5b1;
+}
+
+.categories a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.categories a:hover {
+  color: #3498db;
+}
+
+.children-list {
+    display: none;
+}

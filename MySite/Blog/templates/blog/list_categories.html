@@ -1,19 +1,17 @@
  {% for category in cats %}
-    <li>
-      <a href="{% url 'category' category.slug %}" {% if category.pk == cat_selected %} class="selected"{% endif %}>
+
+    <li class="menu-li">
+      <a href="{% url 'category' category.slug %}" >
         {{ category.name }}
       </a>
       {% if category.child_categories %}
-        <button class="toggle-btn" data-target="children-list-{{ category.pk }}">
+        <button class="toggle-btn" data-target="children-list-{{ category.slug }}">
           &#x25BC;
         </button>
-        <ul id="children-list-{{ category.pk }}" class="children-list">
+        <ul id="children-list-{{ category.slug }}" class="children-list">
           {% for child_category in category.child_categories %}
             <li>
-              <a href="{% url 'category' child_category.slug %}"
-                 {% if child_category.pk == cat_selected %}
-                 class="selected"
-                 {% endif %}>
+              <a class="menu-child" href="{% url 'category' child_category.slug %}">
                 {{ child_category.name }}
 
               </a>
@@ -22,6 +20,8 @@
         </ul>
       {% endif %}
     </li>
+
+
   {% endfor %}
 
 
@@ -38,12 +38,50 @@
     var targetId = toggleButtons[i].getAttribute('data-target');
     toggleButtons[i].addEventListener('click', toggleChildren.bind(null, targetId));
   }
+
+
+<!--  // Находим все кнопки с классом "toggle-btn"-->
+<!--const toggleButtons = document.querySelectorAll('.toggle-btn');-->
+
+<!--// Добавляем обработчик события клика на каждую кнопку-->
+<!--toggleButtons.forEach(button => {-->
+<!--    button.addEventListener('click', () => {-->
+<!--        // Находим соответствующий дочерний список по data-атрибуту-->
+<!--        const targetId = button.getAttribute('data-target');-->
+<!--        const targetList = document.querySelector(`#${targetId}`);-->
+
+<!--        // Переключаем видимость дочернего списка-->
+<!--        if (targetList.style.display === 'none' || targetList.style.display === '') {-->
+<!--            targetList.style.display = 'block';-->
+<!--        } else {-->
+<!--            targetList.style.display = 'none';-->
+<!--        }-->
+<!--    });-->
+<!--});-->
 </script>
 
 <style>
-  .children-list {
+.children-list {
   display: none;
   padding-left: 20px;
+}
+.toggle-btn {
+    background-color: #3498db; /* Цвет фона кнопки */
+    color: black; /* Цвет текста кнопки */
+    border: none;
+    padding: 1px 1px; /* Внутренние отступы */
+    border-radius: 3px; /* Скругление углов */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+}
+
+.toggle-btn:hover {
+    background-color: #2980b9; /* Изменение цвета фона при наведении */
+}
+
+/* Изменение стиля кнопки при нажатии */
+.toggle-btn:active {
+    transform: scale(0.9); /* Уменьшение размера при нажатии */
 }
 
 .selected {
