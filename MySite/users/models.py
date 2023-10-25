@@ -10,7 +10,7 @@ class Profile(models.Model):
     rating = models.IntegerField(default=0)
     review = models.TextField(blank=True)
     image = models.ImageField(verbose_name='Аватарка', default='default.jpg', upload_to='profile_pics')
-    city = models.CharField(max_length=3, choices=CITY_CHOICES, blank=True)
+    city = models.CharField(verbose_name='Город', max_length=3, choices=CITY_CHOICES, blank=True)
     phone = models.IntegerField(default=0, blank=True)
     notifications = models.TextField(blank=True, null=True)
     time_glybinie = models.TimeField(blank=True, null=True)

@@ -1,3 +1,7 @@
+from io import BytesIO
+
+from PIL.Image import Image
+from django.contrib.sites import requests
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -13,6 +17,16 @@ class CustomImage(models.Model):
     post = models.ForeignKey('Posts', on_delete=models.CASCADE, null=True, related_name='post_images')
     image = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Изображение")
     objects = models.Manager()
+
+    # def is_valid_image(self):
+    #     try:
+    #         # Открываем изображение по ссылке и проверяем его целостность
+    #         response = requests.get(self.image.url)
+    #         img = Image.open(BytesIO(response.content))
+    #         img.verify()
+    #         return True
+    #     except Exception:
+    #         return False
 
 
 class Posts(models.Model):
@@ -61,6 +75,13 @@ class Category(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
+
+    def get_all_children(self):
+        children = []
+        for child in self.get_children():
+            children.append(child)
+            children.extend(child.get_all_children())
+        return children
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_slug': self.slug})
