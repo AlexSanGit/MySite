@@ -27,3 +27,4 @@ __pycache__/
 # Игнорирование файлов конфигурации
 *.ini
 *.conf
+/users/migrations/
