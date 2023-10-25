@@ -66,8 +66,7 @@ TEMPLATES = [
                 'Blog.context_processors.unread_notifications',
             ],
             'builtins': [
-                'crispy_forms.templatetags.crispy_forms_tags',
-                'crispy_forms.templatetags.crispy_forms_field',
+
             ],
         },
     },
@@ -120,7 +119,6 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_URL = '/static/'
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIR = []
