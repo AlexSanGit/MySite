@@ -4,4 +4,4 @@
 /MySite/media/
 /MySite/users/migrations/
 /MySite/Blog/migrations/
-/MySite/db.sqlite3
+/__pycache__/
