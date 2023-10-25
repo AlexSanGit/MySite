@@ -1,9 +1,12 @@
 venv
 *.idea/
-.media/
+media/
 __pycache__/
 # Игнорирование файлов миграций Django
 **/migrations/
+
+prod_settings.py
+local_settings.py
 
 # Игнорирование файла БД SQLite
 #*.sqlite3
