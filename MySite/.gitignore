@@ -1,7 +1,30 @@
+venv
+.idea/
+.media/
+__pycache__/
+# Игнорирование файлов миграций Django
+**/migrations/
 
-/venv/
-/.idea/
-/MySite/media/
-/MySite/users/migrations/
-/MySite/Blog/migrations/
-/__pycache__/
+# Игнорирование файла БД SQLite
+#*.sqlite3
+
+# Игнорирование файлов настроек IDE и редакторов
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.pyc
+*.pyo
+*.pyd
+
+# Игнорирование файлов настроек и кэша PythonAnywhere
+.pythonanywhere/
+
+# Игнорирование файла логов Django
+*.log
+
+# Игнорирование файлов конфигурации
+*.ini
+*.conf
