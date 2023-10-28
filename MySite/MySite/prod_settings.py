@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecuresdfdfsdfsd3423423432ds@#@!#!@$fdgsdf$@m0bi'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', '45.136.58.117']
 
 
 DATABASES = {
@@ -21,6 +21,6 @@ DATABASES = {
     }
 }
 
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIR = [STATIC_DIR]
+# STATIC_DIR = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIR = [STATIC_DIR]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
