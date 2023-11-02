@@ -1,5 +1,9 @@
+import os
 import random
 import re
+from io import BytesIO
+
+from PIL import Image
 
 from Blog.menu import DataMixin, menu
 from django.contrib import messages
@@ -51,6 +55,10 @@ class HomePage(LoginRequiredMixin, DataMixin, ListView):
         context['title'] = 'Главная страница'
         posts = self.get_queryset()
         context['posts'] = posts
+        # Получите профиль автора для каждого поста
+        # authors_profiles = [post.author.profile for post in context['posts']]
+        # context['author'] = authors_profiles
+
         # Получите профиль текущего пользователя
         if self.request.user.is_authenticated:
             profile = self.request.user.profile
@@ -140,6 +148,43 @@ class CategoryPosts(LoginRequiredMixin, DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+def is_image(file):
+    # Получите расширение файла
+    _, file_extension = os.path.splitext(file.name)
+
+    # Список поддерживаемых расширений изображений
+    supported_image_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp']
+
+    # Проверьте, является ли расширение поддерживаемым изображением
+    return file_extension.lower() in supported_image_extensions
+
+
+def process_image_in_memory(image):
+    # Чтение данных из InMemoryUploadedFile
+    image_data = image.read()
+
+    # Открываем изображение с использованием Pillow
+    pil_image = Image.open(BytesIO(image_data))
+
+    # Устанавливаем максимальный размер изображения
+    max_size = (800, 600)
+
+    # Если размер изображения превышает максимальный размер, изменяем его
+    if pil_image.size[0] > max_size[0] or pil_image.size[1] > max_size[1]:
+        pil_image.thumbnail(max_size)
+
+        # Создаем новый объект BytesIO для сохранения измененного изображения в памяти
+        output_io = BytesIO()
+        pil_image.save(output_io, format='JPEG', quality=90)  # Можете выбрать другой формат и качество, если нужно
+
+        # Обновляем данные в InMemoryUploadedFile
+        image.file = output_io
+        # Устанавливаем имя файла, необходимое для InMemoryUploadedFile
+        image.file.name = f"{image.name.split('.')[0]}_processed.jpg"
+
+    return image
+
+
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm
     template_name = 'blog/addpage.html'
@@ -162,8 +207,6 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         second_user = form.cleaned_data.get('second_user')
         if second_user:
             obj.second_user = second_user
-
-
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
         # проверяем уникальность slug
@@ -207,8 +250,22 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
         try:
             obj.save()
+
+            # Обработка изображений
             for file in files:
-                CustomImage.objects.create(post=obj, image=file)
+                try:
+                    processed_image = process_image_in_memory(file)
+                    if is_image(processed_image):
+
+                        # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
+                        CustomImage.objects.create(post=obj, image=processed_image)
+                    else:
+                        # Обработка случая, если это не изображение
+
+                        continue
+                except Exception as e:
+                    # Обработка других исключений, если необходимо
+                    messages.error(self.request, f'Файл {file.name} не изображение')
 
         except ValidationError as e:
             print(e)
@@ -287,7 +344,6 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         second_user = form.cleaned_data['second_user']
         post.second_user = second_user
 
-        # print(simulyation_value)
         # Присваиваем значения времени посту
         post.time_zayavki = time_zayavki
         post.time_glybinie = time_glybinie
@@ -312,7 +368,20 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
             # Создание новых изображений
             for file in new_images:
-                CustomImage.objects.create(post=post, image=file)
+
+                try:
+                    processed_image = process_image_in_memory(file)
+                    if is_image(processed_image):
+
+                        # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
+                        CustomImage.objects.create(post=post, image=processed_image)
+                    else:
+                        # Обработка случая, если это не изображение
+                        continue
+                except Exception as e:
+                    # Обработка других исключений, если необходимо
+                    messages.error(self.request, f'Файл {file.name} не изображение')
+
         post.save()
         messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
@@ -462,4 +531,3 @@ class UserListView(DataMixin, ListView):
 
 def welcome(request):
     return render(request, 'blog/welcome.html')
-

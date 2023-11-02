@@ -47,9 +47,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form, 'city_choices': CITY_CHOICES})
 
 
-@login_required
 def profile(request, user_id):
-
     user = get_object_or_404(User, id=user_id)
     prof = get_object_or_404(Profile, user=user)
 
@@ -57,20 +55,20 @@ def profile(request, user_id):
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid():
-             # Обновление фото
+            # Обновление фото
             if 'image' in request.FILES:
                 prof.image = request.FILES['image']
             # Обновление поля city
             first_name = u_form.cleaned_data.get('first_name')
-            last_name =  u_form.cleaned_data.get('last_name')
+            last_name = u_form.cleaned_data.get('last_name')
             phone = p_form.cleaned_data.get('phone')
             prof.phone = phone
 
             # Получите выбранные города из формы и преобразуйте их в строку
             selected_cities = p_form.cleaned_data.get('city_filter', [])
             city_filter_value = ",".join(selected_cities)
-            print(city_filter_value)
-             # Сохраните значение в модели Profile
+
+            # Сохраните значение в модели Profile
             prof.city_filter = city_filter_value
 
             city = request.POST.get('city', '')

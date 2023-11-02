@@ -31,7 +31,7 @@
                     <span style="font-weight: bold;color:red">Важное!</span>
                     {% endif %}
     </p>
-    Заголовок :
+    Краткое описание :
     <div class="title-detail-post">
         {{post.title}}
     </div>
@@ -40,8 +40,8 @@
 
     <!--        {{post.time_glybinie}}</div>-->
     <!--        {% endif %}-->
-    Описание :
-    <div class="post-description"> {{post.description|linebreaks}}</div>
+    <span style="padding-top:30px;"> Описание :</span>
+    <div class="post-description" style="padding-bottom:10px;"> {{post.description|linebreaks}}</div>
 
 <div id="myModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
@@ -68,15 +68,16 @@
         </div>
     </div>
 
-    <p>От кого заявка:<span class="post-description"> {{post.ot_kogo_zayavka}}</span>
+    <p>От кого заявка:{{post.ot_kogo_zayavka}}</p>
 
     <div class="post-time"> Время вызова: {{post.time_zayavki}}</div>
-    <p class="user-post"> Исполнил: {{ user.first_name }} {{ user.last_name }}
-        {{ profile.get_city_display}}
+    <p class="user-post"> Написал: {{ profile.user.first_name }} {{ profile.user.last_name }}
+        ({{ profile.get_city_display}}
 
 
-        <img class="avatar" src="{{ post.author.profile.image.url }}"
-             alt="Avatar"/>
+<!--        <img class="avatar" src="{{ post.author.profile.image.url }}"-->
+<!--             alt="Avatar"/>-->
+        )
     </p>
      {% if post.second_user %}
     <p class="user-post"> Совместно с {{post.second_user.first_name}} {{post.second_user.last_name}} </p>

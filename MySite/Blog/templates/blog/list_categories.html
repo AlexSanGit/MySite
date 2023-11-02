@@ -8,7 +8,7 @@
         <button class="toggle-btn" data-target="children-list-{{ category.slug }}">
           &#x25BC;
         </button>
-        <ul id="children-list-{{ category.slug }}" class="children-list">
+        <ul id="children-list-{{ category.slug }}" class="children-list" style="padding-top:5px;">
           {% for child_category in category.child_categories %}
             <li>
               <a class="menu-child" href="{% url 'category' child_category.slug %}">

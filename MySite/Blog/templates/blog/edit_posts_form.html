@@ -18,6 +18,7 @@
 
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
         <div class="form-container">
             <div class="form-field">
                 <label class="form-label" for="{{ form.city.id_for_label }}">Участок:</label>
@@ -77,8 +78,9 @@
 
 
             <div class="form-field">
-                <label class="form-label" for="{{ form.images.id_for_label }}">{{ form.images.label }}:
+                <label class="form-label" for="{{ form.images.id_for_label }}"> Изабражения, не более 3:
                 {{ form.images }} </label>
+                <div class="form-error">{{ form.images.errors}}</div>
             </div>
 
             <ul class="image-list">

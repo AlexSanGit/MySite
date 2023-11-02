@@ -39,19 +39,19 @@
                 Краткое описание: <p style="font-weight: bold;padding-bottom:10px;" >{{p.title}}</p>
 
             </div>
+
+            Описание: <p class="post-description">{{p.description}}</p>
+
             <div class="row">
                 {% for image in p.post_images.all %}
                 <img class="img-index" src="{{ image.image.url }}"
                      alt="Изображение">
                 {% endfor %}
             </div>
-            Описание: <p class="post-description">{{p.description}}</p>
-
-
-                <p class="user-post"> Написал: {{ user.first_name }} {{ user.last_name }}
-                    <span class="uchastok_title">  {{ profile.get_city_display}}</span>
-                    <img class="avatar" src="{{ p.author.profile.image.url }}"
-                         alt="Avatar"/>
+                <p class="user-post"> Написал: {{ p.author.first_name }} {{ p.author.last_name }}
+                    <span class="uchastok_title">  {{ p.author.profile.get_city_display}}</span>
+<!--                    <img class="avatar" src="{{ p.author.profile.image.url }}"-->
+<!--                         alt="Avatar"/>-->
                 </p>
 
             <p>Коментариев: ({{p.comments_posts.all.count}})</p>
@@ -73,10 +73,6 @@
       message.remove();
     });
   }, 3000);
-
-
-
-
 
 
 </script>
