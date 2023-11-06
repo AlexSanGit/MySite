@@ -1,13 +1,41 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<div class="content-addpost">
-<h1>{{title}}</h1>
-   <p style="padding:10px;font-size:18px;">Пожелания и варианты доработки сайта можете отправить администратору сайта на Email:</p>
-   <h3>algeneralsan@gmail.com</h3>
+<div class="content-login">
+
+    <h1>{{title}}</h1>
+    <p style="padding:10px;font-size:18px;">Вопросы по сайту и учетным записям можете отправить администратору сайта
+        на Email:</p>
+    <p>
+    <h3> algeneralsan@gmail.com </h3>
+    </p>
+    <p style="padding-top:10px;font-size:20px;">
+        Или
+    </p>
+
+    <p style="padding-top:10px;font-size:20px;">
+        <a href="https://wa.me/+77777677272" target="_blank">Отправить сообщение в WhatsApp</a>
+    </p>
 
 
+    <!--    <form method="post" action="{% url 'contact' %}">-->
+    <!--        {% csrf_token %}-->
 
+    <!--        -->
+
+    <!--        <div class="form-field">-->
+    <!--            <label class="form-label" for="{{ form.message.id_for_label }}">{{ form.message.label }}:</label>-->
+    <!--            {{ form.message}}-->
+    <!--            <div class="form-error">{{ form.message.errors }}</div>-->
+    <!--        </div>-->
+    <!--        <div class="form-field">-->
+    <!--            <label class="form-label" for="{{ form.sender.id_for_label }}">{{ form.sender.label }}:</label>-->
+    <!--            {{ form.sender}}-->
+    <!--            <div class="form-error">{{ form.sender.errors }}</div>-->
+    <!--        </div>-->
+
+    <!--        <button class="button" type="submit">Отправить сообщение</button>-->
+    <!--    </form>-->
 
 
 </div>

@@ -118,3 +118,8 @@ class AddPostForm(forms.ModelForm):
                 raise forms.ValidationError('Категория с таким именем уже существует!')
 
 
+class ContactForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, label='Сообщение')
+    sender = forms.CharField(max_length=100, label='Имя, Фамилия')
+
+

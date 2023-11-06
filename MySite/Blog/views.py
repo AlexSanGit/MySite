@@ -477,7 +477,20 @@ def contact(request):
     user_menu = menu.copy()
     if not request.user.is_authenticated:
         user_menu.pop(1)  # Индекс элемента "Добавить запись" в списке меню
-    return render(request, 'blog/contact.html', {'menu': user_menu, 'title': 'Контакты'})
+
+    form = ContactForm()
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Обработайте отправку сообщения, например, отправьте его на почту администратора
+            # Добавьте код отправки почты или любую другую логику обработки сообщения
+            # ...
+
+            return render(request, 'blog/email/contact_success.html')  # Страница успешной отправки
+
+    # return render(request, 'contact.html', {'form': form})
+    return render(request, 'blog/contact.html', {'form': form, 'menu': user_menu, 'title': 'Контакты'})
 
 
 def show_notifications(request):
