@@ -17,7 +17,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import FormMixin, UpdateView, DeleteView, FormView
 from slugify import slugify
-from Blog.forms import CommentForm, AddPostForm
+from Blog.forms import CommentForm, AddPostForm, ContactForm
 from Blog.models import Posts, Category, CustomImage, Comments
 from users.models import Profile, User
 from datetime import datetime, timedelta

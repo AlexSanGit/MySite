@@ -8,8 +8,8 @@ __pycache__/
 prod_settings.py
 local_settings.py
 
-# Игнорирование файла БД SQLite
-#*.sqlite3
+ Игнорирование файла БД SQLite
+*.sqlite3
 
 # Игнорирование файлов настроек IDE и редакторов
 .vscode/
