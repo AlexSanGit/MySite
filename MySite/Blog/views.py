@@ -113,19 +113,6 @@ class CategoryPosts(LoginRequiredMixin, DataMixin, ListView):
     template_name = 'blog/index.html'
     context_object_name = 'posts'
 
-    # def get_queryset(self):
-    #     category_slug = self.kwargs['cat_slug']
-    #     # Get the child category using the slug from the URL
-    #     child_category = Category.objects.get(slug=category_slug)
-    #
-    #     # If the selected category is a parent category, get all posts for its descendants
-    #     if not child_category.is_leaf_node():
-    #         return Posts.objects.filter(
-    #             Q(cat_post__in=child_category.get_descendants(include_self=True)),
-    #             is_published=True)
-    #
-    #     # If the selected category is a leaf node (a child category), get posts for the specific category only
-    #     return Posts.objects.filter(cat_post=child_category, is_published=True)
     def get_queryset(self):
         category_slug = self.kwargs['cat_slug']
 

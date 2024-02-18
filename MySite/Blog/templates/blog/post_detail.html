@@ -46,27 +46,29 @@
 <div id="myModal" class="modal">
     <span class="close" onclick="closeModal()">&times;</span>
     <div class="modal-content">
+        <!-- Стрелка для перехода к предыдущему изображению -->
+        <button class="prev" onclick="prevSlide()">&#10094;</button>
+        <!-- Изображение отображаемое в модальном окне -->
         <div class="slider">
             <div class="slider-content">
                 {% for image in post.post_images.all %}
                 <img src="{{ image.image.url }}" alt="">
                 {% endfor %}
             </div>
-            <div class="slider-controls">
-                <button class="prev" onclick="prevSlide()">&#10094;</button>
-                <button class="next" onclick="nextSlide()">&#10095;</button>
-            </div>
         </div>
+        <!-- Стрелка для перехода к следующему изображению -->
+        <button class="next" onclick="nextSlide()">&#10095;</button>
     </div>
 </div>
 
-    <div class="image-post-detail">
-        <div class="row">
-            {% for image in post.post_images.all %}
-            <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}')">
-            {% endfor %}
-        </div>
+
+<div class="image-post-detail">
+    <div class="row">
+        {% for image in post.post_images.all %}
+        <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}', {{ forloop.counter0 }})">
+        {% endfor %}
     </div>
+</div>
 
     <p>От кого заявка:{{post.ot_kogo_zayavka}}</p>
 

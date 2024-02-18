@@ -1,31 +1,7 @@
-// Открытие модального окна и отображение изображения
-//function openModal(imageUrl) {
-//    var modal = document.getElementById("myModal");
-//    var modalImage = document.getElementById("img01");
-//    modal.style.display = "block";
-//    modalImage.src = imageUrl;
-//}
-//
-//// Закрытие модального окна
-//function closeModal() {
-//    var modal = document.getElementById("myModal");
-//    modal.style.display = "none";
-//}
-//
-//// Обработчик события "click" на документе
-//document.addEventListener("click", function(event) {
-//    var modal = document.getElementById("myModal");
-//    var modalContent = document.querySelector(".modal-content");
-//    // Проверяем, произошел ли клик вне модального окна
-//    if (event.target === modal && event.target !== modalContent) {
-//        closeModal();
-//    }
-//});
-
     var currentSlide = 0;
 
-function openModal(imageUrl) {
-    currentSlide = 0;
+function openModal(imageUrl, index) {
+    currentSlide = index;
     document.getElementById('myModal').style.display = 'block';
     showSlide(currentSlide, imageUrl);
 }
@@ -34,14 +10,20 @@ function openModal(imageUrl) {
 function closeModal() {
     var modal = document.getElementById("myModal");
     modal.style.display = "none";
+    console.log("Closing modal...");
     }
 
-    // Обработчик события "click" на документе
+// Обработчик события "click" на документе
 document.addEventListener("click", function(event) {
     var modal = document.getElementById("myModal");
     var modalContent = document.querySelector(".modal-content");
-    // Проверяем, произошел ли клик вне модального окна
-    if (event.target === modal && event.target !== modalContent) {
+    var sliderContent = document.querySelector(".slider-content");
+
+    console.log("Clicked target:", event.target);
+
+    // Проверяем, произошел ли клик вне модального окна и не на изображении или кнопках переключения
+    if (event.target === modal && event.target !== modalContent && event.target !== sliderContent && !event.target.closest('.slider-controls') && !event.target.closest('.slider-content')) {
+        console.log("Closing modal...");
         closeModal();
     }
 });
