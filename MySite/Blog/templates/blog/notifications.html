@@ -33,5 +33,14 @@
 
 <a href="{% url 'clear_notifications' %}" class="button" style="margin-top:15px;">Очистить уведомления</a>
 
-{% endblock %}
+<script>
+        function playNotificationSound() {
+            // Создайте новый Audio объект, указав путь к звуковому файлу
+            var audio = new Audio('media/audio/notification.mp3');
+            // Воспроизведите звук
+            audio.play();
+        }
+</script>
+
+    {% endblock %}
     </div>

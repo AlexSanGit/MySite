@@ -44,6 +44,7 @@ class AddPostForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['time_zayavki'].initial = '00:00'
         self.fields['time_glybinie'].initial = '00:00'
+        self.fields['time_end'].initial = '00:00'
         self.fields['second_user'].empty_label = "Не выбрано"
         self.fields['second_user'].label_from_instance = self.label_from_instance
         self.fields['city'].initial = 'asu'

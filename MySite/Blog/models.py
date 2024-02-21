@@ -42,6 +42,7 @@ class Posts(models.Model):
     # city = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="Участок", null=True)
     city = models.CharField(max_length=3, choices=CITY_CHOICES, blank=True, null=True)
     time_zayavki = models.TimeField(verbose_name="Время заявки", default='00:00')
+    time_end = models.TimeField(verbose_name="Время окончания", default='00:00')
     time_glybinie = models.TimeField(verbose_name="Глубиные:", default='00:00')
     simulyation = models.BooleanField(default=False, verbose_name="Симуляция")
     ot_kogo_zayavka = models.CharField(max_length=50, verbose_name="От кого заявка", null=True)

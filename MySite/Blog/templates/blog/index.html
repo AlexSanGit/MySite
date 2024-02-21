@@ -43,10 +43,12 @@
             Описание: <p class="post-description">{{p.description}}</p>
 
             <div class="row">
+                <a href="{{ p.get_absolute_url }}">
                 {% for image in p.post_images.all %}
                 <img class="img-index" src="{{ image.image.url }}"
                      alt="Изображение">
                 {% endfor %}
+                </a>
             </div>
                 <p class="user-post"> Написал: {{ p.author.first_name }} {{ p.author.last_name }}
                     <span class="uchastok_title">  {{ p.author.profile.get_city_display}}</span>
