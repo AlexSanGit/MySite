@@ -87,7 +87,7 @@
         {% for value, label in p_form.city_filter.field.choices %}
             <label>
                 <input type="checkbox" name="{{ p_form.city_filter.name }}" value="{{ value }}"
-                       {% if value in p_form.city_filter.value %}checked{% endif %}>
+                       {% if value in p_form.city_filter.value %} checked {% endif %}>
                 {{ label }}
             </label>
         {% endfor %}

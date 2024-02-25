@@ -5,6 +5,7 @@ from io import BytesIO
 
 from PIL import Image
 
+from Blog import models
 from Blog.menu import DataMixin, menu
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -20,51 +21,10 @@ from slugify import slugify
 from Blog.forms import CommentForm, AddPostForm, ContactForm
 from Blog.models import Posts, Category, CustomImage, Comments
 from users.models import Profile, User
-from datetime import datetime, timedelta
-
-
-class HomePage(LoginRequiredMixin, DataMixin, ListView):
-    model = Posts
-    template_name = 'blog/index.html'
-    context_object_name = 'posts'
-    ordering = ['-time_create']  # order posts by date in descending order
-    paginate_by = 5  # display 10 posts per page
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(is_published=True)  # Только опубликованные посты
-
-        # Получите профиль текущего пользователя, если он аутентифицирован
-        if self.request.user.is_authenticated:
-            profile = self.request.user.profile
-
-            # Получите выбранные города из профиля пользователя
-            selected_cities = profile.city_filter.split(",") if profile.city_filter else []
-
-            # Если есть выбранные города, фильтруйте посты по ним
-            if selected_cities:
-                city_filter_q = Q()
-                for city in selected_cities:
-                    city_filter_q |= Q(city=city)
-                queryset = queryset.filter(city_filter_q)
-
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Главная страница'
-        posts = self.get_queryset()
-        context['posts'] = posts
-        # Получите профиль автора для каждого поста
-        # authors_profiles = [post.author.profile for post in context['posts']]
-        # context['author'] = authors_profiles
-
-        # Получите профиль текущего пользователя
-        if self.request.user.is_authenticated:
-            profile = self.request.user.profile
-            context['profile'] = profile
-        c_def = self.get_user_context()
-        return dict(list(context.items()) + list(c_def.items()))
+from datetime import datetime
+from django.db.models import Count  # Добавляем импорт Count
+from .forms import AddPostForm
+from .models import Category
 
 
 class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
@@ -108,25 +68,65 @@ class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-class CategoryPosts(LoginRequiredMixin, DataMixin, ListView):
+class FilterMixin:
+    def filter_by_city(self, queryset):
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            selected_cities = profile.city_filter.split(",") if profile.city_filter else []
+
+            if selected_cities:
+                city_filter_q = Q()
+                for city in selected_cities:
+                    city_filter_q |= Q(city=city)
+                queryset = queryset.filter(city_filter_q)
+        return queryset
+
+
+class HomePage(LoginRequiredMixin, DataMixin, FilterMixin, ListView):
+    model = Posts
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+    ordering = ['-time_create']
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+        queryset = self.filter_by_city(queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Главная страница'
+        posts = self.get_queryset()
+        context['posts'] = posts
+
+        if self.request.user.is_authenticated:
+            profile = self.request.user.profile
+            context['profile'] = profile
+
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+class CategoryPosts(LoginRequiredMixin, DataMixin, FilterMixin, ListView):
     model = Posts
     template_name = 'blog/index.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
         category_slug = self.kwargs['cat_slug']
-
-        # Get the child category using the slug from the URL
         child_category = Category.objects.get(slug=category_slug)
 
-        # If the selected category is a parent category, get all posts for its descendants
         if child_category.parent_id is None:
-            return Posts.objects.filter(
+            queryset = Posts.objects.filter(
                 Q(cat_post__parent_id=child_category.id) | Q(cat_post=child_category),
                 is_published=True)
+        else:
+            queryset = Posts.objects.filter(cat_post=child_category, is_published=True)
 
-        # If the selected category is a leaf node (a child category), get posts for the specific category only
-        return Posts.objects.filter(cat_post=child_category, is_published=True)
+        queryset = self.filter_by_city(queryset)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -187,6 +187,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # Установите начальное значение для city_filter
         obj.time_zayavki = form.cleaned_data['time_zayavki']
         obj.time_glybinie = form.cleaned_data['time_glybinie']
+        obj.time_end = form.cleaned_data['time_end']
         obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
         simulyation_value = form.cleaned_data.get('simulyation', False)
         form.instance.simulyation = simulyation_value
@@ -285,7 +286,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
         # Если текущий день месяца равен 1, обнулите поле glubinie
         # Получите текущую дату и время
         now = datetime.now()
-        if now.day == 1:
+        if now.day == 1 and now.hour > 12:
             zero_time_glybinie = f"{00:02}:{00:02}"
             # Получите всех пользователей и обнулите поле glubinie для их профилей
             users = User.objects.all()
@@ -298,6 +299,22 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
             self.request.user.profile.save()
 
         return HttpResponseRedirect(reverse('home'))
+
+    def get_initial(self):
+        initial = super().get_initial()
+        # Получаем наиболее используемую категорию
+        most_used_category = Category.objects.annotate(post_count=Count('posts')).order_by('-post_count').first()
+        initial['cat_post'] = most_used_category
+        # Получаем профиль пользователя
+        profile = self.request.user.profile if self.request.user.is_authenticated else None
+        if profile:
+            # Получаем список выбранных участков (городов) из профиля пользователя
+            selected_cities = profile.city_filter.split(',') if profile.city_filter else []
+            # Если есть выбранные участки, устанавливаем первый в качестве начального значения
+            if selected_cities:
+                initial['city'] = selected_cities[0]
+
+        return initial
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -521,10 +538,14 @@ class UserListView(DataMixin, ListView):
     model = User  # Используйте свою модель пользователя, если она отличается
     template_name = 'blog/user_list.html'  # Создайте соответствующий шаблон
     context_object_name = 'users'
+    paginate_by = None  # Отключаем пагинацию
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profiles'] = Profile.objects.all()  # Получите все профили пользователей
+        # Получаем статистику о количестве постов для каждого пользователя
+        users_post_count = User.objects.annotate(num_posts=Count('posts')).order_by('-num_posts')
+        context['users_post_count'] = users_post_count
+        context['profiles'] = Profile.objects.all().order_by('city')
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
 

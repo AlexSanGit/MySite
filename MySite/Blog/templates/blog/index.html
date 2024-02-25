@@ -16,48 +16,50 @@
 
 <div class="content-index">
     <ul>
-        {% for p in posts %}
+        {% for post in posts %}
         <li class="content-index2">
             <div>
-                <p class ="uchastok_title" >Участок:  {{p.get_city_display}} </p>
-                <p>Время записи: <span style="font-weight: bold;" > {{p.time_update|date:"d-m-Y H:i"}} </span> </p>
+                <p>Участок: <span class="uchastok_title">{{post.get_city_display}} </span></p>
+                <p>Время записи: <span style="font-weight: bold;"> {{post.time_update|date:"d-m-Y H:i"}} </span> </p>
                 <p>Оборудование:
-                    {% if p.cat_post.parent %}
-                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.parent.slug %}">
-                        {{p.cat_post.parent.name }}</a> -
+                    {% if post.cat_post.parent %}
+                    <a class="index-title" href="{% url 'category' cat_slug=post.cat_post.parent.slug %}">
+                        {{post.cat_post.parent.name }}</a> -
                     {% endif %}
-                    <a class="index-title" href="{% url 'category' cat_slug=p.cat_post.slug %}">
-                        {{ p.cat_post.name}}</a>
+                    <a class="index-title" href="{% url 'category' cat_slug=post.cat_post.slug %}">
+                        {{ post.cat_post.name}}</a>
 
-                    {% if p.simulyation %}
+                    {% if post.simulyation %}
                     <span style="font-weight: bold;color:red;padding-right:10;">Есть симуляция!</span>
                     {% endif %}
-                    {% if p.important %}
+                    {% if post.important %}
                     <span style="font-weight: bold;color:red">Важное!</span>
                     {% endif %}
                  </p>
-                Краткое описание: <p style="font-weight: bold;padding-bottom:10px;" >{{p.title}}</p>
+                    <span class="title-description"> Краткое описание :</span>
+                    <div class="post-description"> {{post.title}}</div>
+
+                    <span class="title-description"> Описание :</span>
+                    <div class="post-description" > {{post.description|linebreaks}}</div>
 
             </div>
 
-            Описание: <p class="post-description">{{p.description}}</p>
-
             <div class="row">
-                <a href="{{ p.get_absolute_url }}">
-                {% for image in p.post_images.all %}
+                <a href="{{ post.get_absolute_url }}">
+                {% for image in post.post_images.all %}
                 <img class="img-index" src="{{ image.image.url }}"
                      alt="Изображение">
                 {% endfor %}
                 </a>
             </div>
-                <p class="user-post"> Написал: {{ p.author.first_name }} {{ p.author.last_name }}
-                    <span class="uchastok_title">  {{ p.author.profile.get_city_display}}</span>
+                <p class="user-postpost"> Написал: {{ post.author.first_name }} {{ post.author.last_name }}
+                    <span class="uchastok_title">  {{ post.author.profile.get_city_display}}</span>
 <!--                    <img class="avatar" src="{{ p.author.profile.image.url }}"-->
 <!--                         alt="Avatar"/>-->
                 </p>
 
-            <p>Коментариев: ({{p.comments_posts.all.count}})</p>
-            <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Подробнее</a></p>
+            <p>Коментариев: ({{post.comments_posts.all.count}})</p>
+            <p class="link-read-postpost"><a href="{{ post.get_absolute_url }}">Подробнее</a></p>
 
 
             {% endfor %}

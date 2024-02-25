@@ -46,13 +46,22 @@
                                id="{{ form.time_zayavki.id_for_label }}">
                         <div class="form-error">{{ form.time_zayavki.errors }}</div>
                     </div>
+
                     <div class="form-column">
+                        <label class="form-label" for="{{ form.time_end.id_for_label }}">
+                            {{form.time_end.label}}:</label>
+                        <input type="time" name="{{ form.time_end.name }}"
+                               id="{{ form.time_end.id_for_label }}">
+                        <div class="form-error">{{ form.time_end.errors }}</div>
+                    </div>
+
+                </div>
+                <div class="form-column">
                         <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
                             {{form.time_glybinie.label}}:</label>
                         <input type="time" name="{{ form.time_glybinie.name }}"
                                id="{{ form.time_glybinie.id_for_label }}">
                         <div class="form-error">{{ form.time_glybinie.errors }}</div>
-                    </div>
                 </div>
             </div>
             <div class="form-field">
@@ -96,12 +105,16 @@
     document.addEventListener("DOMContentLoaded", function() {
         var timeZayavkiInput = document.getElementById("{{ form.time_zayavki.id_for_label }}");
         var timeGlybiniInput = document.getElementById("{{ form.time_glybinie.id_for_label }}");
+        var timeEndInput = document.getElementById("{{ form.time_end.id_for_label }}");
 
         if (timeZayavkiInput && !timeZayavkiInput.value) {
             timeZayavkiInput.value = "08:30";
         }
         if (timeGlybiniInput  && !timeGlybiniInput .value) {
             timeGlybiniInput .value = "00:00";
+        }
+        if (timeEndInput  && !timeEndInput .value) {
+            timeEndInput .value = "12:00";
         }
     });
 </script>

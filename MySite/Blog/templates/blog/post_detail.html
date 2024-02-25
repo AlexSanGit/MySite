@@ -15,75 +15,65 @@
 {% endif %}
 
 <div class="content-index">
-    <p class ="uchastok_title" >Участок:  {{post.get_city_display}} </p>
-    <p>Время записи: <span style="font-weight: bold;" > {{post.time_update|date:"d-m-Y H:i"}} </span> </p>
+    <p class="uchastok_title">Участок: {{post.get_city_display}} </p>
+    <p>Время записи: <span style="font-weight: bold;"> {{post.time_update|date:"d-m-Y H:i"}} </span></p>
     <p>Оборудование:
         {% if post.cat_post.parent %}
         <span class="uchastok_title"> {{post.cat_post.parent}}-</span>
         {% endif %}
         <span class="uchastok_title">{{post.cat_post.name}}</span>
 
-            {% if post.simulyation %}
-                    <span style="font-weight: bold;color:red;padding-right:10;">Есть симуляция!</span>
-                    {% endif %}
+        {% if post.simulyation %}
+        <span style="font-weight: bold;color:red;padding-right:10;">Есть симуляция!</span>
+        {% endif %}
 
-                    {% if post.important %}
-                    <span style="font-weight: bold;color:red">Важное!</span>
-                    {% endif %}
+        {% if post.important %}
+        <span style="font-weight: bold;color:red">Важное!</span>
+        {% endif %}
     </p>
-    Краткое описание :
-    <div class="title-detail-post">
-        {{post.title}}
-    </div>
-    <!--    {% if post.time_glybinie == '00:00' %}-->
-    <!--    <div class="post-time"> Глубиные:-->
+    <span class="title-description"> Краткое описание :</span>
+    <div class="post-description"> {{post.title}}</div>
 
-    <!--        {{post.time_glybinie}}</div>-->
-    <!--        {% endif %}-->
-    <span style="padding-top:30px;"> Описание :</span>
-    <div class="post-description" style="padding-bottom:10px;"> {{post.description|linebreaks}}</div>
+    <span class="title-description"> Описание :</span>
+    <div class="post-description" > {{post.description|linebreaks}}</div>
 
-<div id="myModal" class="modal">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div class="modal-content">
-        <!-- Стрелка для перехода к предыдущему изображению -->
-        <button class="prev" onclick="prevSlide()">&#10094;</button>
-        <!-- Изображение отображаемое в модальном окне -->
-        <div class="slider">
-            <div class="slider-content">
-                {% for image in post.post_images.all %}
-                <img src="{{ image.image.url }}" alt="">
-                {% endfor %}
+    <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <!-- Стрелка для перехода к предыдущему изображению -->
+            <button class="prev" onclick="prevSlide()">&#10094;</button>
+            <!-- Изображение отображаемое в модальном окне -->
+            <div class="slider">
+                <div class="slider-content">
+                    {% for image in post.post_images.all %}
+                    <img src="{{ image.image.url }}" alt="">
+                    {% endfor %}
+                </div>
             </div>
+            <!-- Стрелка для перехода к следующему изображению -->
+            <button class="next" onclick="nextSlide()">&#10095;</button>
         </div>
-        <!-- Стрелка для перехода к следующему изображению -->
-        <button class="next" onclick="nextSlide()">&#10095;</button>
     </div>
-</div>
 
 
-<div class="image-post-detail">
-    <div class="row">
-        {% for image in post.post_images.all %}
-        <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}', {{ forloop.counter0 }})">
-        {% endfor %}
+    <div class="image-post-detail">
+        <div class="row">
+            {% for image in post.post_images.all %}
+            <img src="{{ image.image.url }}" onclick="openModal('{{ image.image.url }}', {{ forloop.counter0 }})">
+            {% endfor %}
+        </div>
     </div>
-</div>
-
+    {% if post.ot_kogo_zayavka %}
     <p>От кого заявка:{{post.ot_kogo_zayavka}}</p>
-
-    <div class="post-time"> Время вызова: {{post.time_zayavki}}</div>
+    {% endif %}
+    <div class="post-time"> Время вызова: <span style="color:green;">{{post.time_zayavki}}</span></div>
+    <div class="post-time"> Время окончания: <span style="color:green;">{{post.time_end}}</span></div>
     <p class="user-post"> Написал: {{ profile.user.first_name }} {{ profile.user.last_name }}
         ({{ profile.get_city_display}}
-
-
-<!--        <img class="avatar" src="{{ post.author.profile.image.url }}"-->
-<!--             alt="Avatar"/>-->
-        )
     </p>
-     {% if post.second_user %}
+    {% if post.second_user %}
     <p class="user-post"> Совместно с {{post.second_user.first_name}} {{post.second_user.last_name}} </p>
-     {% endif %}
+    {% endif %}
     {% if user.is_authenticated and user == post.author %}
     <!-- Элементы, которые будут видны только автору поста -->
     <a class="button" href="{% url 'post-update' object.id %}">Редактировать</a>

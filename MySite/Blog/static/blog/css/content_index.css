@@ -5,6 +5,7 @@
   border: 1px solid #0080FF;
   background-color: #8ee0e2;
   padding: 10px;
+  padding-left: 20px;
   margin-top: 20px;
   margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
   border-radius: 10px;
@@ -43,18 +44,28 @@
 }
 .post-time{
     font-size: 16px;
+    font-weight: bold;
 
 }
 .user-post{
     margin-bottom:5px;
 }
+
+.title-description {
+    padding-bottom:10px;
+    padding-top:10px;
+    font-weight: bold;
+    font-size: 18px;
+   }
+
+
 .post-description{
     font-size: 18px;
     text-decoration: none;
     word-wrap: break-word; /* или word-break: break-all; */
     margin: 0 auto; /* Добавлено margin: 0 auto; для центрирования */
     //text-overflow: ellipsis; /* Добавляет многоточие в конце обрезанного текста */
-    font-weight: bold;
+    //font-weight: bold;
     padding:5px 0px 20px 0px;
 
 }
@@ -67,9 +78,8 @@
 .uchastok_title{
      white-space: nowrap !important;
      font-weight: bold;
-}
-
-
+     color:#5c02fd;
+     }
 
 .post-item {
   border-bottom: 1px solid #ddd;

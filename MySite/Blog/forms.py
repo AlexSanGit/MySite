@@ -42,9 +42,9 @@ class AddPostForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['time_zayavki'].initial = '00:00'
+        self.fields['time_zayavki'].initial = '09:00'
         self.fields['time_glybinie'].initial = '00:00'
-        self.fields['time_end'].initial = '00:00'
+        self.fields['time_end'].initial = '12:00'
         self.fields['second_user'].empty_label = "Не выбрано"
         self.fields['second_user'].label_from_instance = self.label_from_instance
         self.fields['city'].initial = 'asu'
@@ -91,12 +91,13 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Posts
-        fields = ['city', 'title', 'description',  'cat_post', 'new_category', 'time_zayavki',
+        fields = ['city', 'title', 'description',  'cat_post', 'new_category', 'time_zayavki', 'time_end',
                   'time_glybinie', 'simulyation', 'important', 'images', 'ot_kogo_zayavka', 'second_user']
         widgets = {
             # 'title': forms.TextInput(attrs={'cols': 60}),
             # 'description': forms.Textarea(attrs={'cols': 60, 'rows': 5}),
             'time_zayavki': forms.TimeInput(format='%H:%M'),
+            'time_end': forms.TimeInput(format='%H:%M'),
             'time_glybinie': forms.TimeInput(format='%H:%M'),
         }
 

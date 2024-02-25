@@ -10,13 +10,15 @@
         {% for profile in profiles %}
                 {% if profile.user == user %}
                     <p>Участок: <span class="uchastok_title"> {{ profile.get_city_display }}</span></p>
-                    <p>Глубинные: <span class="uchastok_title"> {{ profile.time_glybinie }}</span></p>
-                    <p>Сот.Телефон:<span class="uchastok_title">  {{ profile.phone }}</span></p>
+                    <p>Глубинные: <span> {{ profile.time_glybinie }}</span></p>
+                    <p>Сот.Телефон:<span>  {{ profile.phone }}</span></p>
+                    <p>Кол-во постов:<span>  {{ user.users_post_count }}</span></p>
 
                         {% endif %}
             {% empty %}
                 <p>Профиль не найден</p>
             {% endfor %}
+
 </li>
 
             <!-- Дополнительные поля и информация о пользователе -->

@@ -6,14 +6,14 @@
 <div class="content-addpage">
 
     {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
-        {{ message }}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
 
     <form method="POST" enctype="multipart/form-data">
@@ -53,22 +53,29 @@
                                value="{{ form.time_zayavki.value|default:''|date:'H:i' }}">
                     </div>
                     <div class="form-column">
-
-                        <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
-                            {{form.time_glybinie.label}}</label>
-                        <input type="time" name="{{ form.time_glybinie.name }}"
-                               id="{{ form.time_glybinie.id_for_label }}"
-                               value="{{ form.time_glybinie.value|default:''|date:'H:i' }}" readonly>
+                        <label class="form-label" for="{{ form.time_end.id_for_label }}">
+                            {{ form.time_end.label }}:</label>
+                        <input type="time" name="{{ form.time_end.name }}"
+                               id="{{ form.time_end.id_for_label }}"
+                               value="{{ form.time_end.value|default:''|date:'H:i' }}">
                     </div>
+                </div>
+                <div class="form-column">
+
+                    <label class="form-label" for="{{ form.time_glybinie.id_for_label }}">
+                        {{form.time_glybinie.label}}</label>
+                    <input type="time" name="{{ form.time_glybinie.name }}"
+                           id="{{ form.time_glybinie.id_for_label }}"
+                           value="{{ form.time_glybinie.value|default:''|date:'H:i' }}" readonly>
                 </div>
             </div>
 
-                <label class="form-label-sim" for="{{ form.simulyation.id_for_label }}">
+            <label class="form-label-sim" for="{{ form.simulyation.id_for_label }}">
                  <span class="sim-import ">
                  <span>   Есть симуляция: {{ form.simulyation }} </span>
                  <span>      Важное: {{ form.important}}</span>
                  </span>
-                </label>
+            </label>
             <div class="form-field">
                 <label class="form-label" for="{{ form.second_user.id_for_label }}">
                     {{ form.second_user.label}}</label>
@@ -79,7 +86,7 @@
 
             <div class="form-field">
                 <label class="form-label" for="{{ form.images.id_for_label }}"> Изабражения, не более 3:
-                {{ form.images }} </label>
+                    {{ form.images }} </label>
                 <div class="form-error">{{ form.images.errors}}</div>
             </div>
 
@@ -100,9 +107,9 @@
                 {% endfor %}
             </ul>
 
-            <div class="form-field">
+
                 <button class="button" type="submit">Сохранить</button>
-            </div>
+
 
         </div>
     </form>
@@ -123,6 +130,8 @@
             });
         });
     });
+
+
 
 </script>
 
@@ -163,6 +172,8 @@
     font-size: 14px;
     vertical-align: middle;
 }
+
+
 
 </style>
 
