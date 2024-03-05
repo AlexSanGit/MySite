@@ -4,6 +4,7 @@ import re
 from io import BytesIO
 
 from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from Blog import models
 from Blog.menu import DataMixin, menu
@@ -146,7 +147,7 @@ def is_image(file):
     return file_extension.lower() in supported_image_extensions
 
 
-def process_image_in_memory(image):
+def resize_image(image):
     # Чтение данных из InMemoryUploadedFile
     image_data = image.read()
 
@@ -156,20 +157,65 @@ def process_image_in_memory(image):
     # Устанавливаем максимальный размер изображения
     max_size = (800, 600)
 
+    # Вычисляем соотношение сторон
+    width, height = pil_image.size
+    aspect_ratio = width / height
+
     # Если размер изображения превышает максимальный размер, изменяем его
-    if pil_image.size[0] > max_size[0] or pil_image.size[1] > max_size[1]:
-        pil_image.thumbnail(max_size)
+    if width > max_size[0] or height > max_size[1]:
+        if aspect_ratio > 1:
+            new_width = max_size[0]
+            new_height = int(new_width / aspect_ratio)
+        else:
+            new_height = max_size[1]
+            new_width = int(new_height * aspect_ratio)
+
+        pil_image = pil_image.resize((new_width, new_height), Image.ANTIALIAS)
 
         # Создаем новый объект BytesIO для сохранения измененного изображения в памяти
         output_io = BytesIO()
-        pil_image.save(output_io, format='JPEG', quality=90)  # Можете выбрать другой формат и качество, если нужно
+        pil_image.save(output_io, format='JPEG', quality=100)  # Можете выбрать другой формат и качество, если нужно
 
-        # Обновляем данные в InMemoryUploadedFile
-        image.file = output_io
-        # Устанавливаем имя файла, необходимое для InMemoryUploadedFile
-        image.file.name = f"{image.name.split('.')[0]}_processed.jpg"
+        # Создаем новый InMemoryUploadedFile с измененными данными
+        processed_image = InMemoryUploadedFile(
+            output_io,
+            None,
+            f"{image.name.split('.')[0]}_processed.jpg",
+            'image/jpeg',
+            output_io.tell(),
+            None
+        )
 
-    return image
+        return processed_image
+    else:
+        # Если изображение не требует изменения, возвращаем оригинальное изображение
+        return image
+
+
+# def process_image_in_memory(image):
+#     # Чтение данных из InMemoryUploadedFile
+#     image_data = image.read()
+#
+#     # Открываем изображение с использованием Pillow
+#     pil_image = Image.open(BytesIO(image_data))
+#
+#     # Устанавливаем максимальный размер изображения
+#     max_size = (800, 600)
+#
+#     # Если размер изображения превышает максимальный размер, изменяем его
+#     if pil_image.size[0] > max_size[0] or pil_image.size[1] > max_size[1]:
+#         pil_image.thumbnail(max_size)
+#
+#         # Создаем новый объект BytesIO для сохранения измененного изображения в памяти
+#         output_io = BytesIO()
+#         pil_image.save(output_io, format='JPEG', quality=40)  # Можете выбрать другой формат и качество, если нужно
+#
+#         # Обновляем данные в InMemoryUploadedFile
+#         image.file = output_io
+#         # Устанавливаем имя файла, необходимое для InMemoryUploadedFile
+#         image.file.name = f"{image.name.split('.')[0]}_processed.jpg"
+#
+#     return image
 
 
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
@@ -238,21 +284,34 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
 
         try:
             obj.save()
-
             # Обработка изображений
+            # for file in files:
+            #     try:
+            #         processed_image = process_image_in_memory(file)
+            #         if is_image(processed_image):
+            #             # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
+            #             CustomImage.objects.create(post=obj, image=processed_image)
+            #         else:
+            #             # Обработка случая, если это не изображение
+            #             continue
+            #     except Exception as e:
+            #         # Обработка других исключений, если необходимо
+            #         messages.error(self.request, f'Файл {file.name} не изображение')
             for file in files:
                 try:
-                    processed_image = process_image_in_memory(file)
-                    if is_image(processed_image):
-
+                    # print(f"Обработка файла: {file.name}")
+                    processed_image = resize_image(file)
+                    if processed_image:
+                        # print(f"Файл {file.name} обработан успешно")
                         # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
                         CustomImage.objects.create(post=obj, image=processed_image)
                     else:
                         # Обработка случая, если это не изображение
-
+                        messages.error(self.request, f'Файл {file.name} не изображение')
                         continue
                 except Exception as e:
                     # Обработка других исключений, если необходимо
+                    # print(f"Ошибка при обработке файла {file.name}: {e}")
                     messages.error(self.request, f'Файл {file.name} не изображение')
 
         except ValidationError as e:
