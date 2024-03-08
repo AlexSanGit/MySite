@@ -26,6 +26,9 @@ from datetime import datetime
 from django.db.models import Count  # Добавляем импорт Count
 from .forms import AddPostForm
 from .models import Category
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PostDetail(LoginRequiredMixin, DataMixin, DetailView, FormMixin):
@@ -192,55 +195,30 @@ def resize_image(image):
         return image
 
 
-# def process_image_in_memory(image):
-#     # Чтение данных из InMemoryUploadedFile
-#     image_data = image.read()
-#
-#     # Открываем изображение с использованием Pillow
-#     pil_image = Image.open(BytesIO(image_data))
-#
-#     # Устанавливаем максимальный размер изображения
-#     max_size = (800, 600)
-#
-#     # Если размер изображения превышает максимальный размер, изменяем его
-#     if pil_image.size[0] > max_size[0] or pil_image.size[1] > max_size[1]:
-#         pil_image.thumbnail(max_size)
-#
-#         # Создаем новый объект BytesIO для сохранения измененного изображения в памяти
-#         output_io = BytesIO()
-#         pil_image.save(output_io, format='JPEG', quality=40)  # Можете выбрать другой формат и качество, если нужно
-#
-#         # Обновляем данные в InMemoryUploadedFile
-#         image.file = output_io
-#         # Устанавливаем имя файла, необходимое для InMemoryUploadedFile
-#         image.file.name = f"{image.name.split('.')[0]}_processed.jpg"
-#
-#     return image
-
-
 class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
     form_class = AddPostForm
     template_name = 'blog/addpage.html'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form, *args, **kwargs):
-        obj = form.save(commit=False)
-        obj.author = self.request.user
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.title = form.cleaned_data['title']
         # obj.save()
         # Получение списка файлов
         files = self.request.FILES.getlist('images')
-        obj.city = form.cleaned_data['city']
+        post.city = form.cleaned_data['city']
         # Установите начальное значение для city_filter
-        obj.time_zayavki = form.cleaned_data['time_zayavki']
-        obj.time_glybinie = form.cleaned_data['time_glybinie']
-        obj.time_end = form.cleaned_data['time_end']
-        obj.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
+        post.time_zayavki = form.cleaned_data['time_zayavki']
+        post.time_glybinie = form.cleaned_data['time_glybinie']
+        post.time_end = form.cleaned_data['time_end']
+        post.ot_kogo_zayavka = form.cleaned_data['ot_kogo_zayavka']
         simulyation_value = form.cleaned_data.get('simulyation', False)
         form.instance.simulyation = simulyation_value
         # Получение второго пользователя из формы
         second_user = form.cleaned_data.get('second_user')
         if second_user:
-            obj.second_user = second_user
+            post.second_user = second_user
         # создаем slug из заголовка поста с помощью функции slugify из библиотеки python-slugify
         slug = slugify(form.cleaned_data['title'])
         # проверяем уникальность slug
@@ -264,7 +242,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 slug = slugify(new_category)
                 category = Category.objects.create(name=new_category, slug=slug)
                 # Связываем пост с выбранной или созданной категорией
-                obj.cat_post = category
+                post.cat_post = category
 
             # Проверка, что новая категория не является родителем основной категории
             if new_category and main_category is not None:
@@ -283,20 +261,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 messages.error(self.request, 'Новая категория не может быть потомком основной категории.')
 
         try:
-            obj.save()
-            # Обработка изображений
-            # for file in files:
-            #     try:
-            #         processed_image = process_image_in_memory(file)
-            #         if is_image(processed_image):
-            #             # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
-            #             CustomImage.objects.create(post=obj, image=processed_image)
-            #         else:
-            #             # Обработка случая, если это не изображение
-            #             continue
-            #     except Exception as e:
-            #         # Обработка других исключений, если необходимо
-            #         messages.error(self.request, f'Файл {file.name} не изображение')
+            post.save()
             for file in files:
                 try:
                     # print(f"Обработка файла: {file.name}")
@@ -304,7 +269,7 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                     if processed_image:
                         # print(f"Файл {file.name} обработан успешно")
                         # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
-                        CustomImage.objects.create(post=obj, image=processed_image)
+                        CustomImage.objects.create(post=post, image=processed_image)
                     else:
                         # Обработка случая, если это не изображение
                         messages.error(self.request, f'Файл {file.name} не изображение')
@@ -325,7 +290,18 @@ class AddPost(LoginRequiredMixin, DataMixin, CreateView, FormMixin):
                 raise e
 
         # Получить время из объекта time_glybinie
-        post_time_glybinie = obj.time_glybinie
+        post_time_glybinie = post.time_glybinie
+
+        logger.warning(f" Новая запись: Заголовок: {post.title},"
+                       f" Участок: {post.city},"
+                       f" Описание: {post.description},"
+                       f" Оборудование {post.cat_post},"
+                       f" Время заявки {post.time_zayavki},"
+                       f" Время окончания {post.time_end},"
+                       f" Глубиные {post.time_glybinie},"
+                       f" Симуляция {post.simulyation},"
+                       f" Важное {post.important},"
+                       f" От кого заявка {post.ot_kogo_zayavka},")
 
         # Получить текущее время из профиля пользователя
         current_time_glybinie = self.request.user.profile.time_glybinie
@@ -431,20 +407,47 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
             # Создание новых изображений
             for file in new_images:
-
                 try:
-                    processed_image = process_image_in_memory(file)
-                    if is_image(processed_image):
-
+                    # print(f"Обработка файла: {file.name}")
+                    processed_image = resize_image(file)
+                    if processed_image:
+                        # print(f"Файл {file.name} обработан успешно")
                         # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
                         CustomImage.objects.create(post=post, image=processed_image)
                     else:
                         # Обработка случая, если это не изображение
+                        messages.error(self.request, f'Файл {file.name} не изображение')
                         continue
                 except Exception as e:
                     # Обработка других исключений, если необходимо
+                    # print(f"Ошибка при обработке файла {file.name}: {e}")
                     messages.error(self.request, f'Файл {file.name} не изображение')
 
+            # for file in new_images:
+            #
+            #     try:
+            #         processed_image = process_image_in_memory(file)
+            #         if is_image(processed_image):
+            #
+            #             # Теперь вы можете использовать processed_image для сохранения в модели или другом месте
+            #             CustomImage.objects.create(post=post, image=processed_image)
+            #         else:
+            #             # Обработка случая, если это не изображение
+            #             continue
+            #     except Exception as e:
+            #         # Обработка других исключений, если необходимо
+            #         messages.error(self.request, f'Файл {file.name} не изображение')
+        logger.warning(f" Редактирование поста: Заголовок: {post.title},"
+                       f" Участок: {post.city},"
+                       f" Описание: {post.description},"
+                       f" Оборудование {post.cat_post},"
+                       f" Время заявки {post.time_zayavki},"
+                       f" Время окончания {post.time_end},"
+                       f" Глубиные {post.time_glybinie},"
+                       f" Время обновления {post.time_update},"
+                       f" Симуляция {post.simulyation},"
+                       f" Важное {post.important},"
+                       f" От кого заявка {post.ot_kogo_zayavka},")
         post.save()
         messages.success(self.request, 'Пост успешно обновлен.')
         return super().form_valid(form)
@@ -611,3 +614,42 @@ class UserListView(DataMixin, ListView):
 
 def welcome(request):
     return render(request, 'blog/welcome.html')
+
+
+def search_posts(request):
+    query = request.GET.get('q')  # Получаем поисковой запрос из GET-параметра 'q'
+    if query:
+        # Используем Q-объекты для поиска по полям 'title' и 'content'
+        posts = Posts.objects.filter(Q(title__icontains=query)
+                                     | Q(description__icontains=query)
+                                     | Q(author__username__icontains=query)
+                                     | Q(author__first_name__icontains=query)
+                                     | Q(author__last_name__icontains=query))
+
+    else:
+        posts = Posts.objects.all()  # Если запрос не задан, показываем все посты
+
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+
+# def search_posts(request):
+#     query = request.GET.get('q')  # Получаем поисковой запрос из GET-параметра 'q'
+#     category_query = request.GET.get('cat_post')  # Получаем выбранную категорию из GET-параметра 'category'
+#
+#     posts = Posts.objects.all()  # Получаем все посты по умолчанию
+#
+#     if query:
+#         # Используем Q-объекты для поиска по полям 'title', 'description', 'author__username', 'author__first_name' и 'author__last_name'
+#         posts = posts.filter(
+#             Q(title__icontains=query) |
+#             Q(description__icontains=query) |
+#             Q(author__username__icontains=query) |  # Поиск по имени пользователя автора
+#             Q(author__first_name__icontains=query) |  # Поиск по имени автора
+#             Q(author__last_name__icontains=query)  # Поиск по фамилии автора
+#         )
+#
+#     if category_query:
+#         # Фильтруем посты по выбранной категории
+#         posts = posts.filter(cat_post__name__icontains=category_query)
+#
+#     return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})

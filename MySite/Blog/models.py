@@ -1,7 +1,3 @@
-from io import BytesIO
-
-from PIL.Image import Image
-from django.contrib.sites import requests
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -18,15 +14,9 @@ class CustomImage(models.Model):
     image = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name="Изображение")
     objects = models.Manager()
 
-    # def is_valid_image(self):
-    #     try:
-    #         # Открываем изображение по ссылке и проверяем его целостность
-    #         response = requests.get(self.image.url)
-    #         img = Image.open(BytesIO(response.content))
-    #         img.verify()
-    #         return True
-    #     except Exception:
-    #         return False
+    class Meta:
+        verbose_name = 'Фото'
+        verbose_name_plural = 'Фото'
 
 
 class Posts(models.Model):

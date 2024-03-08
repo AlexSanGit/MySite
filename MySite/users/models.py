@@ -33,3 +33,7 @@ class Profile(models.Model):
             output_size = (100, 100)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профиль'

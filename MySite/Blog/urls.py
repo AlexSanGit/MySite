@@ -19,4 +19,5 @@ urlpatterns = [
     path('posts/simulyation/', views.PostsSimulyationView.as_view(), name='posts_simulyation'),
     path('posts/important/', views.PostsImportantView.as_view(), name='posts_important'),
     path('users/', views.UserListView.as_view(), name='user_list'),
+    path('search/', views.search_posts, name='search_posts'),
 ]

@@ -176,3 +176,31 @@ img.img-article {
     font-size: 20px;
     font-weight: bold;
 }
+
+.button-search {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #0080FF;
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 1px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.button-search:hover {
+    background-color: #0056b3;
+}
+.input-search{
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid #0080FF;
+    border-radius: 5px;
+    font-size: 16px;
+    flex-grow: 1;
+}
+
+form {
+
+    align-items: center;
+}

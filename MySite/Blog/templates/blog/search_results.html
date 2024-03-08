@@ -2,28 +2,11 @@
 
 {% block content %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li {% if message.tags %}
-        class="{{ message.tags }}"
-        {% endif %}>
-        {{ message}}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-    <!-- Любой шаблон, где нужна форма поиска -->
-<form method="get" action="{% url 'search_posts' %}">
-    <input type="text" class="input-search" name="q" placeholder="Поиск...">
-    <button type="submit" class="button-search">Искать</button>
-</form>
 
 <div class="content-index">
+    <h3 style="text-align: center;padding-bottom:10px;">Результаты поиска {{ query }}</h3>
 
-
-    <ul>
+   <ul>
         {% for post in posts %}
         <li class="content-index2">
             <div>
@@ -74,26 +57,7 @@
 
         </li>
     </ul>
+
     {% endblock %}
 
-
-
 </div>
-
-<script>
-  setTimeout(function() {
-    document.querySelectorAll('.messages li').forEach(function(message) {
-      message.remove();
-    });
-  }, 7000);
-
-
-</script>
-
-
-
-
-
-
-
-

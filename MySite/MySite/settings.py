@@ -105,3 +105,25 @@ except ImportError:
     from .prod_settings import *
 
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'log_formatter': {
+            'format': '{asctime} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'WARNING',  # Уровень логирования (например, INFO, DEBUG, ERROR)
+            'class': 'logging.FileHandler',
+            'filename': 'site_asutp.log',  # Имя файла лога
+            'formatter': 'log_formatter',
+        },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'WARNING',
+    },
+}
